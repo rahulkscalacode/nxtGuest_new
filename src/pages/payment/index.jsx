@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout2 from "../../components/layout2";
 import "../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
+import AddCardPopup from "./addCardPopup";
+
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClick = () => {
+    navigate("/booking-confirmation");
+  };
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  console.log(showModal);
   return (
     <Layout2>
+      <AddCardPopup toggleModal={toggleModal} showModal={showModal} />
+
       <div>
         <div className="head">Payment Mode</div>
         <div className="d-flex mt-2 justify-content-between align-items-center">
@@ -23,12 +40,16 @@ const Index = () => {
               Credit Card
             </label>
           </div>
-          <div className="editBook" style={{ borderRadius: "10px" }}>
+          <button
+            className="editBook"
+            style={{ borderRadius: "10px", width: "8rem", cursor: "pointer" }}
+            onClick={toggleModal}
+          >
             <span className="me-2">
               <TfiPlus />
             </span>
             Add Card
-          </div>
+          </button>
         </div>
         <div style={{ color: "#9F9F9F", marginLeft: "1.3rem" }}>
           Saved Cards
@@ -46,7 +67,9 @@ const Index = () => {
           >
             Cancel
           </button>
-          <button className="proceedPay">Proceed to Pay</button>
+          <button className="proceedPay" onClick={handleClick}>
+            Proceed to Pay
+          </button>
         </div>
       </div>
     </Layout2>

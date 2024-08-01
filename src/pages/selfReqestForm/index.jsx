@@ -23,11 +23,11 @@ const Index = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-    navigate("/login");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    navigate("/booking-summary");
     console.log("Form submitted:", form);
   };
 

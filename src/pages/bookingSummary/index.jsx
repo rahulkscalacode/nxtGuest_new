@@ -1,8 +1,14 @@
 import React from "react";
 import Layout2 from "../../components/layout2";
 import "./index.css";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/payment");
+  };
   const json = {
     Name: "K Dewangan",
     Email: "lokeshd@scalacoders.com",
@@ -27,7 +33,9 @@ const Index = () => {
       <div className="displayContent">
         <div className="btncss">
           <button className="editBook">Edit My Booking</button>
-          <button className="proceedPay">Proceed to Pay</button>
+          <button className="proceedPay" onClick={handleClick}>
+            Proceed to Pay
+          </button>
         </div>
       </div>
     </Layout2>

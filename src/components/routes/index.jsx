@@ -12,7 +12,10 @@ import OtherRequsetForm from "../../pages/otherReqestForm";
 import GroupRequestForm from "../../pages/groupRequestForm";
 import BookingSummary from "../../pages/bookingSummary";
 import Payment from "../../pages/payment";
-import BookingConfirmation from "../../pages/bookingConfirmation"
+import BookingConfirmation from "../../pages/payment/bookingConfirmation";
+import BookingFailed from "../../pages/payment/bookingFailed";
+import AboutUs from "../../pages/aboutUs";
+import Profile from "../../pages/profile";
 
 const Index = () => {
   let { pathname } = useLocation();
@@ -46,6 +49,9 @@ const Index = () => {
         <Route path="/booking-summary" element={<BookingSummary />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+        <Route path="/booking-failed" element={<BookingFailed />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>
   );

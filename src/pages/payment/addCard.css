@@ -1,0 +1,114 @@
+.card-container {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 15px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: white;
+  z-index: 99999;
+  position: absolute;
+  top: 25%;
+  border: none;
+}
+.heading {
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+}
+.card-header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+}
+
+.card-form .form-group label {
+  display: block;
+  font-size: 14px;
+  font-size: 14px;
+}
+
+.card-number {
+  display: flex;
+  align-items: center;
+}
+
+.card-number .card-logo {
+  margin-right: 10px;
+}
+
+.card-number input {
+  background-color: #383838;
+  border: none;
+  padding: 5px;
+  color: white;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.card-form .form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-form .form-row .form-group {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.card-form .form-row .form-group:last-child {
+  margin-right: 0;
+}
+
+.card-form input {
+  background-color: #383838;
+  border: none;
+  padding: 5px;
+  color: white;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.card-form .form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cancel-button,
+.save-button {
+  padding: 5px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.cancel-button {
+  background-color: #b0b0b0;
+  color: black;
+}
+
+.save-button {
+  background-color: #ffc107;
+  color: black;
+}
+.input-field {
+  width: 100%;
+  border-radius: 5px !important;
+  border: 1px solid #3b3b3b;
+  box-sizing: border-box;
+  background-color: #3b3b3b !important;
+  color: #fff;
+  margin-top: 10px;
+  padding: 6px;
+}

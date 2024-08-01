@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
-import "../selfReqestForm/index.css";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -29,6 +31,7 @@ const Index = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    navigate("/booking-summary");
     console.log("Form submitted:", form);
   };
 
@@ -46,7 +49,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-            //   style={{ marginTop: "1px", padding: "5px" }}
+              //   style={{ marginTop: "1px", padding: "5px" }}
             />
             <input
               type="text"
@@ -56,7 +59,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-            //   style={{ marginTop: "1px", padding: "5px" }}
+              //   style={{ marginTop: "1px", padding: "5px" }}
             />
           </div>
           <div className="">
@@ -68,7 +71,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
           </div>
           <div className="">
@@ -80,7 +83,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
           </div>
           <div className="">
@@ -92,7 +95,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
           </div>
           {/* -----------------Pickup Location------------------ */}
@@ -159,7 +162,7 @@ const Index = () => {
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
           </div>
           {/* ----------------Input field----------------- */}
@@ -172,7 +175,7 @@ const Index = () => {
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
           </div>
           <div className="">
@@ -181,7 +184,7 @@ const Index = () => {
               value={form.vehicleType}
               onChange={handleChange}
               className="input-field"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             >
               <option value="">Vehicle Type</option>
               {/* Add options here */}
@@ -195,7 +198,7 @@ const Index = () => {
               value={form.date}
               onChange={handleChange}
               className="input-field"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
             <input
               type="time"
@@ -203,7 +206,7 @@ const Index = () => {
               value={form.time}
               onChange={handleChange}
               className="input-field"
-            //   style={{ marginTop: "6px", padding: "5px" }}
+              //   style={{ marginTop: "6px", padding: "5px" }}
             />
           </div>
           <button

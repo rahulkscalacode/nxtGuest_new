@@ -13,3 +13,20 @@ body {
   /* font-weight: ; */
   font-style: normal;
 }
+.fontsixe15 {
+  font-size: 15px;
+  font-weight: 600;
+}
+.fontsize20 {
+  font-size: 20px;
+  font-weight: 700;
+}
+.fontsixe14 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 25px;
+}
+.fontsixe12 {
+  font-size: 12px;
+  font-weight: 500;
+}

@@ -41,7 +41,9 @@ const Index = () => {
             src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
           />
           <div>
-            <div>Christina Jones</div>
+            <div className="headP" style={{ fontSize: "18px", fontWeight: 600 }}>
+              Christina Jones
+            </div>
             <button
               className="editBook1 mt-2"
               style={{

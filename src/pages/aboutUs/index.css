@@ -1,0 +1,24 @@
+.subscribe-box {
+  background-color: #ffcc00;
+  padding: 5%;
+  /* text-align: center; */
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+.subscribe-box input[type="email"] {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  width: 60%;
+}
+
+.subscribe-box button {
+  padding: 10px 20px;
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}

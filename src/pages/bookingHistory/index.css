@@ -1,0 +1,87 @@
+.booking-history {
+  width: 95%;
+  margin: 0 auto;
+  color: white;
+  border: 1px solid #242424;
+  border-radius: 5px;
+}
+
+.booking-history h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.booking-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.booking-history th,
+.booking-history td {
+  padding: 10px;
+  text-align: left;
+}
+
+.booking-history th {
+  background-color: #444;
+  color: white;
+}
+
+.booking-history tr:nth-child(even) {
+  background-color: #333;
+}
+
+.booking-history tr:nth-child(odd) {
+  /* background-color: #222; */
+}
+
+.booking-history td.completed {
+  color: green;
+}
+
+.booking-history td.cancelled {
+  color: red;
+}
+
+.booking-history td.booked {
+  color: orange;
+}
+
+.booking-history td.approved {
+  color: blue;
+}
+
+.booking-history td.rejected {
+  color: darkred;
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination__link {
+  margin: 0 5px;
+  padding: 8px 16px;
+  border: 1px solid #444;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pagination__link--disabled {
+  cursor: default;
+  color: #666;
+}
+
+.pagination__link--active {
+  background-color: #444;
+}
+.table-container {
+  max-width: 100%; /* Adjust this height as needed */
+  overflow-y: auto;
+  scrollbar-width: thin;
+}

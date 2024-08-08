@@ -17,6 +17,10 @@ body {
   font-size: 15px;
   font-weight: 600;
 }
+.fontsize15400{
+  font-size: 15px;
+  font-weight: 400;
+}
 .fontsize20 {
   font-size: 20px;
   font-weight: 700;
@@ -29,4 +33,7 @@ body {
 .fontsixe12 {
   font-size: 12px;
   font-weight: 500;
+}
+a {
+  text-decoration: none !important;
 }

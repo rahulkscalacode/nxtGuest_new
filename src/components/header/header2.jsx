@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Sidebar from "../sidebar";
+import { Link } from "react-router-dom";
 
 const Header2 = () => {
   return (
-    <div style={{ borderBottom: "1px solid #474747" }}>
+    <div style={{ borderBottom: "1px solid #474747", display: "flex" }}>
       <div className="d-flex align-items-center p-3">
         <img
           src="/images/icons/ArrowLeft.png"
@@ -14,16 +15,20 @@ const Header2 = () => {
             height: " 32px",
           }}
         />
-        <img
-          src="/images/asset/logo1.png"
-          alt="Logo"
-          style={{
-            display: "flex",
-            margin: "auto",
-            width: "89px",
-            height: "67px",
-          }}
-        />
+      </div>
+      <div className="d-flex p-3" style={{ margin: "auto" }}>
+        <Link to="/">
+          <img
+            src="/images/asset/logo1.png"
+            alt="Logo"
+            style={{
+              display: "flex",
+              margin: "auto",
+              width: "89px",
+              height: "67px",
+            }}
+          />
+        </Link>
       </div>
     </div>
   );

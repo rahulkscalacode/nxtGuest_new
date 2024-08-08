@@ -16,6 +16,10 @@ import BookingConfirmation from "../../pages/payment/bookingConfirmation";
 import BookingFailed from "../../pages/payment/bookingFailed";
 import AboutUs from "../../pages/aboutUs";
 import Profile from "../../pages/profile";
+import BookingHistory from "../../pages/bookingHistory";
+import BookingDetails from "../../pages/bookingHistory/bookingDetails";
+import ContactUs from "../../pages/contactUs";
+import FeedbackForm from "../../pages/feedback";
 
 const Index = () => {
   let { pathname } = useLocation();
@@ -52,6 +56,10 @@ const Index = () => {
         <Route path="/booking-failed" element={<BookingFailed />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/booking-history" element={<BookingHistory />} />
+        <Route path="/booking-details" element={<BookingDetails />} />
+        <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
     </div>
   );

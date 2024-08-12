@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Home from "../../pages/home";
 import Login from "../../pages/login";
 import Register from "../../pages/register";
@@ -40,6 +42,7 @@ const Index = () => {
         backgroundBlendMode: "darken",
       }}
     >
+      <ToastContainer theme="dark" autoClose={5000} />
       <Routes>
         <Route index element={<Home />} />
         <Route path="*" element={<InvalidRoute />} />

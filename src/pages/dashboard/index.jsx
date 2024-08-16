@@ -51,7 +51,11 @@ const Index = () => {
             <p className="card-text">Valet Ride</p>
           </div>
         </div>
-        <div className="callbtn" style={{ zIndex: "99", width: "16rem" }}>
+        <div
+          className="callbtn"
+          style={{ zIndex: "99", width: "16rem", cursor: "pointer" }}
+          onClick={() => (window.location.href = "tel:9602228608")}
+        >
           Call Now{" "}
           <span>
             <img src="/images/icons/PhoneCall.png" alt="" />

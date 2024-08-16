@@ -18,6 +18,6 @@ export async function apiCall(method, url, data=null,params=null,controller=null
   } catch (err) {
     if(err.message!=="canceled")
     console.log("apiCallErr=>",err);
-    return err;
+    throw err;
   }
 }

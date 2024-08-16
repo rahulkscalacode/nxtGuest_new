@@ -3,6 +3,8 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
+import { selfserviceReqest } from "../../functions/api/selfServiceReqest";
+import { toast } from "react-toastify";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ const Index = () => {
     firstName: "",
     lastName: "",
     contactNumber: "",
-    email: "",
+    serviceEmail: "",
     locationType: "select",
     pickupLocation: "",
     dropLocation: "",
@@ -25,10 +27,22 @@ const Index = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/booking-summary");
-    console.log("Form submitted:", form);
+
+    try {
+      await selfserviceReqest(form)
+        .then((res) => {
+          console.log("res=>>", res);
+          toast.success("Successfully created self service request form.");
+          // navigate("/booking-summary");
+        })
+        .catch((err) => {
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      console.log("error=>>>", error);
+    }
   };
 
   return (
@@ -45,6 +59,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
+              // required
             />
             <input
               type="text"
@@ -65,17 +80,19 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
+              required
             />
           </div>
           <div className="">
             <input
               type="email"
-              name="email"
+              name="serviceEmail"
               placeholder="Email Address"
               value={form.email}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
+              required
             />
           </div>
           {/* -----------------Pickup Location------------------ */}
@@ -162,6 +179,7 @@ const Index = () => {
               value={form.vehicleType}
               onChange={handleChange}
               className="input-field"
+              // required
             >
               <option value="">Vehicle Type</option>
               {/* Add options here */}
@@ -175,6 +193,7 @@ const Index = () => {
               value={form.date}
               onChange={handleChange}
               className="input-field"
+              required
             />
             <input
               type="time"
@@ -182,6 +201,7 @@ const Index = () => {
               value={form.time}
               onChange={handleChange}
               className="input-field"
+              required
             />
           </div>
           <button type="submit" className="submit-button">

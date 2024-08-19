@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 const Index = () => {
+  const cookies = new Cookies();
   const navigate = useNavigate();
+  const tokenC = cookies.get("token");
+  const userNameC = cookies.get("userName");
+
+  useEffect(() => {
+    if (tokenC && userNameC) {
+      navigate("/dashboard");
+    }
+  }, [tokenC, userNameC]);
+  
   const handleClick = () => {
     navigate("/login");
   };

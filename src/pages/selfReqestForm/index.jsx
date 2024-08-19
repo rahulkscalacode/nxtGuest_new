@@ -5,6 +5,13 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { selfserviceReqest } from "../../functions/api/selfServiceReqest";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
+
+import TimePicker from "react-time-picker";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,14 +25,26 @@ const Index = () => {
     pickupLocation: "",
     dropLocation: "",
     vehicleType: "",
-    date: "",
+    datevalue: "",
     time: "",
   });
+  const [selectedDate, setSelectedDate] = useState(null);
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setForm({ ...form, datevalue: date });
+  };
+  // console.log("selectedDate", selectedDate);
+
+  const formatDate = (date) => {
+    return date ? format(date, "MM/dd/yy") : "";
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
+
+  console.log("form=>", form);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,6 +62,16 @@ const Index = () => {
     } catch (error) {
       console.log("error=>>>", error);
     }
+  };
+
+  const [time, setTime] = useState("00:00");
+
+  const formatTime = (value) => {
+    const [hour, minute] = value.split(":");
+    let formattedHour = parseInt(hour);
+    const period = formattedHour >= 12 ? "PM" : "AM";
+    formattedHour = formattedHour % 12 || 12; // Convert to 12-hour format
+    return `${formattedHour}:${minute} ${period}`;
   };
 
   return (
@@ -80,7 +109,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              required
+              // required
             />
           </div>
           <div className="">
@@ -92,7 +121,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              required
+              // required
             />
           </div>
           {/* -----------------Pickup Location------------------ */}
@@ -186,22 +215,24 @@ const Index = () => {
             </select>
           </div>
 
-          <div className="input-group">
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
+          <div className="d-flex gap-2">
+            <DatePicker
               className="input-field"
-              required
+              name="datevalue"
+              selected={form.datevalue}
+              onChange={handleDateChange}
+              dateFormat="MM/dd/yy"
+              placeholderText="MM/DD/YY"
+              // style={{ padding: "6px" }}
             />
-            <input
-              type="time"
-              name="time"
-              value={form.time}
-              onChange={handleChange}
+
+            <TimePicker
               className="input-field"
-              required
+              onChange={setTime}
+              value={time}
+              amPmAriaLabel="AM"
+              format="h:mm a"
+              shouldOpenClock={({ reason }) => reason !== "focus"}
             />
           </div>
           <button type="submit" className="submit-button">

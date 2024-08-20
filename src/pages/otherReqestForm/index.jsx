@@ -3,6 +3,8 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { otherServiceReqest } from "../../functions/api/serviceReqest";
+import { toast } from "react-toastify";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -29,10 +31,22 @@ const Index = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/booking-summary");
-    console.log("Form submitted:", form);
+
+    try {
+      await otherServiceReqest(form)
+        .then((res) => {
+          console.log("res=>>", res);
+          toast.success("Successfully created self service request form.");
+          navigate("/booking-summary");
+        })
+        .catch((err) => {
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      console.log("error=>>>", error);
+    }
   };
 
   return (

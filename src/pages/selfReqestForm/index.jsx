@@ -3,18 +3,20 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import { selfserviceReqest } from "../../functions/api/selfServiceReqest";
+import { selfserviceReqest } from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import Cookies from "universal-cookie";
 
 import TimePicker from "react-time-picker";
 
 const Index = () => {
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -27,7 +29,10 @@ const Index = () => {
     vehicleType: "",
     datevalue: "",
     time: "",
+    userId:cookies.get("userId"),
+    type:"self"
   });
+
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (date) => {
@@ -54,7 +59,7 @@ const Index = () => {
         .then((res) => {
           console.log("res=>>", res);
           toast.success("Successfully created self service request form.");
-          // navigate("/booking-summary");
+          navigate("/booking-summary");
         })
         .catch((err) => {
           toast.error("Something went wrong!");

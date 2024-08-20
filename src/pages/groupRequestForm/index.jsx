@@ -3,14 +3,16 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
 import "../selfReqestForm/index.css";
+import { otherServiceReqest } from "../../functions/api/serviceReqest";
+import { toast } from "react-toastify";
 
 const Index = () => {
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    contactNumber: "",
-    email: "",
+    groupName: "",
+    occasion: "",
     company: "",
+    email: "",
+    contact: "",
     locationType: "select",
     pickupLocation: "",
     dropLocation: "",
@@ -27,11 +29,23 @@ const Index = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
-  };
 
+    try {
+      await otherServiceReqest(form)
+        .then((res) => {
+          console.log("res=>>", res);
+          toast.success("Successfully created self service request form.");
+          // navigate("/booking-summary");
+        })
+        .catch((err) => {
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      console.log("error=>>>", error);
+    }
+  };
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
@@ -40,9 +54,9 @@ const Index = () => {
           <div className="">
             <input
               type="text"
-              name="contactNumber"
+              name="groupName"
               placeholder="Group Name"
-              value={form.contactNumber}
+              value={form.groupName}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
@@ -51,18 +65,18 @@ const Index = () => {
           <div className="input-group">
             <input
               type="text"
-              name="firstName"
+              name="occasion"
               placeholder="Occasion"
-              value={form.firstName}
+              value={form.occasion}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
             />
             <input
               type="text"
-              name="lastName"
+              name="company"
               placeholder="Company Name"
-              value={form.lastName}
+              value={form.company}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
@@ -86,21 +100,23 @@ const Index = () => {
           <div className="input-group">
             <input
               type="text"
-              name="firstName"
-              placeholder="Occasion"
-              value={form.firstName}
+              name="contact"
+              placeholder="Contact Number"
+              value={form.contact}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
             />
             <select
-              name="passengers"
+              name="pickupLocation"
               value={form.pickupLocation}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
             >
-              <option value="" selected>No. of Passengers</option>
+              <option value="" selected>
+                No. of Passengers
+              </option>
               {/* Add options here */}
             </select>
           </div>

@@ -3,22 +3,27 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
 import "../selfReqestForm/index.css";
-import { otherServiceReqest } from "../../functions/api/serviceReqest";
+import { groupServiceReqest } from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
 
 const Index = () => {
+  const cookies = new Cookies();
+
   const [form, setForm] = useState({
     groupName: "",
     occasion: "",
-    company: "",
+    companyName: "",
     email: "",
-    contact: "",
+    contactNumber: "",
     locationType: "select",
     pickupLocation: "",
     dropLocation: "",
     vehicleType: "",
     date: "",
     time: "",
+    userId: cookies.get("userId"),
+    type: "group",
   });
 
   let { pathname } = useLocation();
@@ -33,7 +38,7 @@ const Index = () => {
     e.preventDefault();
 
     try {
-      await otherServiceReqest(form)
+      await groupServiceReqest(form)
         .then((res) => {
           console.log("res=>>", res);
           toast.success("Successfully created self service request form.");
@@ -74,9 +79,9 @@ const Index = () => {
             />
             <input
               type="text"
-              name="company"
+              name="companyName"
               placeholder="Company Name"
-              value={form.company}
+              value={form.companyName}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
@@ -100,9 +105,9 @@ const Index = () => {
           <div className="input-group">
             <input
               type="text"
-              name="contact"
+              name="contactNumber"
               placeholder="Contact Number"
-              value={form.contact}
+              value={form.contactNumber}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"

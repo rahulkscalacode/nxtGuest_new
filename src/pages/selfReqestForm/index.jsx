@@ -22,7 +22,7 @@ const Index = () => {
     firstName: "",
     lastName: "",
     contactNumber: "",
-    serviceEmail: "",
+    email: "",
     locationType: "select",
     pickupLocation: "",
     dropLocation: "",
@@ -120,7 +120,7 @@ const Index = () => {
           <div className="">
             <input
               type="email"
-              name="serviceEmail"
+              name="email"
               placeholder="Email Address"
               value={form.email}
               onChange={handleChange}

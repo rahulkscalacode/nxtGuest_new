@@ -5,9 +5,11 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { otherServiceReqest } from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
 
 const Index = () => {
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -21,6 +23,8 @@ const Index = () => {
     vehicleType: "",
     date: "",
     time: "",
+    userId:cookies.get("userId"),
+    type:"other"
   });
 
   let { pathname } = useLocation();

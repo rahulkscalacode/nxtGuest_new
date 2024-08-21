@@ -3,20 +3,27 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
 import "../selfReqestForm/index.css";
+import { groupServiceReqest } from "../../functions/api/serviceReqest";
+import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
 
 const Index = () => {
+  const cookies = new Cookies();
+
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    contactNumber: "",
+    groupName: "",
+    occasion: "",
+    companyName: "",
     email: "",
-    company: "",
+    contactNumber: "",
     locationType: "select",
     pickupLocation: "",
     dropLocation: "",
     vehicleType: "",
     date: "",
     time: "",
+    userId: cookies.get("userId"),
+    type: "group",
   });
 
   let { pathname } = useLocation();
@@ -27,11 +34,23 @@ const Index = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
-  };
 
+    try {
+      await groupServiceReqest(form)
+        .then((res) => {
+          console.log("res=>>", res);
+          toast.success("Successfully created self service request form.");
+          // navigate("/booking-summary");
+        })
+        .catch((err) => {
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      console.log("error=>>>", error);
+    }
+  };
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
@@ -40,9 +59,9 @@ const Index = () => {
           <div className="">
             <input
               type="text"
-              name="contactNumber"
+              name="groupName"
               placeholder="Group Name"
-              value={form.contactNumber}
+              value={form.groupName}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
@@ -51,18 +70,18 @@ const Index = () => {
           <div className="input-group">
             <input
               type="text"
-              name="firstName"
+              name="occasion"
               placeholder="Occasion"
-              value={form.firstName}
+              value={form.occasion}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
             />
             <input
               type="text"
-              name="lastName"
+              name="companyName"
               placeholder="Company Name"
-              value={form.lastName}
+              value={form.companyName}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
@@ -86,21 +105,23 @@ const Index = () => {
           <div className="input-group">
             <input
               type="text"
-              name="firstName"
-              placeholder="Occasion"
-              value={form.firstName}
+              name="contactNumber"
+              placeholder="Contact Number"
+              value={form.contactNumber}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
             />
             <select
-              name="passengers"
+              name="pickupLocation"
               value={form.pickupLocation}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
             >
-              <option value="" selected>No. of Passengers</option>
+              <option value="" selected>
+                No. of Passengers
+              </option>
               {/* Add options here */}
             </select>
           </div>

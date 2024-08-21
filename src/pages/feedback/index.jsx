@@ -56,6 +56,30 @@ const FeedbackForm = () => {
             </div>
           </form>
         </div>
+        <div className="row mt-2">
+          <div className="col-3"></div>
+          <div className="col-9">
+            <img
+              src="/images/icons/google.png"
+              alt=""
+              style={{
+                backgroundColor: "white",
+                width: "100px",
+                marginRight: "20px",
+                borderRadius: "50%",
+              }}
+            />
+            <img
+              src="/images/icons/fav.ico"
+              alt=""
+              style={{
+                backgroundColor: "white",
+                width: "100px",
+                borderRadius: "10px",
+              }}
+            />
+          </div>
+        </div>
       </div>
       <div className="d-flex gap-2">
         <button type="button" className="cancel-button col-6">

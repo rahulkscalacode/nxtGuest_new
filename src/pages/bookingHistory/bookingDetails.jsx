@@ -2,18 +2,18 @@ import React from "react";
 import Layout2 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
-
+import moment from "moment";
 const BookingDetails = () => {
   const location = useLocation();
   const { state } = location || {};
-  console.log(state);
+  console.log("state",state);
 
   const json = {
     "Pickup Location": "Noida Sector 62",
     "Drop Location": "Noida Sector 63",
     "Date of Booking": "30th May 2024",
     "Date of Ride": "22th May 2024",
-    Time: "15:00 PM",
+    Time: moment(state.time, "HH:mm").format("hh:mm A"),
     "Car Model Name": "Cadillac Escalade",
     "Car Number": "UP 16 BC 8765",
     "Driver Name": "Brian Lara",
@@ -21,7 +21,7 @@ const BookingDetails = () => {
     "Card Number": "************1234",
     "Transaction ID": "123456789098",
     Fare: state?.status === "Booked" ? "Pending" : "$400.00",
-    "Vehicle Type": "ESV",
+    "Vehicle Type": state.vehicleType ? state.vehicleType : "N/A",
   };
   return (
     <Layout2 footer={<Footer />}>

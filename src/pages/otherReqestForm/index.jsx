@@ -6,25 +6,28 @@ import { useNavigate } from "react-router-dom";
 import { otherServiceReqest } from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
+import DateAndTime from "../../components/dateAndTime";
 
 const Index = () => {
   const navigate = useNavigate();
   const cookies = new Cookies();
+  const [value, setValue] = useState("00:00");
 
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     contactNumber: "",
     email: "",
-    company: "",
+    companyName: "",
     locationType: "select",
     pickupLocation: "",
     dropLocation: "",
     vehicleType: "",
-    date: "",
-    time: "",
-    userId:cookies.get("userId"),
-    type:"other"
+    dateOfRide: "",
+    dateOfBooking: new Date().toString(),
+    time: value ? value : "",
+    userId: cookies.get("userId"),
+    type: "other",
   });
 
   let { pathname } = useLocation();
@@ -35,6 +38,15 @@ const Index = () => {
     setForm({ ...form, [name]: value });
   };
 
+  const handleDateChange = (value) => {
+    setForm({ ...form, dateOfRide: value });
+  };
+
+  const handleTimeChange = (value) => {
+    setValue(value);
+    setForm({ ...form, time: value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,8 +54,11 @@ const Index = () => {
       await otherServiceReqest(form)
         .then((res) => {
           console.log("res=>>", res);
+          const serializableData = {
+            data: res.data,
+          };
           toast.success("Successfully created self service request form.");
-          navigate("/booking-summary");
+          navigate("/booking-summary", { state: { data: serializableData } });
         })
         .catch((err) => {
           toast.error("Something went wrong!");
@@ -53,6 +68,7 @@ const Index = () => {
     }
   };
 
+  console.log(form);
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
@@ -68,6 +84,7 @@ const Index = () => {
               className="input-field"
               autoComplete="new-email"
               //   style={{ marginTop: "1px", padding: "5px" }}
+              required
             />
             <input
               type="text"
@@ -107,9 +124,9 @@ const Index = () => {
           <div className="">
             <input
               type="text"
-              name="company"
+              name="companyName"
               placeholder="Company Name"
-              value={form.company}
+              value={form.companyName}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
@@ -209,24 +226,10 @@ const Index = () => {
             </select>
           </div>
 
-          <div className="input-group">
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
-            />
-            <input
-              type="time"
-              name="time"
-              value={form.time}
-              onChange={handleChange}
-              className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
-            />
-          </div>
+          <DateAndTime
+            arg={{ form, value, handleDateChange, handleTimeChange }}
+          />
+
           <button
             type="submit"
             className="submit-button"

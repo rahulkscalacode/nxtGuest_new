@@ -1,78 +1,103 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import "./index.css";
 import Layout from "../../components/layout";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
+import { apiCall } from "../../functions/api/apiGlobal";
+import Cookies from "universal-cookie";
+
 
 const Index = () => {
+  const cookies = new Cookies();
+  const tokenUserId = cookies.get("userId");
   const navigate = useNavigate();
 
-  const bookings = [
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Completed",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Completed",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Cancelled",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Booked",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Approved",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Approved",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Completed",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Completed",
-      action: "View",
-    },
-    {
-      date: "07/03/2024",
-      pickup: "Noida",
-      drop: "Delhi",
-      status: "Completed",
-      action: "View",
-    },
-  ];
+  const [bookings,setBookings] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiCall('GET', '/user/booking-history', {}, {}, null, {
+          "user_id": tokenUserId // Pass tokenUserId in headers
+        });
+        // const bookingData = response.data.bookingData
+        // console.log("bookingdata response----->>>>",bookingData)
+        setBookings(response.data.bookingData);
+        
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+      }
+    };
+
+    fetchData();
+  }, []); 
+
+  // const bookings = [
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Completed",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Completed",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Cancelled",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Booked",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Approved",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Approved",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Completed",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Completed",
+  //     action: "View",
+  //   },
+  //   {
+  //     date: "07/03/2024",
+  //     pickup: "Noida",
+  //     drop: "Delhi",
+  //     status: "Completed",
+  //     action: "View",
+  //   },
+  // ];
 
   const [currentPage, setCurrentPage] = useState(0);
   const bookingsPerPage = 10;
@@ -126,16 +151,17 @@ const Index = () => {
                 {currentBookings.map((booking, index) => (
                   <tr key={index}>
                     <td>{booking.date}</td>
-                    <td>{booking.pickup}</td>
-                    <td>{booking.drop}</td>
+                    <td>{booking.pickupLocation}</td>
+                    <td>{booking.dropLocation}</td>
                     <td className={getStatusClass(booking.status)}>
-                      {booking.status}
+                      {booking.status ?? "N/A" }
                     </td>
                     <td
                       style={{ color: "#1052FB", cursor: "pointer" }}
                       onClick={() => handleView(booking)}
                     >
-                      {booking.action}
+                      {/* {booking.action} */}
+                      View
                     </td>
                   </tr>
                 ))}

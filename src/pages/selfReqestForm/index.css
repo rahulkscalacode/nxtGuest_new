@@ -57,3 +57,25 @@ button.submit-button {
 .react-time-picker__wrapper {
   border: none !important;
 }
+/* .react-datepicker__tab-loop {
+  z-index: 66666;
+  position: absolute;
+  left: 20% !important;
+} */
+
+@media only screen and (min-width: 300px) {
+  .widthTimePicker {
+    width: 80% !important;
+  }
+  .react-datepicker-popper {
+    left: 14% !important;
+  }
+}
+@media only screen and (min-width: 360px) {
+  .widthTimePicker {
+    width: 60% !important;
+  }
+  .react-datepicker-popper {
+    left: 10% !important;
+  }
+}

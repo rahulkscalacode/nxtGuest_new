@@ -11,7 +11,7 @@ export async function apiCall(method, url, data=null,params=null,controller=null
       data: data,
       params: params,
       headers:{...header,
-      "Authorization": `Bearer ${cookies.get("Token")}`
+      "Authorization": `Bearer ${cookies.get("token")}`
       },
       ...(controller && {signal:controller.signal})
     });

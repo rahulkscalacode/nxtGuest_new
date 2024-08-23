@@ -17,7 +17,7 @@ body {
   font-size: 15px;
   font-weight: 600;
 }
-.fontsize15400{
+.fontsize15400 {
   font-size: 15px;
   font-weight: 400;
 }
@@ -37,3 +37,4 @@ body {
 a {
   text-decoration: none !important;
 }
+

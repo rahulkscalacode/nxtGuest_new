@@ -5,19 +5,15 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { selfserviceReqest } from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
-import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css";
 import Cookies from "universal-cookie";
-
-import TimePicker from "react-time-picker";
+import DateAndTime from "../../components/dateAndTime";
 
 const Index = () => {
   const navigate = useNavigate();
   const cookies = new Cookies();
+  const [value, setValue] = useState("00:00");
 
+  // console.log("time", value);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -27,26 +23,47 @@ const Index = () => {
     pickupLocation: "",
     dropLocation: "",
     vehicleType: "",
-    datevalue: "",
-    time: "",
-    userId:cookies.get("userId"),
-    type:"self"
+    dateOfRide: "",
+    dateOfBooking: new Date().toString(),
+    time: value ? value : "",
+    userId: cookies.get("userId"),
+    type: "self",
   });
 
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setForm({ ...form, datevalue: date });
+  const handleDateChange = (value) => {
+    setForm({ ...form, dateOfRide: value });
   };
-  // console.log("selectedDate", selectedDate);
 
-  const formatDate = (date) => {
-    return date ? format(date, "MM/dd/yy") : "";
+  const handleTimeChange = (value) => {
+    setValue(value);
+    setForm({ ...form, time: value });
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+
+    if (name === "locationType") {
+      if (value === "manual") {
+        setForm({
+          ...form,
+          locationType: value,
+          pickupLocation: "",
+          dropLocation: "",
+        });
+      } else if (value === "select") {
+        setForm({
+          ...form,
+          locationType: value,
+          pickupLocation: "",
+          dropLocation: "",
+        });
+      }
+    } else {
+      setForm({
+        ...form,
+        [name]: value,
+      });
+    }
   };
 
   console.log("form=>", form);
@@ -58,25 +75,20 @@ const Index = () => {
       await selfserviceReqest(form)
         .then((res) => {
           console.log("res=>>", res);
+          const serializableData = {
+            data: res.data,
+          };
+
           toast.success("Successfully created self service request form.");
-          navigate("/booking-summary");
+          navigate("/booking-summary", { state: { data: serializableData } });
         })
         .catch((err) => {
+          console.log(err);
           toast.error("Something went wrong!");
         });
     } catch (error) {
       console.log("error=>>>", error);
     }
-  };
-
-  const [time, setTime] = useState("00:00");
-
-  const formatTime = (value) => {
-    const [hour, minute] = value.split(":");
-    let formattedHour = parseInt(hour);
-    const period = formattedHour >= 12 ? "PM" : "AM";
-    formattedHour = formattedHour % 12 || 12; // Convert to 12-hour format
-    return `${formattedHour}:${minute} ${period}`;
   };
 
   return (
@@ -93,7 +105,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              // required
+              required
             />
             <input
               type="text"
@@ -114,7 +126,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              // required
+              required
             />
           </div>
           <div className="">
@@ -126,7 +138,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              // required
+              required
             />
           </div>
           {/* -----------------Pickup Location------------------ */}
@@ -145,13 +157,14 @@ const Index = () => {
             </label>
             <select
               name="pickupLocation"
-              value={form.pickupLocation}
+              value={form.locationType === "select" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
             >
               <option value="">Select</option>
-              {/* Add options here */}
+              <option value="noida">Noida</option>
+              <option value="delhi">Delhi</option>
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
@@ -159,13 +172,14 @@ const Index = () => {
             <label style={{ marginLeft: "1.4rem" }}>Drop Location</label>
             <select
               name="dropLocation"
-              value={form.dropLocation}
+              value={form.locationType === "select" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
             >
               <option value="">Select</option>
-              {/* Add options here */}
+              <option value="gurgaon">Gurgaon</option>
+              <option value="mayur">Mayur</option>
             </select>
           </div>
           {/* -------------Other------------ */}
@@ -189,7 +203,7 @@ const Index = () => {
               type="text"
               name="pickupLocation"
               placeholder="Enter Pickup Location Manually"
-              value={form.pickupLocation}
+              value={form.locationType === "manual" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
@@ -201,7 +215,7 @@ const Index = () => {
               type="text"
               name="dropLocation"
               placeholder="Enter Drop Location Manually"
-              value={form.dropLocation}
+              value={form.locationType === "manual" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
@@ -216,30 +230,16 @@ const Index = () => {
               // required
             >
               <option value="">Vehicle Type</option>
+              <option value="car">car</option>
+              <option value="xuv">xuv</option>
               {/* Add options here */}
             </select>
           </div>
 
-          <div className="d-flex gap-2">
-            <DatePicker
-              className="input-field"
-              name="datevalue"
-              selected={form.datevalue}
-              onChange={handleDateChange}
-              dateFormat="MM/dd/yy"
-              placeholderText="MM/DD/YY"
-              // style={{ padding: "6px" }}
-            />
+          <DateAndTime
+            arg={{ form, value, handleDateChange, handleTimeChange }}
+          />
 
-            <TimePicker
-              className="input-field"
-              onChange={setTime}
-              value={time}
-              amPmAriaLabel="AM"
-              format="h:mm a"
-              shouldOpenClock={({ reason }) => reason !== "focus"}
-            />
-          </div>
           <button type="submit" className="submit-button">
             Confirm Booking
           </button>

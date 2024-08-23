@@ -6,9 +6,13 @@ import "../selfReqestForm/index.css";
 import { groupServiceReqest } from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
+import DateAndTime from "../../components/dateAndTime";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const cookies = new Cookies();
+  const [value, setValue] = useState("00:00");
 
   const [form, setForm] = useState({
     groupName: "",
@@ -20,10 +24,12 @@ const Index = () => {
     pickupLocation: "",
     dropLocation: "",
     vehicleType: "",
-    date: "",
-    time: "",
+    dateOfRide: "",
+    dateOfBooking: new Date().toString(),
+    time: value ? value : "",
     userId: cookies.get("userId"),
     type: "group",
+    numberOfPassengers: "",
   });
 
   let { pathname } = useLocation();
@@ -34,6 +40,15 @@ const Index = () => {
     setForm({ ...form, [name]: value });
   };
 
+  const handleDateChange = (value) => {
+    setForm({ ...form, dateOfRide: value });
+  };
+
+  const handleTimeChange = (value) => {
+    setValue(value);
+    setForm({ ...form, time: value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,8 +56,11 @@ const Index = () => {
       await groupServiceReqest(form)
         .then((res) => {
           console.log("res=>>", res);
+          const serializableData = {
+            data: res.data,
+          };
           toast.success("Successfully created self service request form.");
-          // navigate("/booking-summary");
+          navigate("/booking-summary", { state: { data: serializableData } });
         })
         .catch((err) => {
           toast.error("Something went wrong!");
@@ -113,8 +131,8 @@ const Index = () => {
               autoComplete="new-email"
             />
             <select
-              name="pickupLocation"
-              value={form.pickupLocation}
+              name="numberOfPassengers"
+              value={form.numberOfPassengers}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
@@ -122,7 +140,8 @@ const Index = () => {
               <option value="" selected>
                 No. of Passengers
               </option>
-              {/* Add options here */}
+              <option value="1">1</option>
+              <option value="2">2</option>
             </select>
           </div>
           {/* -----------------Pickup Location------------------ */}
@@ -218,24 +237,10 @@ const Index = () => {
             </select>
           </div>
 
-          <div className="input-group">
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
-            />
-            <input
-              type="time"
-              name="time"
-              value={form.time}
-              onChange={handleChange}
-              className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
-            />
-          </div>
+          <DateAndTime
+            arg={{ form, value, handleDateChange, handleTimeChange }}
+          />
+
           <button
             type="submit"
             className="submit-button"

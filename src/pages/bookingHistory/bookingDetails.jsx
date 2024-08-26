@@ -3,10 +3,11 @@ import Layout2 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
 import moment from "moment";
+
 const BookingDetails = () => {
   const location = useLocation();
   const { state } = location || {};
-  console.log("state",state);
+  console.log("state",state._id);
 
   const json = {
     "Pickup Location": "Noida Sector 62",

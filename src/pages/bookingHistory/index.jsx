@@ -5,7 +5,7 @@ import Layout from "../../components/layout";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { apiCall } from "../../functions/api/apiGlobal";
-import Cookies from "universal-cookie";
+import Cookies from "universal-cookie"
 
 const Index = () => {
   const cookies = new Cookies();

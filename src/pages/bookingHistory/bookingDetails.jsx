@@ -2,7 +2,7 @@ import React from "react";
 import Layout2 from "../../components/layout1";
 import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
-import moment from "moment";
+import moment from "moment"
 
 const BookingDetails = () => {
   const location = useLocation();

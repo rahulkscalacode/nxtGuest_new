@@ -1,34 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  selfserviceReqest,
+  updateServiceForm,
+} from "../../functions/api/serviceReqest";
+import { toast } from "react-toastify";
 import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import "./index.css";
-import { useNavigate } from "react-router-dom";
-import { selfserviceReqest } from "../../functions/api/serviceReqest";
-import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const cookies = new Cookies();
   const [value, setValue] = useState("00:00");
 
-  // console.log("time", value);
+  const previousData = useMemo(
+    () => location.state?.data || {},
+    [location.state?.data]
+  );
+
+  useEffect(() => {
+    console.log("Received data:", previousData);
+  }, [previousData]);
+
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    contactNumber: "",
-    email: "",
-    locationType: "select",
-    pickupLocation: "",
-    dropLocation: "",
-    vehicleType: "",
-    dateOfRide: "",
-    dateOfBooking: new Date().toString(),
-    time: value ? value : "",
+    firstName: previousData.firstName || "",
+    lastName: previousData.lastName || "",
+    contactNumber: previousData.contactNumber || "",
+    email: previousData.email || "",
+    locationType: previousData.locationType || "select",
+    pickupLocation: previousData.pickupLocation || "",
+    dropLocation: previousData.dropLocation || "",
+    vehicleType: previousData.vehicleType || "",
+    dateOfRide: previousData.dateOfRide || "",
+    dateOfBooking: previousData.dateOfBooking || new Date().toString(),
+    time: previousData.time || value,
     userId: cookies.get("userId"),
     type: "self",
   });
+
+  useEffect(() => {
+    if (location.state && location.state.data) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        ...location.state.data,
+      }));
+    }
+  }, [location.state]);
 
   const handleDateChange = (value) => {
     setForm({ ...form, dateOfRide: value });
@@ -66,8 +87,6 @@ const Index = () => {
     }
   };
 
-  console.log("form=>", form);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -78,9 +97,10 @@ const Index = () => {
           const serializableData = {
             data: res.data,
           };
-
           toast.success("Successfully created self service request form.");
-          navigate("/booking-summary", { state: { data: serializableData } });
+          navigate("/booking-summary", {
+            state: { data: serializableData, previousRoute: location.pathname },
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -91,11 +111,42 @@ const Index = () => {
     }
   };
 
+  const handleUpdateData = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Form data before update:", form);
+
+      await updateServiceForm(form, previousData._id)
+        .then((res) => {
+          const serializableData = {
+            data: res.data,
+          };
+          toast.success("Successfully updated self service request form.");
+          navigate("/booking-summary", {
+            state: { data: serializableData, previousRoute: location.pathname },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
         <div className="head">Service Request</div>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form
+          onSubmit={
+            Object.keys(previousData).length > 0
+              ? handleUpdateData
+              : handleSubmit
+          }
+          autoComplete="off"
+        >
           <div className="input-group">
             <input
               type="text"

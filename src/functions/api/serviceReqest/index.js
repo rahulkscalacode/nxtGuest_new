@@ -14,3 +14,8 @@ export async function groupServiceReqest(obj) {
   const res = await apiCall("post", "/service/group", obj, null);
   return res;
 }
+
+export async function updateServiceForm(obj, params) {
+  const res = await apiCall("patch", `/service/update/${params}`, obj, null);
+  return res;
+}

@@ -5,7 +5,8 @@ import Layout from "../../components/layout";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { apiCall } from "../../functions/api/apiGlobal";
-import Cookies from "universal-cookie"
+import Cookies from "universal-cookie";
+import { timeFormatter } from "../../components/formatter/timeFormatter";
 
 const Index = () => {
   const cookies = new Cookies();
@@ -66,13 +67,7 @@ const Index = () => {
         return "";
     }
   };
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return `${(date.getMonth() + 1).toString().padStart(2, "0")}/${date
-      .getDate()
-      .toString()
-      .padStart(2, "0")}/${date.getFullYear().toString().slice(-2)}`;
-  };
+
   const handleView = (booking) => {
     navigate("/booking-details", { state: booking });
   };
@@ -95,7 +90,7 @@ const Index = () => {
               <tbody className="fontsixe14">
                 {currentBookings.map((booking, index) => (
                   <tr key={index}>
-                    <td>{formatDate(booking.dateOfRide)}</td>
+                    <td>{timeFormatter(booking.dateOfRide)}</td>
                     <td>{booking.pickupLocation}</td>
                     <td>{booking.dropLocation}</td>
                     <td className={getStatusClass("Completed")}>

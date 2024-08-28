@@ -1,39 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
-import { useLocation } from "react-router-dom";
 import "../selfReqestForm/index.css";
-import { groupServiceReqest } from "../../functions/api/serviceReqest";
+import {
+  groupServiceReqest,
+  updateServiceForm,
+} from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
-import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const cookies = new Cookies();
   const [value, setValue] = useState("00:00");
 
+  const previousData = useMemo(
+    () => location.state?.data || {},
+    [location.state?.data]
+  );
+
+  useEffect(() => {
+    console.log("Received data:", previousData);
+  }, [previousData]);
+
   const [form, setForm] = useState({
-    groupName: "",
-    occasion: "",
-    companyName: "",
-    email: "",
-    contactNumber: "",
-    locationType: "select",
-    pickupLocation: "",
-    dropLocation: "",
-    vehicleType: "",
-    dateOfRide: "",
-    dateOfBooking: new Date().toString(),
-    time: value ? value : "",
+    groupName: previousData.groupName || "",
+    occasion: previousData.occasion || "",
+    companyName: previousData.companyName || "",
+    email: previousData.email || "",
+    contactNumber: previousData.contactNumber || "",
+    locationType: previousData.locationType || "select",
+    pickupLocation: previousData.pickupLocation || "",
+    dropLocation: previousData.dropLocation || "",
+    vehicleType: previousData.vehicleType || "",
+    dateOfRide: previousData.dateOfRide || "",
+    dateOfBooking: previousData.dateOfBooking || new Date().toString(),
+    time: previousData.time || value ? value : "",
     userId: cookies.get("userId"),
     type: "group",
-    numberOfPassengers: "",
+    numberOfPassengers: previousData.numberOfPassengers || "",
   });
 
-  let { pathname } = useLocation();
-  console.log(pathname);
+  useEffect(() => {
+    if (location.state && location.state.data) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        ...location.state.data,
+      }));
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +78,9 @@ const Index = () => {
             data: res.data,
           };
           toast.success("Successfully created self service request form.");
-          navigate("/booking-summary", { state: { data: serializableData } });
+          navigate("/booking-summary", {
+            state: { data: serializableData, previousRoute: location.pathname },
+          });
         })
         .catch((err) => {
           toast.error("Something went wrong!");
@@ -69,11 +89,42 @@ const Index = () => {
       console.log("error=>>>", error);
     }
   };
+
+  const handleUpdateData = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Form data before update:", form);
+
+      await updateServiceForm(form, previousData._id)
+        .then((res) => {
+          const serializableData = {
+            data: res.data,
+          };
+          toast.success("Successfully updated self service request form.");
+          navigate("/booking-summary", {
+            state: { data: serializableData, previousRoute: location.pathname },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      toast.error(error);
+    }
+  };
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
         <div className="head">Service Request</div>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form
+          onSubmit={
+            Object.keys(previousData).length > 0
+              ? handleUpdateData
+              : handleSubmit
+          }
+          autoComplete="off"
+        >
           <div className="">
             <input
               type="text"

@@ -100,4 +100,5 @@
     url("/public/images/asset/car2.gif") center bottom / cover no-repeat;
   background-repeat: no-repeat;
   background-position: 5px 20.597px;
+  margin-bottom: 3rem;
 }

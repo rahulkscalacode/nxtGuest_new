@@ -1,8 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.css";
 import Layout1 from "../../components/layout1";
-
+import { apiCall } from '../../functions/api/apiGlobal';
+import { toast } from "react-toastify";
 const Index = () => {
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+    type: "contact"
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await apiCall('POST', '/user/contact-feedback', formData, {}, null, {});
+      
+      if(response.data.status === "success"){
+        toast.success(response.data.message);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+          type: "contact"
+        });
+      } else if(response.data.status === "error") {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      } 
+    } catch (error) {
+      console.error("Failed to submit feedback:", error);
+      toast.error("Failed to submit feedback");
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+      type: "contact"
+    });
+  };
+
   return (
     <Layout1>
       <div className="contact-us">
@@ -45,7 +96,7 @@ const Index = () => {
         </button>
         <div className="form-container">
           <p className="fontsixe15">For Queries:</p>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="row">
               <label htmlFor="name" className="col-3">
                 Name:
@@ -55,6 +106,9 @@ const Index = () => {
                 placeholder="Enter Name"
                 className="col-9 input-field1"
                 autoComplete="new-email"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
               />
             </div>
             <div className="row">
@@ -66,6 +120,9 @@ const Index = () => {
                 placeholder="Enter Email Address"
                 className="col-9 input-field1"
                 autoComplete="new-email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
               />
             </div>
             <div className="row">
@@ -77,6 +134,9 @@ const Index = () => {
                 placeholder="Enter subject"
                 className="col-9 input-field1"
                 autoComplete="new-email"
+                name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
               />
             </div>
             <div className="row">
@@ -84,10 +144,15 @@ const Index = () => {
                 Phone:
               </label>
               <input
-                type="tel"
+                type="number"
                 placeholder="Enter phone number "
-                className="col-9 input-field1"
+                className="col-9 input-field1 no-spinner"
                 autoComplete="new-email"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                onKeyDown={(e) => (e.key === '.' || e.key === '-') && e.preventDefault()}
+                min="0"
               />
             </div>
             <div className="row">
@@ -98,10 +163,12 @@ const Index = () => {
                 id="message"
                 name="message"
                 className="col-9 input-field1"
+                value={formData.message}
+                onChange={handleInputChange}
               ></textarea>
             </div>
             <div className="d-flex gap-2">
-              <button type="button" className="cancel-button col-6">
+              <button type="button" onClick={handleCancel} className="cancel-button col-6">
                 Cancel
               </button>
               <button type="submit" className="submit-button1 col-6">

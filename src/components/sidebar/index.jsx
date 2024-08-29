@@ -1,9 +1,27 @@
 import React from "react";
 import "./index.css";
 import { TfiClose } from "react-icons/tfi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
+import { toast } from "react-toastify";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
+
+  const navigate = useNavigate();
+  const cookies = new Cookies();
+
+  const handleLogout = () => {
+    cookies.remove("userId");
+    cookies.remove("name");
+    cookies.remove("refreshToken");
+    cookies.remove("token");
+    cookies.remove("userName");
+
+    navigate("/");
+    toast.success("Logged out successfully");
+  };
+
+  
   return (
     <div className={`sidebar ${isOpen ? "" : "close"}`}>
       <div className="sidebar-header">
@@ -47,7 +65,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <img src="/images/icons/ChatText.png" alt="" /> Feedback
           </div>
         </Link>
-        <div className="menu-item">
+        <div className="menu-item" onClick={handleLogout}>
           <img src="/images/icons/SignOut.png" alt="" /> Logout
         </div>
       </div>

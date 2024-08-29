@@ -2,7 +2,7 @@ import React from "react";
 import Layout2 from "../../../components/layout2";
 import "../../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const json = {

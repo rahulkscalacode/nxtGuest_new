@@ -79,3 +79,11 @@ button.submit-button {
     left: 10% !important;
   }
 }
+
+.react-time-picker__inputGroup__amPm {
+  color: black;
+}
+
+.react-time-picker__inputGroup__amPm option {
+  color: black;
+}

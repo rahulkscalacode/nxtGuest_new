@@ -40,9 +40,9 @@ const Index = () => {
             </div>
           </div>
         </div>
-        <button className="service-banner">
+        <div className="service-banner">
           24x7 Transportation Services Available
-        </button>
+        </div>
         <div className="form-container">
           <p className="fontsixe15">For Queries:</p>
           <form>
@@ -98,6 +98,7 @@ const Index = () => {
                 id="message"
                 name="message"
                 className="col-9 input-field1"
+                placeholder="Enter message"
               ></textarea>
             </div>
             <div className="d-flex gap-2">

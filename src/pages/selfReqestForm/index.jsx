@@ -170,7 +170,7 @@ const Index = () => {
           </div>
           <div className="">
             <input
-              type="text"
+              type="number"
               name="contactNumber"
               placeholder="Contact Number"
               value={form.contactNumber}

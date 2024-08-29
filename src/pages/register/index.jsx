@@ -11,11 +11,6 @@ const Index = () => {
   const tokenC = cookies.get("token");
   const userNameC = cookies.get("userName");
 
-  useEffect(() => {
-    if (tokenC && userNameC) {
-      navigate("/dashboard");
-    }
-  }, [tokenC, userNameC]);
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -24,6 +19,15 @@ const Index = () => {
     confirmPassword: "",
   });
 
+  console.log(user.firstName.length);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (tokenC && userNameC) {
+      navigate("/dashboard");
+    }
+  }, [tokenC, userNameC, navigate]);
+
   const inputHandler = (e) => {
     e.preventDefault();
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -31,7 +35,16 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, email, password, confirmPassword } = user;
+    if (loading) return;
+
+    const trimmedUser = {
+      firstName: user.firstName.trim(),
+      lastName: user.lastName.trim(),
+      email: user.email.trim(),
+      password: user.password.trim(),
+      confirmPassword: user.confirmPassword.trim(),
+    };
+    const { firstName, email, password, confirmPassword } = trimmedUser;
 
     if (!firstName || !email || !password || !confirmPassword) {
       toast.error("Please fill in all required fields.");
@@ -47,23 +60,23 @@ const Index = () => {
       return;
     }
 
+    setLoading(true);
+
     try {
-      await register(user)
-        .then((res) => {
-          console.log(res.status);
-          if (res.status === 201) {
-            toast.success("Account created successfully.");
-            navigate("/login");
-          } else if (res.data.data.code === 409) {
-            toast.error("Email already exists");
-          }
-        })
-        .catch((err) => {
-          toast.error("Failed to create account.>>", err);
-        });
+      const res = await register(trimmedUser);
+      if (res.status === 201) {
+        toast.success("Account created successfully.");
+        navigate("/login");
+      }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to create account....");
+      if (err.response.status === 409) {
+        toast.error("Email already exists.");
+      } else {
+        toast.error("Failed to create account.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,8 +135,8 @@ const Index = () => {
             value={user.confirmPassword}
             required
           />
-          <button type="submit" className="col-12 login-btn">
-            Create Account
+          <button type="submit" className="col-12 login-btn" disabled={loading}>
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
         <div className="signup-link">

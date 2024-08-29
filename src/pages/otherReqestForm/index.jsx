@@ -205,7 +205,8 @@ const Index = () => {
               className="input-field"
             >
               <option value="">Select</option>
-              {/* Add options here */}
+              <option value="noida">Noida</option>
+              <option value="delhi">Delhi</option>
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
@@ -219,7 +220,8 @@ const Index = () => {
               className="input-field"
             >
               <option value="">Select</option>
-              {/* Add options here */}
+              <option value="gurgaon">Gurgaon</option>
+              <option value="mayur">Mayur</option>
             </select>
           </div>
           {/* -------------Other------------ */}

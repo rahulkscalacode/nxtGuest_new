@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
+import moment from "moment";
 
 
 const Index = () => {
@@ -150,7 +151,7 @@ const Index = () => {
               <tbody className="fontsixe14">
                 {currentBookings.map((booking, index) => (
                   <tr key={index}>
-                    <td>{booking.date}</td>
+                    <td>{moment(booking.dateOfRide).format('MM/DD/YY')}</td>
                     <td>{booking.pickupLocation}</td>
                     <td>{booking.dropLocation}</td>
                     <td className={getStatusClass(booking.status)}>

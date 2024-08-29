@@ -1,37 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { otherServiceReqest } from "../../functions/api/serviceReqest";
+import {
+  otherServiceReqest,
+  updateServiceForm,
+} from "../../functions/api/serviceReqest";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const cookies = new Cookies();
   const [value, setValue] = useState("00:00");
 
+  const previousData = useMemo(
+    () => location.state?.data || {},
+    [location.state?.data]
+  );
+
+  useEffect(() => {
+    console.log("Received data:", previousData);
+  }, [previousData]);
+
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    contactNumber: "",
-    email: "",
-    companyName: "",
-    locationType: "select",
-    pickupLocation: "",
-    dropLocation: "",
-    vehicleType: "",
-    dateOfRide: "",
-    dateOfBooking: new Date().toString(),
-    time: value ? value : "",
+    firstName: previousData.firstName || "",
+    lastName: previousData.lastName || "",
+    contactNumber: previousData.contactNumber || "",
+    email: previousData.email || "",
+    companyName: previousData.companyName || "",
+    locationType: previousData.locationType || "select",
+    pickupLocation: previousData.pickupLocation || "",
+    dropLocation: previousData.dropLocation || "",
+    vehicleType: previousData.vehicleType || "",
+    dateOfRide: previousData.dateOfRide || "",
+    dateOfBooking: previousData.dateOfBooking || new Date().toString(),
+    time: previousData.time || value ? value : "",
     userId: cookies.get("userId"),
     type: "other",
   });
 
-  let { pathname } = useLocation();
-  console.log(pathname);
+  useEffect(() => {
+    if (location.state && location.state.data) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        ...location.state.data,
+      }));
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,8 +75,11 @@ const Index = () => {
           const serializableData = {
             data: res.data,
           };
+          localStorage.setItem("service", serializableData);
           toast.success("Successfully created self service request form.");
-          navigate("/booking-summary", { state: { data: serializableData } });
+          navigate("/booking-summary", {
+            state: { data: serializableData, previousRoute: location.pathname },
+          });
         })
         .catch((err) => {
           toast.error("Something went wrong!");
@@ -67,13 +88,42 @@ const Index = () => {
       console.log("error=>>>", error);
     }
   };
+  const handleUpdateData = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Form data before update:", form);
 
+      await updateServiceForm(form, previousData._id)
+        .then((res) => {
+          const serializableData = {
+            data: res.data,
+          };
+          toast.success("Successfully updated self service request form.");
+          navigate("/booking-summary", {
+            state: { data: serializableData, previousRoute: location.pathname },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Something went wrong!");
+        });
+    } catch (error) {
+      toast.error(error);
+    }
+  };
   console.log(form);
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
         <div className="head">Service Request</div>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form
+          onSubmit={
+            Object.keys(previousData).length > 0
+              ? handleUpdateData
+              : handleSubmit
+          }
+          autoComplete="off"
+        >
           <div className="input-group">
             <input
               type="text"
@@ -155,7 +205,8 @@ const Index = () => {
               className="input-field"
             >
               <option value="">Select</option>
-              {/* Add options here */}
+              <option value="noida">Noida</option>
+              <option value="delhi">Delhi</option>
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
@@ -169,7 +220,8 @@ const Index = () => {
               className="input-field"
             >
               <option value="">Select</option>
-              {/* Add options here */}
+              <option value="gurgaon">Gurgaon</option>
+              <option value="mayur">Mayur</option>
             </select>
           </div>
           {/* -------------Other------------ */}

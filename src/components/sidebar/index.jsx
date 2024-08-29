@@ -33,16 +33,15 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </button>
       </div>
       <div className="sidebar-menu">
+        <Link to="/dashboard">
+          <div className="menu-item">
+            <img src="/images/icons/UserCircleGear.png" alt="" /> Dashboard
+          </div>
+        </Link>
         <Link to="/profile">
           <div className="menu-item">
             <img src="/images/icons/UserCircle.png" alt="" />
             My Profile
-          </div>
-        </Link>
-        <Link to="/self-request">
-          <div className="menu-item">
-            <img src="/images/icons/UserCircleGear.png" alt="" /> Service
-            Request Form
           </div>
         </Link>
         <Link to="/booking-history">

@@ -13,7 +13,12 @@ const Index = () => {
     <div style={{ borderBottom: "1px solid #474747" }}>
       <div className="d-flex align-items-center justify-content-center p-3">
         <RxHamburgerMenu
-          style={{ fontSize: "26px", cursor: "pointer" }}
+          style={{
+            fontSize: "26px",
+            cursor: "pointer",
+            position: "absolute",
+            left: "25px",
+          }}
           onClick={toggleSidebar}
         />
         {/* <Link to="/"> */}
@@ -25,7 +30,6 @@ const Index = () => {
             margin: "auto",
             width: "89px",
             height: "67px",
-            
           }}
         />
         {/* </Link> */}

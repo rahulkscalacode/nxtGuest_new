@@ -7,7 +7,10 @@ const Header2 = () => {
   const navigate = useNavigate()
   return (
     <div style={{ borderBottom: "1px solid #474747", display: "flex" }}>
-      <div className="d-flex align-items-center p-3">
+      <div
+        className="d-flex align-items-center p-3"
+        style={{ position: "absolute", left: "0", top: "1.2rem" }}
+      >
         <img
           src="/images/icons/ArrowLeft.png"
           alt="Logo"

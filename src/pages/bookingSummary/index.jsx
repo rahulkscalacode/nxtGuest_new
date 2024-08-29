@@ -16,14 +16,20 @@ const Index = () => {
     navigate("/payment");
   };
 
+  const handleEditBooking = () => {
+    const previousRoute = location.state?.previousRoute || "/self-request";
+    navigate(previousRoute, { state: { data: nData } }); // This will navigate to the previous page
+  };
+
+  console.log(location);
   const json = {
-    Name: `${nData.firstName || ""} ${nData.lastName || ""}`,
-    Email: nData.email || "",
-    "Contact Number": nData.contactNumber || "",
-    "Pickup Location": nData.pickupLocation || "",
-    "Drop Location": nData.dropLocation || "",
-    Date: nData.dateOfRide || "",
-    "Pickup Time": nData.time || "",
+    Name: `${nData.firstName || "N/A"} ${nData.lastName || ""}`,
+    Email: nData.email || "N/A",
+    "Contact Number": nData.contactNumber || "N/A",
+    "Pickup Location": nData.pickupLocation || "N/A",
+    "Drop Location": nData.dropLocation || "N/A",
+    Date: nData.dateOfRide || "N/A",
+    "Pickup Time": nData.time || "N/A",
     Fare: "$400.00",
   };
 
@@ -40,7 +46,9 @@ const Index = () => {
       </div>
       <div className="displayContent">
         <div className="btncss">
-          <button className="editBook">Edit My Booking</button>
+          <button className="editBook" onClick={handleEditBooking}>
+            Edit My Booking
+          </button>
           <button className="proceedPay" onClick={handleClick}>
             Proceed to Pay
           </button>

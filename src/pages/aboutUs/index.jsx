@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Layout2 from "../../components/layout2";
+import Layout from "../../components/layout";
 import styled from "styled-components";
 import "./index.css";
 
@@ -26,7 +26,7 @@ const Index = () => {
   }, [isPlaying]);
 
   return (
-    <Layout2>
+    <Layout>
       <div className="p-2">
         <div className="fontsize20">
           <div> About Us</div>
@@ -136,7 +136,7 @@ const Index = () => {
           internet connection.
         </span>
       </div>
-    </Layout2>
+    </Layout>
   );
 };
 

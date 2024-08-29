@@ -10,6 +10,10 @@ import { toast } from "react-toastify";
 const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [prevEmail, setPrevEmail] = useState(""); // Store previous email
+  const [prevPassword, setPrevPassword] = useState(""); // Store previous password
+  const [loginDisabled, setLoginDisabled] = useState(false); // Manage login button state
+
   const navigate = useNavigate();
   const cookies = new Cookies();
   const tokenC = cookies.get("token");
@@ -19,7 +23,7 @@ const Index = () => {
     if (tokenC && userNameC) {
       navigate("/dashboard");
     }
-  }, [tokenC, userNameC]);
+  }, [tokenC, userNameC, navigate]);
 
   const validateEmail = (email) => {
     const re = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
@@ -28,6 +32,11 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if email and password haven't changed since last submit
+    if (email === prevEmail && password === prevPassword) {
+      return;
+    }
 
     // Validate email
     if (!validateEmail(email)) {
@@ -59,20 +68,34 @@ const Index = () => {
         toast.success("You are logged in successfully.");
       } else {
         toast.error("Enter valid user credentials.");
+        setPrevEmail(email); // Store current email and password
+        setPrevPassword(password);
+        setLoginDisabled(true); // Disable the login button
       }
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Incorrect email or password."
       );
+      setPrevEmail(email); // Store current email and password
+      setPrevPassword(password);
+      setLoginDisabled(true); // Disable the login button
     }
   };
 
+  const handleInputChange = (setter, value) => {
+    setter(value);
+    setLoginDisabled(false); // Enable the login button on any change
+  };
+
+  const handleGuest = () => {
+    navigate("/dashboard");
+  };
   return (
     <Layout2>
       <div>
         <div className="title">Login Account</div>
         <form
-          className="login-form needs-validation"
+          className="login-form"
           autoComplete="off"
           noValidate
           onSubmit={handleSubmit}
@@ -81,7 +104,7 @@ const Index = () => {
             value={email}
             type="email"
             name="email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleInputChange(setEmail, e.target.value)}
             placeholder="Enter Email Address"
             className="col-12 input-field"
             autoComplete="new-email"
@@ -92,7 +115,7 @@ const Index = () => {
             value={password}
             type="password"
             name="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handleInputChange(setPassword, e.target.value)}
             placeholder="Enter password"
             className="col-12 input-field"
             autoComplete="new-password"
@@ -110,7 +133,11 @@ const Index = () => {
               Remember Me
             </label>
           </div>
-          <button type="submit" className="col-12 login-btn">
+          <button
+            type="submit"
+            className="col-12 login-btn"
+            disabled={loginDisabled} // Disable the button if needed
+          >
             Login
           </button>
         </form>

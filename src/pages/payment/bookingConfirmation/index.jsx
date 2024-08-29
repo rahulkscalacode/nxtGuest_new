@@ -14,7 +14,7 @@ const Index = () => {
   };
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/profile");
+    navigate("/booking-history");
   };
   return (
     <Layout2>

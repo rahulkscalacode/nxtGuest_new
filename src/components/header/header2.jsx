@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Sidebar from "../sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header2 = () => {
+  const navigate = useNavigate()
   return (
     <div style={{ borderBottom: "1px solid #474747", display: "flex" }}>
       <div
@@ -17,6 +18,7 @@ const Header2 = () => {
             width: "32px",
             height: " 32px",
           }}
+          onClick={()=>navigate(-1)}
         />
       </div>
       <div className="d-flex p-3" style={{ margin: "auto" }}>

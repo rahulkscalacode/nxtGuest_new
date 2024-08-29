@@ -157,6 +157,7 @@ const Index = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   className="input-field"
+                  placeholder="Enter First Name"
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -165,12 +166,13 @@ const Index = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   className="input-field"
+                  placeholder="Enter Last Name"
                 />
               </div>
             </>
           ) : (
             <div className="inputcss mt-2">
-              <div>Name</div>
+              <div>Name :</div>
               <div>{firstName} {lastName}</div>
             </div>
           )}
@@ -182,6 +184,7 @@ const Index = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input-field"
+                  placeholder="Enter Email"
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -190,6 +193,7 @@ const Index = () => {
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   className="input-field"
+                  placeholder="Enter Contact"
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -198,6 +202,7 @@ const Index = () => {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   className="input-field"
+                  placeholder="Enter Address"
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -206,6 +211,7 @@ const Index = () => {
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   className="input-field"
+                  placeholder="Enter City"
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -214,30 +220,31 @@ const Index = () => {
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   className="input-field"
+                  placeholder="Enter Country"
                 />
               </div>
             </>
           ) : (
             <>
               <div className="inputcss mt-2">
-                <div>Email</div>
-                <div>{email}</div>
+                <div>Email :</div>
+                <div>{email ? email : "N/A"}</div>
               </div>
               <div className="inputcss mt-2">
-                <div>Contact</div>
-                <div>{contact}</div>
+                <div>Contact :</div>
+                <div>{contact ? contact : "N/A"}</div>
               </div>
               <div className="inputcss mt-2">
-                <div>Address</div>
-                <div>{address}</div>
+                <div>Address :</div>
+                <div>{address ? address : "N/A"}</div>
               </div>
               <div className="inputcss mt-2">
-                <div>City</div>
-                <div>{city}</div>
+                <div>City :</div>
+                <div>{city ? city : "N/A"}</div>
               </div>
               <div className="inputcss mt-2">
-                <div>Country</div>
-                <div>{country}</div>
+                <div>Country :</div>
+                <div>{country ? country : "N/A"}</div>
               </div>
             </>
           )}

@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
+import { apiCall } from "../../functions/api/apiGlobal";
+import Cookies from "universal-cookie";
+
 
 const Index = ({
   arg: { openModal, closeModal, isModalOpen, setIsModalOpen },
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const cookies = new Cookies();
+  const tokenUserId = cookies.get("userId");
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -19,10 +25,29 @@ const Index = ({
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     // Handle the update logic, e.g., uploading the file to the server
-    console.log("Updated profile picture:", selectedFile);
-    setIsModalOpen(false);
+    // console.log("Updated profile picture:", selectedFile);
+    // setIsModalOpen(false);
+    try {
+      const formData = new FormData();
+      formData.append('profilePicture', selectedFile);
+
+      const response = await apiCall('POST', '/user/update-profile-picture', formData, {}, null, {
+        "user_id": tokenUserId
+      });
+
+      if(response.data.status === "success"){
+        toast.success(response.data.message);
+        setIsModalOpen(false);
+      } else if(response.data.status === "error") {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      } 
+    } catch (error) {
+      console.error("Failed to update profile picture:", error);
+      toast.error("Failed to update profile picture");
+    }
   };
 
   return (

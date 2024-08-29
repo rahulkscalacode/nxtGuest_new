@@ -1,8 +1,58 @@
 import Layout1 from "../../components/layout1";
-import React from "react";
+import React, { useState } from "react";
 import "../contactUs/index.css";
+import { apiCall } from '../../functions/api/apiGlobal';
+import { toast } from "react-toastify";
 
 const FeedbackForm = () => {
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    type: "feedback"  // Assuming type is feedback/report
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await apiCall('POST', '/user/contact-feedback', formData, {}, null, {});
+      
+      if(response.data.status === "success"){
+        toast.success(response.data.message);
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          type: "feedback"
+        });
+      } else if(response.data.status === "error") {
+        console.error(response.data.message);
+        toast.error(response.data.message);
+      } 
+    } catch (error) {
+      console.error("Failed to submit feedback:", error);
+      toast.error("Failed to submit feedback");
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+      type: "feedback"
+    });
+  };  
+
+
   return (
     <Layout1>
       <div className="contact-us">
@@ -18,6 +68,9 @@ const FeedbackForm = () => {
                 placeholder="Enter Name"
                 className="col-9 input-field1"
                 autoComplete="new-email"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
               />
             </div>
             <div className="row">
@@ -29,6 +82,9 @@ const FeedbackForm = () => {
                 placeholder="Enter Email Address"
                 className="col-9 input-field1"
                 autoComplete="new-email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
               />
             </div>
 
@@ -41,6 +97,9 @@ const FeedbackForm = () => {
                 placeholder="Enter subject"
                 className="col-9 input-field1"
                 autoComplete="new-email"
+                name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
               />
             </div>
             <div className="row">
@@ -52,6 +111,8 @@ const FeedbackForm = () => {
                 name="message"
                 className="col-9 input-field1"
                 placeholder="Enter Message"
+                value={formData.message}
+                onChange={handleInputChange}
               ></textarea>
             </div>
           </form>
@@ -82,10 +143,10 @@ const FeedbackForm = () => {
         </div>
       </div>
       <div className="d-flex gap-2">
-        <button type="button" className="cancel-button col-6">
+        <button type="button" onClick={handleCancel} className="cancel-button col-6">
           Cancel
         </button>
-        <button type="submit" className="submit-button1 col-6">
+        <button type="submit" onClick={handleSubmit} className="submit-button1 col-6">
           Submit
         </button>
       </div>

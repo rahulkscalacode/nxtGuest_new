@@ -4,11 +4,11 @@
     justify-content: center;
   }
 }
-.layoutcls {
+/* .layoutcls {
   background: #000;
   height: 100vh;
   position: relative;
-}
+} */
 @media screen and (min-width: 430px) {
   .layoutcls {
     width: 430px;
@@ -16,6 +16,12 @@
   main {
     width: 430px;
     margin: 0 auto; /* Center the main content */
+  }
+}
+@media screen and (max-width: 429px) {
+  .layoutcls,
+  .splash-container {
+    height: 90vh;
   }
 }
 main {
@@ -29,7 +35,7 @@ main {
 .layout-grid {
   display: grid;
   grid-template-rows: auto 1fr auto; /* Header, main, footer */
-  height: 100vh;
+  /* height: 100vh; */
   background: #000;
 }
 .footercls {

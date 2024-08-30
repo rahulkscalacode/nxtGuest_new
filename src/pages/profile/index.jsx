@@ -32,6 +32,25 @@ const Index = () => {
   const [originalAddress, setOriginalAddress] = useState(address);
   const [originalCity, setOriginalCity] = useState(city);
   const [originalCountry, setOriginalCountry] = useState(country);
+  const [profileImage, setProfileImage] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await apiCall('GET', '/user/get-profile-picture', {}, {}, null, {
+          "user_id": tokenUserId // Pass tokenUserId in headers
+        });
+        const base64Image = response.data.image; // Assuming the response contains a base64 string
+        setProfileImage(base64Image);
+        console.log("base64Image",base64Image)
+        console.log("profile image response----->>>>", response);
+      } catch (error) {
+        console.error("Failed to fetch profile image:", error);
+      }
+    };
+
+    fetchProfileImage();
+  }, []);
 
 
   useEffect(() => {
@@ -125,7 +144,7 @@ const Index = () => {
           <Image
             style={{ borderRadius: "5px" }}
             width={100}
-            src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+          v  src={profileImage}
           />
           <div>
             <div className="headP" style={{ fontSize: "18px", fontWeight: 600 }}>

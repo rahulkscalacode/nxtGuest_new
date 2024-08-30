@@ -25,9 +25,6 @@ const Index = ({
   };
 
   const handleUpdate = async () => {
-    // Handle the update logic, e.g., uploading the file to the server
-    // console.log("Updated profile picture:", selectedFile);
-    // setIsModalOpen(false);
     try {
       const formData = new FormData();
       formData.append("profilePicture", selectedFile);

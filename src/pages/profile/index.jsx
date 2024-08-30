@@ -32,6 +32,26 @@ const Index = () => {
   const [originalAddress, setOriginalAddress] = useState(address);
   const [originalCity, setOriginalCity] = useState(city);
   const [originalCountry, setOriginalCountry] = useState(country);
+  const [profileImage, setProfileImage] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await apiCall('GET', '/user/get-profile-picture', {}, {}, null, {
+          "user_id": tokenUserId // Pass tokenUserId in headers
+        });
+        const base64Image = response.data.image; // Assuming the response contains a base64 string
+        setProfileImage(base64Image);
+        console.log("base64Image",base64Image)
+        console.log("profile image response----->>>>", response);
+      } catch (error) {
+        console.error("Failed to fetch profile image:", error);
+      }
+    };
+
+    fetchProfileImage();
+  }, []);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,13 +154,11 @@ const Index = () => {
       <div>
         <div className="headP mb-3">My Profile</div>
         <div className="d-flex gap-3">
-
-            <Image
-              style={{ borderRadius: "5px", border: "1px solid white" }}
-              width={100}
-              src="/images/icons/self.png"
-            />
-          
+          <Image
+            style={{ borderRadius: "5px", border: "1px solid white" }}
+            width={100}
+          v  src={profileImage}
+          />
           <div>
             <div
               className="headP"

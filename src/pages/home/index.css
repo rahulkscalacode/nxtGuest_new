@@ -26,7 +26,16 @@
   text-align: center;
   justify-content: space-between;
 }
-
+/* @media screen and (max-height: 900px) {
+  .splash-container {
+    height: 80vh;
+  }
+}
+@media screen and (max-height: 1100px) {
+  .splash-container {
+    height: 90vh;
+  }
+} */
 .logo {
   width: 159px;
   height: 120px;

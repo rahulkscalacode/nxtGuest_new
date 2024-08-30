@@ -5,7 +5,7 @@ import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
 
 const Index = ({
-  arg: { openModal, closeModal, isModalOpen, setIsModalOpen },
+  arg: { openModal, closeModal, isModalOpen, setIsModalOpen , profileImage},
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -64,7 +64,7 @@ const Index = ({
                 <ProfileImage src={preview} alt="Profile Preview" />
               ) : (
                 <ProfileImage
-                  src="/images/icons/self.png"
+                  src={profileImage ? profileImage : "/images/icons/self.png"}
                   alt="Current Profile"
                 />
               )}

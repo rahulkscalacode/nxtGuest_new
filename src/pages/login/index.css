@@ -129,8 +129,8 @@ input:-moz-placeholder {
   display: flex;
   justify-content: center;
   transition: transform 0.3s;
-  height: 8rem ;
-  width: 11rem ;
+  height: 9rem;
+  width: 9rem;
 }
 
 .card-text {
@@ -172,8 +172,8 @@ input:-moz-placeholder {
 
 @media screen and (max-width: 400px) {
   .imgcard {
-    height: 7rem ;
-    width: 9rem ;
+    height: 7rem;
+    width: 9rem;
   }
   .callbtn {
     left: 15%;
@@ -182,8 +182,8 @@ input:-moz-placeholder {
 
 @media screen and (max-width: 350px) {
   .imgcard {
-    height: 7rem ;
-    width: 8rem ;
+    height: 7rem;
+    width: 8rem;
   }
   .callbtn {
     left: 10%;

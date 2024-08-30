@@ -6,7 +6,7 @@ import { Image } from "antd";
 import { FaPencilAlt } from "react-icons/fa";
 import EditProfile from "./editImage";
 import Cookies from "universal-cookie";
-import apicall, { apiCall } from '../../functions/api/apiGlobal';
+import apicall, { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
 const Index = () => {
   const cookies = new Cookies();
@@ -56,10 +56,17 @@ const Index = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiCall('GET', '/user/user-details', {}, {}, null, {
-          "user_id": tokenUserId // Pass tokenUserId in headers
-        });
-        const user = response.data.user
+        const response = await apiCall(
+          "GET",
+          "/user/user-details",
+          {},
+          {},
+          null,
+          {
+            user_id: tokenUserId, // Pass tokenUserId in headers
+          }
+        );
+        const user = response.data.user;
         setFirstName(user.firstName);
         setLastName(user.lastName);
         setEmail(user.email);
@@ -73,29 +80,35 @@ const Index = () => {
     };
 
     fetchData();
-  }, []); 
-
+  }, []);
 
   const updateData = async () => {
     try {
-      const response = await apiCall('PUT', '/user/update-user-details', {
-        firstName,
-        lastName,
-        email,
-        contact,
-        address,
-        city,
-        country
-      }, {}, null, {
-        "user_id": tokenUserId
-      });
+      const response = await apiCall(
+        "PUT",
+        "/user/update-user-details",
+        {
+          firstName,
+          lastName,
+          email,
+          contact,
+          address,
+          city,
+          country,
+        },
+        {},
+        null,
+        {
+          user_id: tokenUserId,
+        }
+      );
       // console.log(response.data)
-      if(response.data.status === "success"){
+      if (response.data.status === "success") {
         toast.success(response.data.message);
         setEdit(false);
-      }else if(response.data.status === "error"){
+      } else if (response.data.status === "error") {
         console.error(response.data.message);
-      }    
+      }
     } catch (error) {
       console.error("Failed to update user details:", error);
       toast.error(error);
@@ -142,12 +155,15 @@ const Index = () => {
         <div className="headP mb-3">My Profile</div>
         <div className="d-flex gap-3">
           <Image
-            style={{ borderRadius: "5px" }}
+            style={{ borderRadius: "5px", border: "1px solid white" }}
             width={100}
           v  src={profileImage}
           />
           <div>
-            <div className="headP" style={{ fontSize: "18px", fontWeight: 600 }}>
+            <div
+              className="headP"
+              style={{ fontSize: "18px", fontWeight: 600 }}
+            >
               {firstName} {lastName}
             </div>
             <button
@@ -192,7 +208,9 @@ const Index = () => {
           ) : (
             <div className="inputcss mt-2">
               <div>Name :</div>
-              <div>{firstName} {lastName}</div>
+              <div>
+                {firstName} {lastName}
+              </div>
             </div>
           )}
           {edit ? (
@@ -279,7 +297,9 @@ const Index = () => {
             >
               Cancel
             </button>
-            <button className="proceedPay" onClick={updateData}>Update</button>
+            <button className="proceedPay" onClick={updateData}>
+              Update
+            </button>
           </div>
         </div>
       )}

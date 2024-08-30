@@ -125,7 +125,7 @@ const Index = () => {
           <Image
             style={{ borderRadius: "5px" }}
             width={100}
-            src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+            src="/images/icons/self.png"
           />
           <div>
             <div className="headP" style={{ fontSize: "18px", fontWeight: 600 }}>

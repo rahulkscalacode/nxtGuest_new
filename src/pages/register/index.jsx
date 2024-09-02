@@ -18,8 +18,8 @@ const Index = () => {
     password: "",
     confirmPassword: "",
   });
-
-  console.log(user.firstName.length);
+  const [loginDisabled, setLoginDisabled] = useState(false);
+  // console.log(user.firstName.length);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -31,6 +31,7 @@ const Index = () => {
   const inputHandler = (e) => {
     e.preventDefault();
     setUser({ ...user, [e.target.name]: e.target.value });
+    setLoginDisabled(false);
   };
 
   const handleSubmit = async (e) => {
@@ -48,15 +49,18 @@ const Index = () => {
 
     if (!firstName || !email || !password || !confirmPassword) {
       toast.error("Please fill in all required fields.");
+      setLoginDisabled(true);
       return;
     }
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long.");
+      setLoginDisabled(true);
       return;
     }
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
+      setLoginDisabled(true);
       return;
     }
 
@@ -69,6 +73,7 @@ const Index = () => {
         navigate("/login");
       }
     } catch (err) {
+      setLoginDisabled(true);
       console.error(err);
       if (err.response.status === 409) {
         toast.error("Email already exists.");
@@ -76,10 +81,12 @@ const Index = () => {
         toast.error("Failed to create account.");
       }
     } finally {
+      setLoginDisabled(false);
       setLoading(false);
     }
   };
 
+  console.log("loginDisabled=>", loginDisabled);
   return (
     <Layout2>
       <div>
@@ -135,7 +142,11 @@ const Index = () => {
             value={user.confirmPassword}
             required
           />
-          <button type="submit" className="col-12 login-btn" disabled={loading}>
+          <button
+            type="submit"
+            className="col-12 login-btn"
+            disabled={loginDisabled}
+          >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>

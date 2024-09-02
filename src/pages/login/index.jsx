@@ -41,12 +41,14 @@ const Index = () => {
     // Validate email
     if (!validateEmail(email)) {
       toast.error("Please enter a valid email address.");
+      setLoginDisabled(true);
       return;
     }
 
     // Validate password
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long.");
+      setLoginDisabled(true);
       return;
     }
 
@@ -90,6 +92,8 @@ const Index = () => {
   const handleGuest = () => {
     navigate("/dashboard");
   };
+
+  console.log("loginDisabled", loginDisabled);
   return (
     <Layout2>
       <div>
@@ -105,7 +109,7 @@ const Index = () => {
             type="email"
             name="email"
             onChange={(e) => handleInputChange(setEmail, e.target.value)}
-            placeholder="Enter Email Address"
+            placeholder="Enter Email Address*"
             className="col-12 input-field"
             autoComplete="new-email"
             required
@@ -116,7 +120,7 @@ const Index = () => {
             type="password"
             name="password"
             onChange={(e) => handleInputChange(setPassword, e.target.value)}
-            placeholder="Enter password"
+            placeholder="Enter password*"
             className="col-12 input-field"
             autoComplete="new-password"
             required

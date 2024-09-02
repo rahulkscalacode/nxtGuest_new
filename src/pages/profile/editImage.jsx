@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
 
-
 const Index = ({
   arg: { openModal, closeModal, isModalOpen, setIsModalOpen, profileImage, fetchProfileImage },
 }) => {
@@ -28,20 +27,27 @@ const Index = ({
   const handleUpdate = async () => {
     try {
       const formData = new FormData();
-      formData.append('profilePicture', selectedFile);
+      formData.append("profilePicture", selectedFile);
 
-      const response = await apiCall('POST', '/user/update-profile-picture', formData, {}, null, {
-        "user_id": tokenUserId
-      });
+      const response = await apiCall(
+        "POST",
+        "/user/update-profile-picture",
+        formData,
+        {},
+        null,
+        {
+          user_id: tokenUserId,
+        }
+      );
 
-      if(response.data.status === "success"){
+      if (response.data.status === "success") {
         toast.success(response.data.message);
         setIsModalOpen(false);
         fetchProfileImage();
       } else if(response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
-      } 
+      }
     } catch (error) {
       console.error("Failed to update profile picture:", error);
       toast.error("Failed to update profile picture");
@@ -59,7 +65,7 @@ const Index = ({
                 <ProfileImage src={preview} alt="Profile Preview" />
               ) : (
                 <ProfileImage
-                  src={profileImage}
+                  src={profileImage ? profileImage : "/images/icons/self.png"}
                   alt="Current Profile"
                 />
               )}

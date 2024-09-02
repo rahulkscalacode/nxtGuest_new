@@ -1,7 +1,7 @@
 import Layout1 from "../../components/layout1";
 import React, { useState } from "react";
 import "../contactUs/index.css";
-import { apiCall } from '../../functions/api/apiGlobal';
+import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 const FeedbackForm = () => {
@@ -14,7 +14,7 @@ const FeedbackForm = () => {
     email: "",
     subject: "",
     message: "",
-    type: "feedback"  // Assuming type is feedback/report
+    type: "feedback", // Assuming type is feedback/report
   });
 
   const handleInputChange = (e) => {
@@ -33,12 +33,12 @@ const FeedbackForm = () => {
           email: "",
           subject: "",
           message: "",
-          type: "feedback"
+          type: "feedback",
         });
-      } else if(response.data.status === "error") {
+      } else if (response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
-      } 
+      }
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
@@ -51,10 +51,9 @@ const FeedbackForm = () => {
       email: "",
       subject: "",
       message: "",
-      type: "feedback"
+      type: "feedback",
     });
-  };  
-
+  };
 
   return (
     <Layout1>
@@ -123,33 +122,51 @@ const FeedbackForm = () => {
         <div className="row mt-2">
           <div className="col-3"></div>
           <div className="col-9">
-            <img
-              src="/images/icons/google.png"
-              alt=""
-              style={{
-                backgroundColor: "white",
-                width: "100px",
-                marginRight: "20px",
-                borderRadius: "50%",
-              }}
-            />
-            <img
-              src="/images/icons/fav.ico"
-              alt=""
-              style={{
-                backgroundColor: "white",
-                width: "100px",
-                borderRadius: "10px",
-              }}
-            />
+            <a
+              href="https://www.google.com/search?q=nxtguest+&sca_esv=8e99831eb58f4f25&sca_upv=1&sxsrf=ADLYWIJZg4JdJlYOR_7Ug7ZLAbL8hQwSrg%3A1725013887834&source=hp&ei=f5_RZpycMLqUvr0P5qrF4Ag&iflsig=AL9hbdgAAAAAZtGtj2R7wM8d8zm_uP6ElBKIr9oDhWYv&ved=0ahUKEwjc147AwZyIAxU6iq8BHWZVEYwQ4dUDCBk&uact=5&oq=nxtguest+&gs_lp=Egdnd3Mtd2l6IglueHRndWVzdCAyBxAAGIAEGA0yBxAAGIAEGA0yBxAuGIAEGA0yBxAAGIAEGA0yBxAAGIAEGA0yBxAAGIAEGA0yDRAuGIAEGMcBGA0YrwEyBxAAGIAEGA0yBxAAGIAEGA0yBxAAGIAEGA1I-hFQAFiQC3AAeACQAQCYAZgBoAGaAqoBAzAuMrgBA8gBAPgBAvgBAZgCAqACogKYAwCSBwMwLjKgB5kW&sclient=gws-wiz#lrd=0x88d9b5b846467825:0xbeb3c1a9a37e2173,1"
+              target="blank"
+            >
+              <img
+                src="/images/icons/google.png"
+                alt=""
+                style={{
+                  backgroundColor: "white",
+                  width: "100px",
+                  marginRight: "20px",
+                  borderRadius: "50%",
+                }}
+              />
+            </a>
+            <a
+              href="https://www.yelp.com/biz/nxtguest-miami-beach-2"
+              target="blank"
+            >
+              <img
+                src="/images/icons/fav.ico"
+                alt=""
+                style={{
+                  backgroundColor: "white",
+                  width: "100px",
+                  borderRadius: "10px",
+                }}
+              />
+            </a>
           </div>
         </div>
       </div>
       <div className="d-flex gap-2">
-        <button type="button" onClick={handleCancel} className="cancel-button col-6">
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="cancel-button col-6"
+        >
           Cancel
         </button>
-        <button type="submit" onClick={handleSubmit} className="submit-button1 col-6">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="submit-button1 col-6"
+        >
           Submit
         </button>
       </div>

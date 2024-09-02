@@ -3,8 +3,12 @@ import React, { useState } from "react";
 import "../contactUs/index.css";
 import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
-
+import Cookies from "universal-cookie";
 const FeedbackForm = () => {
+  const cookies = new Cookies();
+  // const tokenC = cookies.get("token");
+  const tokenUserId = cookies.get("userId");
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,16 +24,9 @@ const FeedbackForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await apiCall(
-        "POST",
-        "/user/contact-feedback",
-        formData,
-        {},
-        null,
-        {}
-      );
-
-      if (response.data.status === "success") {
+      const response = await apiCall('POST', '/user/contact-feedback', formData, {}, null, {"user_id": tokenUserId});
+      
+      if(response.data.status === "success"){
         toast.success(response.data.message);
         setFormData({
           name: "",

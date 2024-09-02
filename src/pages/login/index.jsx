@@ -83,7 +83,11 @@ const Index = () => {
   };
 
   const handleInputChange = (setter, value) => {
-    setter(value);
+    if (setter === setPassword) {
+      setter(value.replace(/\s/g, ""));
+    } else {
+      setter(value);
+    }
     setLoginDisabled(false); // Enable the login button on any change
   };
 

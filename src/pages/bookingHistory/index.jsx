@@ -53,6 +53,8 @@ const Index = () => {
   const offset = currentPage * bookingsPerPage;
   const currentBookings = bookings.slice(offset, offset + bookingsPerPage);
 
+  console.log("currentBookings", currentBookings);
+
   const getStatusClass = (status) => {
     switch (status) {
       case "Completed":
@@ -90,25 +92,29 @@ const Index = () => {
                 </tr>
               </thead>
               <tbody className="fontsixe14">
-                {currentBookings.map((booking, index) => (
-                  <tr key={index}>
-                    <td>{timeFormatter(booking.dateOfRide)}</td>
-                    <td>{booking.pickupLocation}</td>
-                    <td>{booking.dropLocation}</td>
-                    <td className={getStatusClass("Completed")}>
-                      {booking.status ?? "Completed"}
-                    </td>
-                    <td
-                      style={{ color: "#1052FB", cursor: "pointer" }}
-                      onClick={() => handleView(booking)}
-                    >
-                      {/* {booking.action} */}
-                      View
-                    </td>
-                  </tr>
-                ))}
+                {currentBookings &&
+                  currentBookings.map((booking, index) => (
+                    <tr key={index}>
+                      <td>{timeFormatter(booking.dateOfRide)}</td>
+                      <td>{booking.pickupLocation}</td>
+                      <td>{booking.dropLocation}</td>
+                      <td className={getStatusClass("Completed")}>
+                        {booking.status ?? "Completed"}
+                      </td>
+                      <td
+                        style={{ color: "#1052FB", cursor: "pointer" }}
+                        onClick={() => handleView(booking)}
+                      >
+                        {/* {booking.action} */}
+                        View
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
+            {currentBookings.length === 0 && (
+              <div className="p-2">No bookings yet!</div>
+            )}
           </div>
           {/* <ReactPaginate
           previousLabel={"← Previous"}

@@ -168,7 +168,7 @@ const Index = () => {
                 placeholder="Enter message"
               ></textarea>
             </div>
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-2 mt-4">
               <button type="button" onClick={handleCancel} className="cancel-button col-6">
                 Cancel
               </button>

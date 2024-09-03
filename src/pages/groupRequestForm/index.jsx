@@ -66,6 +66,7 @@ const Index = () => {
     setValue(value);
     setForm({ ...form, time: value });
   };
+  const passengerOptions = Array.from({ length: 20 }, (_, index) => index + 1);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -129,11 +130,12 @@ const Index = () => {
             <input
               type="text"
               name="groupName"
-              placeholder="Group Name"
+              placeholder="Group Name*"
               value={form.groupName}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
+              required
             />
           </div>
           <div className="input-group">
@@ -161,25 +163,26 @@ const Index = () => {
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
+              placeholder="Email Address*"
               value={form.email}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              //   style={{ marginTop: "6px", padding: "5px" }}
+              required
             />
           </div>
 
           {/* -------------Contact Number---------- */}
           <div className="input-group">
             <input
-              type="text"
+              type="number"
               name="contactNumber"
-              placeholder="Contact Number"
+              placeholder="Contact Number*"
               value={form.contactNumber}
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
+              required
             />
             <select
               name="numberOfPassengers"
@@ -187,12 +190,16 @@ const Index = () => {
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
+              required
             >
-              <option value="" selected>
-                No. of Passengers
+              <option value="" disabled selected>
+                No. of Passengers*
               </option>
-              <option value="1">1</option>
-              <option value="2">2</option>
+              {passengerOptions.map((val) => (
+                <option key={val} value={val}>
+                  {val}
+                </option>
+              ))}
             </select>
           </div>
           {/* -----------------Pickup Location------------------ */}
@@ -205,19 +212,24 @@ const Index = () => {
                 value="select"
                 checked={form.locationType === "select"}
                 onChange={handleChange}
-                style={{ marginRight: "6px" }}
+                style={{ marginRight: "8px" }}
               />
               Pickup Location
             </label>
             <select
               name="pickupLocation"
-              value={form.pickupLocation}
+              value={form.locationType === "select" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
+              required={form.locationType === "select"}
             >
-              <option value="">Select</option>
-              {/* Add options here */}
+              <option value="">
+                Select{form.locationType === "select" ? "*" : ""}
+              </option>
+              <option value="New York">New York</option>
+              <option value="Miami">Miami</option>
+              <option value="Florida">Florida</option>
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
@@ -225,17 +237,22 @@ const Index = () => {
             <label style={{ marginLeft: "1.4rem" }}>Drop Location</label>
             <select
               name="dropLocation"
-              value={form.dropLocation}
+              value={form.locationType === "select" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
+              required={form.locationType === "select"}
             >
-              <option value="">Select</option>
-              {/* Add options here */}
+              <option value="">
+                Select{form.locationType === "select" ? "*" : ""}
+              </option>
+              <option value="New York">New York</option>
+              <option value="Miami">Miami</option>
+              <option value="Florida">Florida</option>
             </select>
           </div>
           {/* -------------Other------------ */}
-          <div className="input-group" style={{ marginTop: "4px" }}>
+          <div className="input-group mt-2">
             <label className="">
               <input
                 className="form-check-input"
@@ -254,12 +271,14 @@ const Index = () => {
             <input
               type="text"
               name="pickupLocation"
-              placeholder="Enter Pickup Location Manually"
-              value={form.pickupLocation}
+              placeholder={`Enter Pickup Location Manually${
+                form.locationType === "manual" ? "*" : ""
+              }`}
+              value={form.locationType === "manual" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
+              required={form.locationType === "manual"}
             />
           </div>
           {/* ----------------Input field----------------- */}
@@ -267,12 +286,14 @@ const Index = () => {
             <input
               type="text"
               name="dropLocation"
-              placeholder="Enter Drop Location Manually"
-              value={form.dropLocation}
+              placeholder={`Enter Drop Location Manually${
+                form.locationType === "manual" ? "*" : ""
+              }`}
+              value={form.locationType === "manual" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
+              required={form.locationType === "manual"}
             />
           </div>
           <div className="">
@@ -281,9 +302,11 @@ const Index = () => {
               value={form.vehicleType}
               onChange={handleChange}
               className="input-field"
-              //   style={{ marginTop: "6px", padding: "5px" }}
+              required
             >
-              <option value="">Vehicle Type</option>
+              <option value="">Vehicle Type*</option>
+              <option value="car">car</option>
+              <option value="xuv">xuv</option>
               {/* Add options here */}
             </select>
           </div>

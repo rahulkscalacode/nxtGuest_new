@@ -3,6 +3,8 @@ import Layout2 from "../../components/layout2";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { timeFormatter } from "../../components/formatter/timeFormatter";
+import moment from "moment";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -28,8 +30,9 @@ const Index = () => {
     "Contact Number": nData.contactNumber || "N/A",
     "Pickup Location": nData.pickupLocation || "N/A",
     "Drop Location": nData.dropLocation || "N/A",
-    Date: nData.dateOfRide || "N/A",
-    "Pickup Time": nData.time || "N/A",
+    "Pickup Date": timeFormatter(nData.dateOfRide) || "N/A",
+    "Pickup Time":
+      moment(nData && nData.time, "HH:mm").format("hh:mm A") || "N/A",
     Fare: "$400.00",
   };
 

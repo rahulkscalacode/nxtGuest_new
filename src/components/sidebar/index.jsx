@@ -17,7 +17,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     cookies.remove("token");
     cookies.remove("userName");
 
-    navigate("/");
+    navigate("/login");
     toast.success("Logged out successfully");
   };
 

@@ -226,10 +226,11 @@ const Index = () => {
               required={form.locationType === "select"}
             >
               <option value="">
-                Select {form.locationType === "select" ? "*" : ""}
+                Select{form.locationType === "select" ? "*" : ""}
               </option>
-              <option value="noida">Noida</option>
-              <option value="delhi">Delhi</option>
+              <option value="New York">New York</option>
+              <option value="Miami">Miami</option>
+              <option value="Florida">Florida</option>
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
@@ -244,10 +245,11 @@ const Index = () => {
               required={form.locationType === "select"}
             >
               <option value="">
-                Select {form.locationType === "select" ? "*" : ""}
+                Select{form.locationType === "select" ? "*" : ""}
               </option>
-              <option value="gurgaon">Gurgaon</option>
-              <option value="mayur">Mayur</option>
+              <option value="New York">New York</option>
+              <option value="Miami">Miami</option>
+              <option value="Florida">Florida</option>
             </select>
           </div>
           {/* -------------Other------------ */}
@@ -270,7 +272,7 @@ const Index = () => {
             <input
               type="text"
               name="pickupLocation"
-              placeholder={`Enter Pickup Location Manually ${
+              placeholder={`Enter Pickup Location Manually${
                 form.locationType === "manual" ? "*" : ""
               }`}
               value={form.locationType === "manual" ? form.pickupLocation : ""}
@@ -285,7 +287,7 @@ const Index = () => {
             <input
               type="text"
               name="dropLocation"
-              placeholder={`Enter Drop Location Manually ${
+              placeholder={`Enter Drop Location Manually${
                 form.locationType === "manual" ? "*" : ""
               }`}
               value={form.locationType === "manual" ? form.dropLocation : ""}

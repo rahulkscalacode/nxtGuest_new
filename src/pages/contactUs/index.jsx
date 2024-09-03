@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./index.css";
 import Layout1 from "../../components/layout1";
 import { apiCall } from '../../functions/api/apiGlobal';
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 const Index = () => {
 
   const [formData, setFormData] = useState({

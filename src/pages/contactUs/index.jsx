@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import "./index.css";
 import Layout1 from "../../components/layout1";
-import { apiCall } from '../../functions/api/apiGlobal';
+import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
 const Index = () => {
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     subject: "",
     message: "",
-    type: "contact"
+    type: "contact",
   });
 
   const handleInputChange = (e) => {
@@ -21,9 +20,16 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await apiCall('POST', '/user/contact-feedback', formData, {}, null, {});
-      
-      if(response.data.status === "success"){
+      const response = await apiCall(
+        "POST",
+        "/user/contact-feedback",
+        formData,
+        {},
+        null,
+        {}
+      );
+
+      if (response.data.status === "success") {
         toast.success(response.data.message);
         setFormData({
           name: "",
@@ -31,12 +37,12 @@ const Index = () => {
           phone: "",
           subject: "",
           message: "",
-          type: "contact"
+          type: "contact",
         });
-      } else if(response.data.status === "error") {
+      } else if (response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
-      } 
+      }
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
@@ -50,7 +56,7 @@ const Index = () => {
       phone: "",
       subject: "",
       message: "",
-      type: "contact"
+      type: "contact",
     });
   };
 
@@ -151,7 +157,9 @@ const Index = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                onKeyDown={(e) => (e.key === '.' || e.key === '-') && e.preventDefault()}
+                onKeyDown={(e) =>
+                  (e.key === "." || e.key === "-") && e.preventDefault()
+                }
                 min="0"
               />
             </div>
@@ -169,7 +177,11 @@ const Index = () => {
               ></textarea>
             </div>
             <div className="d-flex gap-2 mt-4">
-              <button type="button" onClick={handleCancel} className="cancel-button col-6">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="cancel-button col-6"
+              >
                 Cancel
               </button>
               <button type="submit" className="submit-button1 col-6">

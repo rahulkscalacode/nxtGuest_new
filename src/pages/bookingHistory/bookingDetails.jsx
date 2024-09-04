@@ -24,7 +24,7 @@ const BookingDetails = () => {
 
   useEffect(() => {
     handleData();
-  }, [state._id]);
+  }, [state?._id]);
 
   console.log(details);
   const json = {

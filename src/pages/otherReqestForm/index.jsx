@@ -103,6 +103,10 @@ const Index = () => {
           const serializableData = {
             data: res.data,
           };
+          localStorage.setItem(
+            "guestService",
+            JSON.stringify(serializableData)
+          );
           toast.success("Successfully created self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },
@@ -127,6 +131,10 @@ const Index = () => {
           const serializableData = {
             data: res.data,
           };
+          localStorage.setItem(
+            "guestService",
+            JSON.stringify(serializableData)
+          );
           toast.success("Successfully updated self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },

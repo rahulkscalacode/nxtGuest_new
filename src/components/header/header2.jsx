@@ -4,7 +4,7 @@ import Sidebar from "../sidebar";
 import { Link, useNavigate } from "react-router-dom";
 
 const Header2 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div style={{ borderBottom: "1px solid #474747", display: "flex" }}>
       <div
@@ -17,8 +17,9 @@ const Header2 = () => {
           style={{
             width: "32px",
             height: " 32px",
+            cursor: "pointer",
           }}
-          onClick={()=>navigate(-1)}
+          onClick={() => navigate(-1)}
         />
       </div>
       <div className="d-flex p-3" style={{ margin: "auto" }}>

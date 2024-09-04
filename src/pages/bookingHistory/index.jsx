@@ -13,33 +13,43 @@ import { timeFormatter } from "../../components/formatter/timeFormatter";
 const Index = () => {
   const cookies = new Cookies();
   const tokenUserId = cookies.get("userId");
+  const tokenC = cookies.get("token");
   const navigate = useNavigate();
 
   const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiCall(
-          "GET",
-          "/user/booking-history",
-          {},
-          {},
-          null,
-          {
-            user_id: tokenUserId, // Pass tokenUserId in headers
-          }
-        );
-        // const bookingData = response.data.bookingData
-        // console.log("bookingdata response----->>>>",bookingData)
-        setBookings(response.data.bookingData);
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);
-      }
-    };
+  const serviceData = localStorage.getItem("guestService");
 
-    fetchData();
-  }, []);
+  const jsonServiceData = serviceData && JSON.parse(serviceData);
+
+  // console.log("tokenC=>", tokenC, jsonServiceData?.data?.data);
+
+  useEffect(() => {
+    if (tokenUserId) {
+      const fetchData = async () => {
+        try {
+          const response = await apiCall(
+            "GET",
+            "/user/booking-history",
+            {},
+            {},
+            null,
+            {
+              user_id: tokenUserId, // Pass tokenUserId in headers
+            }
+          );
+          setBookings(response.data.bookingData);
+        } catch (error) {
+          console.error("Failed to fetch user details:", error);
+        }
+      };
+
+      fetchData();
+    } else if (jsonServiceData?.data?.data) {
+      // If token is not available, use the jsonServiceData
+      setBookings([jsonServiceData?.data?.data]);
+    }
+  }, [tokenC, tokenUserId]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const bookingsPerPage = 10;

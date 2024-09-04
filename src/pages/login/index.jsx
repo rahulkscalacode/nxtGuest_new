@@ -146,7 +146,9 @@ const Index = () => {
           </button>
         </form>
         <div className="separator">OR</div>
-        <button className="col-12 guest-btn">Book as a Guest</button>
+        <button className="col-12 guest-btn" onClick={handleGuest}>
+          Book as a Guest
+        </button>
         <div className="signup-link">
           Don't have an account,&nbsp;
           <Link to="/register">sign up</Link>

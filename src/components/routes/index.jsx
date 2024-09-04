@@ -22,6 +22,8 @@ import BookingHistory from "../../pages/bookingHistory";
 import BookingDetails from "../../pages/bookingHistory/bookingDetails";
 import ContactUs from "../../pages/contactUs";
 import FeedbackForm from "../../pages/feedback";
+import TermCondition from "../../pages/terms&Conditions"
+import PrivecyPolicy from "../../pages/privacyPolicy"
 
 const Index = () => {
   let { pathname } = useLocation();
@@ -63,6 +65,8 @@ const Index = () => {
         <Route path="/booking-details" element={<BookingDetails />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/feedback" element={<FeedbackForm />} />
+        <Route path="/privacy-policy" element={<PrivecyPolicy />} />
+        <Route path="/terms-conditions" element={<TermCondition />} />
       </Routes>
     </div>
   );

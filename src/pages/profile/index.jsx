@@ -72,6 +72,10 @@ const Index = () => {
     fetchProfileImage();
   }, []);
 
+<<<<<<< HEAD
+  // console.log("profileImage", profileImage);
+=======
+>>>>>>> development
   useEffect(() => {
     fetchData();
   }, []);
@@ -187,7 +191,7 @@ const Index = () => {
           {edit ? (
             <>
               <div className="inputcss align-items-center">
-                <div>First Name</div>
+                <div>First Name : </div>
                 <input
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
@@ -196,7 +200,7 @@ const Index = () => {
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
-                <div>Last Name</div>
+                <div>Last Name : </div>
                 <input
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
@@ -216,8 +220,9 @@ const Index = () => {
           {edit ? (
             <>
               <div className="inputcss align-items-center mt-2">
-                <div>Email</div>
+                <div>Email : </div>
                 <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input-field"
@@ -225,8 +230,9 @@ const Index = () => {
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
-                <div>Contact</div>
+                <div>Contact : </div>
                 <input
+                  type="number"
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   className="input-field"
@@ -234,7 +240,7 @@ const Index = () => {
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
-                <div>Address</div>
+                <div>Address : </div>
                 <input
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
@@ -243,7 +249,7 @@ const Index = () => {
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
-                <div>City</div>
+                <div>City : </div>
                 <input
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -252,7 +258,7 @@ const Index = () => {
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
-                <div>Country</div>
+                <div>Country : </div>
                 <input
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}

@@ -15,7 +15,7 @@ const Index = () => {
     phone: "",
     subject: "",
     message: "",
-    type: "contact"
+    type: "contact",
   });
   const [disableBtn, setDisableBtn] = useState(false);
 
@@ -36,7 +36,7 @@ const Index = () => {
           phone: "",
           subject: "",
           message: "",
-          type: "contact"
+          type: "contact",
         });
         setDisableBtn(false);
       } else if(response.data.status === "error") {
@@ -58,7 +58,7 @@ const Index = () => {
       phone: "",
       subject: "",
       message: "",
-      type: "contact"
+      type: "contact",
     });
     setDisableBtn(false);
   };
@@ -160,7 +160,9 @@ const Index = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                onKeyDown={(e) => (e.key === '.' || e.key === '-') && e.preventDefault()}
+                onKeyDown={(e) =>
+                  (e.key === "." || e.key === "-") && e.preventDefault()
+                }
                 min="0"
               />
             </div>
@@ -177,8 +179,12 @@ const Index = () => {
                 placeholder="Enter message"
               ></textarea>
             </div>
-            <div className="d-flex gap-2">
-              <button type="button" onClick={handleCancel} className="cancel-button col-6">
+            <div className="d-flex gap-2 mt-4">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="cancel-button col-6"
+              >
                 Cancel
               </button>
               <button type="submit" onClick={()=> setDisableBtn(true)} className="submit-button1 col-6">

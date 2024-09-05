@@ -16,6 +16,7 @@ const Index = () => {
   const location = useLocation();
   const cookies = new Cookies();
   const [value, setValue] = useState("00:00");
+  const [serviceDisable, setServiceDisable] = useState(false);
 
   const previousData = useMemo(
     () => location.state?.data || {},
@@ -53,11 +54,13 @@ const Index = () => {
 
   const handleDateChange = (value) => {
     setForm({ ...form, dateOfRide: value });
+    setServiceDisable(false);
   };
 
   const handleTimeChange = (value) => {
     setValue(value);
     setForm({ ...form, time: value });
+    setServiceDisable(false);
   };
 
   const handleChange = (e) => {
@@ -71,6 +74,7 @@ const Index = () => {
           pickupLocation: "",
           dropLocation: "",
         });
+        setServiceDisable(false);
       } else if (value === "select") {
         setForm({
           ...form,
@@ -78,15 +82,18 @@ const Index = () => {
           pickupLocation: "",
           dropLocation: "",
         });
+        setServiceDisable(false);
       }
     } else {
       setForm({
         ...form,
         [name]: value,
       });
+      setServiceDisable(false);
     }
   };
 
+  // console.log("serviceDisable", serviceDisable);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -97,6 +104,10 @@ const Index = () => {
           const serializableData = {
             data: res.data,
           };
+          localStorage.setItem(
+            "guestService",
+            JSON.stringify(serializableData)
+          );
           toast.success("Successfully created self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },
@@ -104,10 +115,12 @@ const Index = () => {
         })
         .catch((err) => {
           console.log(err);
+          setServiceDisable(true);
           toast.error("Something went wrong!");
         });
     } catch (error) {
       console.log("error=>>>", error);
+      setServiceDisable(true);
     }
   };
 
@@ -122,15 +135,21 @@ const Index = () => {
             data: res.data,
           };
           toast.success("Successfully updated self service request form.");
+          localStorage.setItem(
+            "guestService",
+            JSON.stringify(serializableData)
+          );
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },
           });
         })
         .catch((err) => {
           console.log(err);
+          setServiceDisable(true);
           toast.error("Something went wrong!");
         });
     } catch (error) {
+      setServiceDisable(true);
       toast.error(error);
     }
   };
@@ -151,7 +170,7 @@ const Index = () => {
             <input
               type="text"
               name="firstName"
-              placeholder="First Name"
+              placeholder="First Name*"
               value={form.firstName}
               onChange={handleChange}
               className="input-field"
@@ -172,7 +191,7 @@ const Index = () => {
             <input
               type="number"
               name="contactNumber"
-              placeholder="Contact Number"
+              placeholder="Contact Number*"
               value={form.contactNumber}
               onChange={handleChange}
               className="input-field"
@@ -184,7 +203,7 @@ const Index = () => {
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
+              placeholder="Email Address*"
               value={form.email}
               onChange={handleChange}
               className="input-field"
@@ -212,10 +231,14 @@ const Index = () => {
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
+              required={form.locationType === "select"}
             >
-              <option value="">Select</option>
-              <option value="noida">Noida</option>
-              <option value="delhi">Delhi</option>
+              <option value="">
+                Select{form.locationType === "select" ? "*" : ""}
+              </option>
+              <option value="New York">New York</option>
+              <option value="Miami">Miami</option>
+              <option value="Florida">Florida</option>
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
@@ -227,10 +250,14 @@ const Index = () => {
               onChange={handleChange}
               disabled={form.locationType !== "select"}
               className="input-field"
+              required={form.locationType === "select"}
             >
-              <option value="">Select</option>
-              <option value="gurgaon">Gurgaon</option>
-              <option value="mayur">Mayur</option>
+              <option value="">
+                Select{form.locationType === "select" ? "*" : ""}
+              </option>
+              <option value="New York">New York</option>
+              <option value="Miami">Miami</option>
+              <option value="Florida">Florida</option>
             </select>
           </div>
           {/* -------------Other------------ */}
@@ -253,11 +280,14 @@ const Index = () => {
             <input
               type="text"
               name="pickupLocation"
-              placeholder="Enter Pickup Location Manually"
+              placeholder={`Enter Pickup Location Manually${
+                form.locationType === "manual" ? "*" : ""
+              }`}
               value={form.locationType === "manual" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
+              required={form.locationType === "manual"}
             />
           </div>
           {/* ----------------Input field----------------- */}
@@ -265,11 +295,14 @@ const Index = () => {
             <input
               type="text"
               name="dropLocation"
-              placeholder="Enter Drop Location Manually"
+              placeholder={`Enter Drop Location Manually${
+                form.locationType === "manual" ? "*" : ""
+              }`}
               value={form.locationType === "manual" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
+              required={form.locationType === "manual"}
             />
           </div>
           <div className="">
@@ -278,9 +311,9 @@ const Index = () => {
               value={form.vehicleType}
               onChange={handleChange}
               className="input-field"
-              // required
+              required
             >
-              <option value="">Vehicle Type</option>
+              <option value="">Vehicle Type*</option>
               <option value="car">car</option>
               <option value="xuv">xuv</option>
               {/* Add options here */}
@@ -291,7 +324,11 @@ const Index = () => {
             arg={{ form, value, handleDateChange, handleTimeChange }}
           />
 
-          <button type="submit" className="submit-button">
+          <button
+            type="submit"
+            className="submit-button"
+            disabled={serviceDisable}
+          >
             Confirm Booking
           </button>
         </form>

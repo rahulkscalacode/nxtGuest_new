@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../components/layout";
 import styled from "styled-components";
 import "./index.css";
+import Footer from "../../components/footer";
 
 const Index = () => {
   const videoRef = useRef(null);
@@ -26,7 +27,7 @@ const Index = () => {
   }, [isPlaying]);
 
   return (
-    <Layout>
+    <Layout footer={<Footer />}>
       <div className="p-2">
         <div className="fontsize20">
           <div> About Us</div>

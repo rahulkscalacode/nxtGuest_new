@@ -21,7 +21,7 @@ const Index = () => {
           }}
           onClick={toggleSidebar}
         />
-        {/* <Link to="/"> */}
+        <Link to="/">
         <img
           src="/images/asset/logo1.png"
           alt="Logo"
@@ -32,7 +32,7 @@ const Index = () => {
             height: "67px",
           }}
         />
-        {/* </Link> */}
+        </Link>
       </div>
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
     </div>

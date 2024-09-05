@@ -1,48 +1,32 @@
-@media screen and (min-width: 430px) {
+@media screen and (max-width: 430px) {
   .displaycenter {
     display: flex;
     justify-content: center;
-    height: 100vh;
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent scrolling */
   }
-}
 
-.layoutcls {
-  background: #000;
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* Header takes up auto space, content expands, footer takes up auto space */
-  height: 100vh; /* Ensure full viewport height */
-  width: 100%;
-}
-
-@media screen and (min-width: 430px) {
   .layoutcls {
-    width: 430px;
+    width: 100%; /* Ensure full width on mobile */
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* Header, content, footer */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent scrolling */
+  }
+
+  main {
+    padding: 1rem;
+    background: #000;
+    color: white;
+    overflow-y: hidden; /* Prevent vertical scrolling */
+    display: flex;
+    flex-direction: column;
+  }
+
+  footer {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
   }
 }
 
-main {
-  padding: 1rem;
-  background: #000;
-  color: white;
-  overflow-y: auto;
-}
-
-.footercls {
-  display: flex;
-  gap: 10px;
-  height: 45px;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  background-color: #1c1c1c;
-  color: #fff;
-  text-align: center;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  z-index: 10; /* Ensure it stays above the main content */
-  position: sticky;
-  bottom: 0;
-}

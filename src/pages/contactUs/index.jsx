@@ -17,6 +17,7 @@ const Index = () => {
     message: "",
     type: "contact",
   });
+  const [disableBtn, setDisableBtn] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,13 +38,16 @@ const Index = () => {
           message: "",
           type: "contact",
         });
-      } else if (response.data.status === "error") {
+        setDisableBtn(false);
+      } else if(response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
-      }
+        setDisableBtn(false);
+      } 
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
+      setDisableBtn(false);
     }
   };
 
@@ -56,6 +60,7 @@ const Index = () => {
       message: "",
       type: "contact",
     });
+    setDisableBtn(false);
   };
 
   return (
@@ -182,7 +187,7 @@ const Index = () => {
               >
                 Cancel
               </button>
-              <button type="submit" className="submit-button1 col-6">
+              <button type="submit" onClick={()=> setDisableBtn(true)} className="submit-button1 col-6">
                 Submit
               </button>
             </div>

@@ -38,7 +38,7 @@ const Index = () => {
         backgroundImage: backgroundImage,
         backgroundPosition: "center center",
         backgroundSize: "cover",
-        height: "100vh",
+        // height: "100vh",
         width: "100%",
         backgroundRepeat: "no-repeat",
         backgroundBlendMode: "darken",

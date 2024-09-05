@@ -21,7 +21,7 @@ const Index = () => {
 
   return (
     <Layout1>
-      <div className="d-container">
+      <div>
         <div class="cards-container">
           <Link to="/self-request">
             <div

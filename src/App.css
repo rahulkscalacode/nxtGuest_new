@@ -27,7 +27,7 @@
     background-size: unset;
     background-repeat: unset;
     background-blend-mode: unset;
-    height: auto; /* Or set a specific height if necessary */
-    width: auto; /* Or set a specific width if necessary */
+    /* height: auto; 
+     width: auto; */
   }
 }

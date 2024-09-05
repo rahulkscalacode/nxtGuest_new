@@ -9,3 +9,25 @@
 .no-spinner[type="number"] {
   -moz-appearance: textfield;
 }
+
+.route-backgound {
+  background-image: url("/public/images/icons/bg1.png");
+  background-position: center center;
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-blend-mode: darken;
+}
+
+@media screen and (max-width: 432px) {
+  .route-backgound {
+    background-image: none;
+    background-position: unset;
+    background-size: unset;
+    background-repeat: unset;
+    background-blend-mode: unset;
+    height: auto; /* Or set a specific height if necessary */
+    width: auto; /* Or set a specific width if necessary */
+  }
+}

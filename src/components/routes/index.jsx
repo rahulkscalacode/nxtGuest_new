@@ -22,8 +22,9 @@ import BookingHistory from "../../pages/bookingHistory";
 import BookingDetails from "../../pages/bookingHistory/bookingDetails";
 import ContactUs from "../../pages/contactUs";
 import FeedbackForm from "../../pages/feedback";
-import TermCondition from "../../pages/terms&Conditions"
-import PrivecyPolicy from "../../pages/privacyPolicy"
+import TermCondition from "../../pages/terms&Conditions";
+import PrivecyPolicy from "../../pages/privacyPolicy";
+import "../../App.css";
 
 const Index = () => {
   let { pathname } = useLocation();
@@ -33,17 +34,7 @@ const Index = () => {
       : "url(/images/icons/bg2.png)";
 
   return (
-    <div
-      style={{
-        backgroundImage: backgroundImage,
-        backgroundPosition: "center center",
-        backgroundSize: "cover",
-        height: "100vh",
-        width: "100%",
-        backgroundRepeat: "no-repeat",
-        backgroundBlendMode: "darken",
-      }}
-    >
+    <div className="route-backgound">
       <ToastContainer theme="dark" autoClose={5000} />
       <Routes>
         <Route index element={<Home />} />

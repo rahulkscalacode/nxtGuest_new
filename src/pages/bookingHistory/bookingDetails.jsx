@@ -4,7 +4,7 @@ import Footer from "../../components/footer";
 import { useLocation } from "react-router-dom";
 import moment from "moment";
 import { bookingDetails } from "../../functions/api/booking";
-import { timeFormatter } from "../../components/formatter/timeFormatter";
+import { timeFormatter } from "../../components/formatter/timeFormatter"
 
 const BookingDetails = () => {
   const location = useLocation();
@@ -24,7 +24,7 @@ const BookingDetails = () => {
 
   useEffect(() => {
     handleData();
-  }, [state._id]);
+  }, [state?._id]);
 
   console.log(details);
   const json = {

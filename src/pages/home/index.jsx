@@ -14,7 +14,7 @@ const Index = () => {
       navigate("/dashboard");
     }
   }, [tokenC, userNameC]);
-  
+
   const handleClick = () => {
     navigate("/login");
   };

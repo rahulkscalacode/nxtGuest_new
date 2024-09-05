@@ -22,6 +22,7 @@ const Index = ({
           dateFormat="MM/dd/yy"
           placeholderText="MM/DD/YY"
           // style={{ padding: "6px" }}
+          required
         />
         <CiCalendarDate style={{ fontSize: "25px" }} className="calendericon" />
       </div>
@@ -32,7 +33,8 @@ const Index = ({
           value={value}
           amPmAriaLabel="AM"
           format="h:mm a"
-          // disableClock={true}
+          disableClock={true}
+          required
         />
       </div>
     </div>

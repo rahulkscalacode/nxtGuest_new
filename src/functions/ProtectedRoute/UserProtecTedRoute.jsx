@@ -9,7 +9,9 @@ const UserRoute = ({ children, ...rest }) => {
   const tokenC = cookies.get("token");
   const userNameC = cookies.get("userName");
 
-  return userNameC && tokenC ? children : <LoadingToRedirect />;
+  // return userNameC && tokenC ? children : <LoadingToRedirect />;
+
+  return children;
 };
 
 export default UserRoute;

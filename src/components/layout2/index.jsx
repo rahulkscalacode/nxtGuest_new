@@ -2,7 +2,7 @@ import React from "react";
 import Header3 from "../header/header3";
 import Footer from "../footer";
 import "../layout/index.css";
-import UserRoute from "../../functions/ProtectedRoute/UserProtecTedRoute";
+import UserRoute from "../../functions/ProtectedRoute/UserProtecTedRoute"
 
 const Index = ({ children }) => {
   return (

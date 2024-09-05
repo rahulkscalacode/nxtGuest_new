@@ -33,6 +33,15 @@ const Index = () => {
       ? "url(/images/icons/bg1.png)"
       : "url(/images/icons/bg2.png)";
 
+  const routeBackgroundStyle = {
+    backgroundImage: backgroundImage,
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
+    height: "100vh",
+    width: "100%",
+    backgroundRepeat: "no-repeat",
+    backgroundBlendMode: "darken",
+  };
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -55,7 +64,7 @@ const Index = () => {
     };
   }, []);
   return (
-    <div className={isSmallScreen ? "" : "route-backgound"}>
+    <div style={isSmallScreen ? {} : routeBackgroundStyle}>
       <ToastContainer theme="dark" autoClose={5000} />
       <Routes>
         <Route index element={<Home />} />

@@ -33,11 +33,11 @@
     position: unset;
   }
 }
-/* @media screen and (max-height: 1100px) {
+@media screen and (max-width: 415px) {
   .splash-container {
-    height: 90vh;
+    height: 85vh;
   }
-} */
+}
 .logo {
   width: 159px;
   height: 120px;

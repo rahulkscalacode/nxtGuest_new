@@ -33,31 +33,7 @@ const Index = () => {
   const [originalCity, setOriginalCity] = useState(city);
   const [originalCountry, setOriginalCountry] = useState(country);
   const [profileImage, setProfileImage] = useState(null);
-
-<<<<<<< HEAD
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      try {
-        const response = await apiCall(
-          "GET",
-          "/user/get-profile-picture",
-          {},
-          {},
-          null,
-          {
-            user_id: tokenUserId, // Pass tokenUserId in headers
-          }
-        );
-        const base64Image = response.data.image; // Assuming the response contains a base64 string
-        setProfileImage(base64Image);
-        // console.log("base64Image", base64Image);
-        console.log("profile image response----->>>>", response);
-      } catch (error) {
-        console.error("Failed to fetch profile image:", error);
-      }
-    };
-=======
->>>>>>> development
+  const [disableBtn, setDisableBtn] = useState(false);
 
 
   const fetchProfileImage = async () => {
@@ -128,12 +104,15 @@ const Index = () => {
       if (response.data.status === "success") {
         toast.success(response.data.message);
         setEdit(false);
+        setDisableBtn(false);
       } else if (response.data.status === "error") {
         console.error(response.data.message);
+        setDisableBtn(false);
       }
     } catch (error) {
       console.error("Failed to update user details:", error);
       toast.error(error);
+      setDisableBtn(false);
     }
   };
 
@@ -161,6 +140,7 @@ const Index = () => {
     setCity(originalCity);
     setCountry(originalCountry);
     setEdit(false);
+    setDisableBtn(false);
   };
 
   const openModal = () => {
@@ -323,7 +303,7 @@ const Index = () => {
             >
               Cancel
             </button>
-            <button className="proceedPay" onClick={updateData}>
+            <button className="proceedPay" disabled={disableBtn} onClick={() => {setDisableBtn(true); updateData(); }}>
               Update
             </button>
           </div>

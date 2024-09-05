@@ -10,7 +10,7 @@ import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
 const Index = () => {
   const cookies = new Cookies();
-  const tokenC = cookies.get("token");
+  // const tokenC = cookies.get("token");
   const tokenUserId = cookies.get("userId");
   const [edit, setEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,6 +34,7 @@ const Index = () => {
   const [originalCountry, setOriginalCountry] = useState(country);
   const [profileImage, setProfileImage] = useState(null);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
@@ -55,37 +56,51 @@ const Index = () => {
         console.error("Failed to fetch profile image:", error);
       }
     };
+=======
+>>>>>>> development
 
+
+  const fetchProfileImage = async () => {
+    try {
+      const response = await apiCall('GET', '/user/get-profile-picture', {}, {}, null, {
+        "user_id": tokenUserId // Pass tokenUserId in headers
+      });
+      const base64Image = response.data.image; // Assuming the response contains a base64 string
+      setProfileImage(base64Image);
+      console.log("base64Image",base64Image)
+      console.log("profile image response----->>>>", response);
+    } catch (error) {
+      console.error("Failed to fetch profile image:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await apiCall('GET', '/user/user-details', {}, {}, null, {
+        "user_id": tokenUserId // Pass tokenUserId in headers
+      });
+      const user = response.data.user
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setEmail(user.email);
+      setContact(user.contact);
+      setAddress(user.address);
+      setCity(user.city);
+      setCountry(user.country);
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchProfileImage();
   }, []);
 
+<<<<<<< HEAD
   // console.log("profileImage", profileImage);
+=======
+>>>>>>> development
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiCall(
-          "GET",
-          "/user/user-details",
-          {},
-          {},
-          null,
-          {
-            user_id: tokenUserId, // Pass tokenUserId in headers
-          }
-        );
-        const user = response.data.user;
-        setFirstName(user.firstName);
-        setLastName(user.lastName);
-        setEmail(user.email);
-        setContact(user.contact);
-        setAddress(user.address);
-        setCity(user.city);
-        setCountry(user.country);
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -315,13 +330,7 @@ const Index = () => {
         </div>
       )}
       <EditProfile
-        arg={{
-          openModal,
-          closeModal,
-          isModalOpen,
-          setIsModalOpen,
-          profileImage,
-        }}
+        arg={{ openModal, closeModal, isModalOpen, setIsModalOpen, profileImage,fetchProfileImage }}
       />
     </Layout>
   );

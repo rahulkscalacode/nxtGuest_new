@@ -5,7 +5,7 @@ import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
 
 const Index = ({
-  arg: { openModal, closeModal, isModalOpen, setIsModalOpen , profileImage},
+  arg: { openModal, closeModal, isModalOpen, setIsModalOpen, profileImage, fetchProfileImage },
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -43,7 +43,8 @@ const Index = ({
       if (response.data.status === "success") {
         toast.success(response.data.message);
         setIsModalOpen(false);
-      } else if (response.data.status === "error") {
+        fetchProfileImage();
+      } else if(response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
       }
@@ -80,7 +81,7 @@ const Index = ({
               onChange={handleFileChange}
             />
             <ButtonWrapper>
-              <CancelButton onClick={closeModal}>Cancel</CancelButton>
+              <CancelButton onClick={() => {setIsModalOpen(false);setPreview(null)}}>Cancel</CancelButton>
               <UpdateButton onClick={handleUpdate}>Update</UpdateButton>
             </ButtonWrapper>
           </ModalContainer>

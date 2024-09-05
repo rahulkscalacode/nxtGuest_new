@@ -30,8 +30,13 @@ const Index = () => {
 
   const inputHandler = (e) => {
     e.preventDefault();
-    setUser({ ...user, [e.target.name]: e.target.value });
-    setLoginDisabled(false);
+    const { name, value } = e.target;
+    
+    if (name === "password" || name === "confirmPassword") {
+      setUser({ ...user, [name]: value.replace(/\s/g, '') });
+    } else {
+      setUser({ ...user, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -131,6 +136,7 @@ const Index = () => {
             onChange={inputHandler}
             value={user.password}
             required
+            minLength="6"
           />
           <input
             type="password"

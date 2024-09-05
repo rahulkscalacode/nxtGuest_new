@@ -23,3 +23,89 @@ const Index = ({ children }) => {
 };
 
 export default Index;
+
+
+
+// @media screen and (min-width: 430px) {
+//   .displaycenter {
+//     display: flex;
+//     justify-content: center;
+//   }
+// }
+// .layoutcls {
+//   background: #000;
+//   /* height: 100vh; */
+//   /* position: relative; */
+// }
+// @media screen and (min-width: 430px) {
+//   .layoutcls {
+//     width: 430px;
+//   }
+//   main {
+//     width: 430px;
+//     margin: 0 auto; /* Center the main content */
+//   }
+// }
+// main {
+//   overflow-y: auto;
+//   padding: 1rem;
+//   background: #000;
+//   color: white;
+//   z-index: 1;
+// }
+
+// .layout-grid {
+//   display: grid;
+//   grid-template-rows: auto 1fr auto; /* Header, main, footer */
+//   min-height: 100vh;
+//   background: #000;
+// }
+// .footercls {
+//   display: flex;
+//   gap: 10px;
+//   height: 45px;
+//   width: 100%;
+//   padding: 0px 24px 0px 25px;
+//   justify-content: center;
+//   align-items: center;
+//   flex-shrink: 0;
+//   background-color: #1c1c1c;
+//   color: #fff;
+//   text-align: center;
+//   justify-content: space-around;
+//   font-size: 13px;
+//   font-style: normal;
+//   font-weight: 400;
+//   line-height: normal;
+//   z-index: 10; /* Ensure it stays above the main content */
+//   position: sticky;
+//   bottom: 0;
+// }
+
+// /* SCrol css */
+// main::-webkit-scrollbar {
+//   width: 10px;
+// }
+
+// main::-webkit-scrollbar-track {
+//   background: #ffcc00;
+// }
+
+// main::-webkit-scrollbar-thumb {
+//   background: #ffcc00;
+// }
+
+// main::-webkit-scrollbar-thumb:hover {
+//   background: #ffcc00;
+// }
+
+// /* Firefox */
+// main {
+//   scrollbar-width: thin;
+//   scrollbar-color: #ffcc00 #000000;
+// }
+// main {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+// }

@@ -23,6 +23,7 @@ const Index = ({
           placeholderText="MM/DD/YY"
           // style={{ padding: "6px" }}
           required
+          minDate={new Date()}
         />
         <CiCalendarDate style={{ fontSize: "25px" }} className="calendericon" />
       </div>

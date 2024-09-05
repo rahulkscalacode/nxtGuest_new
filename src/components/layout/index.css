@@ -6,8 +6,8 @@
 }
 .layoutcls {
   background: #000;
-  height: 100vh;
-  position: relative;
+  /* height: 100vh; */
+  /* position: relative; */
 }
 @media screen and (min-width: 430px) {
   .layoutcls {

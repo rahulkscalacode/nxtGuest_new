@@ -7,7 +7,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import EditProfile from "./editImage";
 import Cookies from "universal-cookie";
 import { apiCall } from "../../functions/api/apiGlobal";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify"
 const Index = () => {
   const cookies = new Cookies();
   // const tokenC = cookies.get("token");
@@ -49,6 +49,7 @@ const Index = () => {
       console.error("Failed to fetch profile image:", error);
     }
   };
+  
 
   const fetchData = async () => {
     try {

@@ -8,6 +8,7 @@ const FeedbackForm = () => {
   const cookies = new Cookies();
   // const tokenC = cookies.get("token");
   const tokenUserId = cookies.get("userId");
+  const [disableBtn, setDisableBtn] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -35,13 +36,16 @@ const FeedbackForm = () => {
           message: "",
           type: "feedback",
         });
+        setDisableBtn(false);
       } else if (response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
+        setDisableBtn(false);
       }
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
+      setDisableBtn(false);
     }
   };
 
@@ -53,6 +57,7 @@ const FeedbackForm = () => {
       message: "",
       type: "feedback",
     });
+    setDisableBtn(false);
   };
 
   return (
@@ -164,7 +169,7 @@ const FeedbackForm = () => {
         </button>
         <button
           type="submit"
-          onClick={handleSubmit}
+          onClick={(e) => {setDisableBtn(true); handleSubmit(e)}}
           className="submit-button1 col-6"
         >
           Submit

@@ -48,8 +48,8 @@ const Index = () => {
               </span>
             </button>
           </div>
-          {/* <div className="footer-image1" style={{ zIndex: "1" }}></div> */}
         </div>
+        <div className="footer-image1" style={{ zIndex: "1" }}></div>
       </div>
     </div>
   );

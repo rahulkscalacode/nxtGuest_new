@@ -55,8 +55,7 @@ const Index = () => {
     };
   }, []);
   return (
-    <div>
-      className={isSmallScreen ? "" : "route-backgound"}
+    <div className={isSmallScreen ? "" : "route-backgound"}>
       <ToastContainer theme="dark" autoClose={5000} />
       <Routes>
         <Route index element={<Home />} />

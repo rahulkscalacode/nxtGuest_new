@@ -72,10 +72,7 @@ const Index = () => {
     fetchProfileImage();
   }, []);
 
-<<<<<<< HEAD
   // console.log("profileImage", profileImage);
-=======
->>>>>>> development
   useEffect(() => {
     fetchData();
   }, []);

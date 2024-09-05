@@ -33,8 +33,29 @@ const Index = () => {
       ? "url(/images/icons/bg1.png)"
       : "url(/images/icons/bg2.png)";
 
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 430px)");
+
+    // Check the initial screen size
+    const handleScreenChange = (e) => {
+      setIsSmallScreen(e.matches);
+    };
+
+    // Add listener for screen size changes
+    mediaQuery.addEventListener("change", handleScreenChange);
+
+    // Check on component mount
+    handleScreenChange(mediaQuery);
+
+    // Clean up the listener on unmount
+    return () => {
+      mediaQuery.removeEventListener("change", handleScreenChange);
+    };
+  }, []);
   return (
-    <div className="route-backgound">
+    <div className={isSmallScreen ? "" : "route-backgound"}>
       <ToastContainer theme="dark" autoClose={5000} />
       <Routes>
         <Route index element={<Home />} />

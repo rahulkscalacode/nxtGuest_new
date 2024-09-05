@@ -23,10 +23,10 @@
 @media screen and (max-width: 432px) {
   .route-backgound {
     background-image: none;
-    background-position: unset;
+    /* background-position: unset;
     background-size: unset;
     background-repeat: unset;
-    background-blend-mode: unset;
+    background-blend-mode: unset; */
     /* height: auto; 
      width: auto; */
   }

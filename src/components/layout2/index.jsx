@@ -7,7 +7,7 @@ import UserRoute from "../../functions/ProtectedRoute/UserProtecTedRoute";
 const Index = ({ children }) => {
   return (
     // <UserRoute>
-    <div className="displaycenter">
+    <div className="displaycenter ">
       <div className=" col-lg-4 col-md-6 col-sm-12 layoutcls layout-grid">
         <header>
           <Header3 />

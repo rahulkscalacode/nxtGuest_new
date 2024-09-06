@@ -2,9 +2,9 @@ import React from "react";
 import Header3 from "../header/header3";
 import Footer from "../footer";
 import "../layout/index.css";
-import UserRoute from "../../functions/ProtectedRoute/UserProtecTedRoute"
+import UserRoute from "../../functions/ProtectedRoute/UserProtecTedRoute";
 
-const Index = ({ children }) => {
+const Index = ({ children, footer }) => {
   return (
     // <UserRoute>
     <div className="displaycenter">
@@ -13,9 +13,7 @@ const Index = ({ children }) => {
           <Header3 />
         </header>
         <main>{children}</main>
-        {/* <footer>
-          <Footer />
-        </footer> */}
+        <footer>{footer}</footer>
       </div>
     </div>
     // </UserRoute>

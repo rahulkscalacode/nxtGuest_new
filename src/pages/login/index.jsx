@@ -6,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { loginApi } from "../../functions/api/auth";
 import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners"; 
 
 const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [prevEmail, setPrevEmail] = useState(""); // Store previous email
-  const [prevPassword, setPrevPassword] = useState(""); // Store previous password
-  const [loginDisabled, setLoginDisabled] = useState(false); // Manage login button state
+  const [prevPassword, setPrevPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -41,17 +42,16 @@ const Index = () => {
     // Validate email
     if (!validateEmail(email)) {
       toast.error("Please enter a valid email address.");
-      setLoginDisabled(true);
       return;
     }
 
     // Validate password
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long.");
-      setLoginDisabled(true);
       return;
     }
 
+    setIsLoading(true);
     try {
       const res = await loginApi({ email, password });
       if (res.data.user) {
@@ -72,7 +72,6 @@ const Index = () => {
         toast.error("Enter valid user credentials.");
         setPrevEmail(email); // Store current email and password
         setPrevPassword(password);
-        setLoginDisabled(true); // Disable the login button
       }
     } catch (err) {
       toast.error(
@@ -80,7 +79,8 @@ const Index = () => {
       );
       setPrevEmail(email); // Store current email and password
       setPrevPassword(password);
-      setLoginDisabled(true); // Disable the login button
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -90,14 +90,12 @@ const Index = () => {
     } else {
       setter(value);
     }
-    setLoginDisabled(false); // Enable the login button on any change
   };
 
   const handleGuest = () => {
     navigate("/dashboard");
   };
 
-  console.log("loginDisabled", loginDisabled);
   return (
     <Layout2>
       <div>
@@ -144,13 +142,13 @@ const Index = () => {
           <button
             type="submit"
             className="col-12 login-btn"
-            disabled={loginDisabled} // Disable the button if needed
+            disabled={isLoading} // Disable the button if needed
           >
-            Login
+            {isLoading ? <ClipLoader color={"#fff"} size={20} /> : "Login"}
           </button>
         </form>
         <div className="separator">OR</div>
-        <button className="col-12 guest-btn" onClick={handleGuest}>
+        <button className="col-12 guest-btn" onClick={handleGuest} disabled={isLoading}>
           Book as a Guest
         </button>
         <div className="signup-link">

@@ -9,7 +9,7 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import "./index.css";
 import Cookies from "universal-cookie";
-import DateAndTime from "../../components/dateAndTime";
+import DateAndTime from "../../components/dateAndTime"
 
 const Index = () => {
   const navigate = useNavigate();

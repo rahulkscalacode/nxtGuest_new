@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout";
 import "../login/index.css";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,29 @@ const Index = () => {
   const handleClick = () => {
     navigate("/role");
   };
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
+  useEffect(() => {
+    const handleResize = () => {
+      // Get the visible viewport height
+      setViewportHeight(window.innerHeight);
+    };
+
+    // Set the height on load
+    handleResize();
+
+    // Update height on window resize or orientation change
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
+  }, []);
   return (
     <Layout>
-      <div className="d-container">
+      <div className="d-container" style={{ height: `${viewportHeight}px` }}>
         <div class="cards-container">
           <div className="imgcard" onClick={handleClick}>
             <img

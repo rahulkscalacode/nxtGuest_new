@@ -33,11 +33,33 @@ const Index = () => {
       ? "url(/images/icons/bg1.png)"
       : "url(/images/icons/bg2.png)";
 
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // Get the visible viewport height
+      setViewportHeight(window.innerHeight);
+    };
+
+    // Set the height on load
+    handleResize();
+
+    // Update height on window resize or orientation change
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
+  }, []);
+
+  console.log("viewportHeight=>", viewportHeight);
   const routeBackgroundStyle = {
     backgroundImage: backgroundImage,
     backgroundPosition: "center center",
     backgroundSize: "cover",
-    height: "100vh",
+    height: `${viewportHeight}px`,
     width: "100%",
     backgroundRepeat: "no-repeat",
     backgroundBlendMode: "darken",

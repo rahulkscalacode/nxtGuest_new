@@ -7,7 +7,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import EditProfile from "./editImage";
 import Cookies from "universal-cookie";
 import { apiCall } from "../../functions/api/apiGlobal";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 const Index = () => {
   const cookies = new Cookies();
   // const tokenC = cookies.get("token");
@@ -35,28 +35,40 @@ const Index = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [disableBtn, setDisableBtn] = useState(false);
 
-
   const fetchProfileImage = async () => {
     try {
-      const response = await apiCall('GET', '/user/get-profile-picture', {}, {}, null, {
-        "user_id": tokenUserId // Pass tokenUserId in headers
-      });
+      const response = await apiCall(
+        "GET",
+        "/user/get-profile-picture",
+        {},
+        {},
+        null,
+        {
+          user_id: tokenUserId, // Pass tokenUserId in headers
+        }
+      );
       const base64Image = response.data.image; // Assuming the response contains a base64 string
       setProfileImage(base64Image);
-      console.log("base64Image",base64Image)
+      console.log("base64Image", base64Image);
       console.log("profile image response----->>>>", response);
     } catch (error) {
       console.error("Failed to fetch profile image:", error);
     }
   };
-  
 
   const fetchData = async () => {
     try {
-      const response = await apiCall('GET', '/user/user-details', {}, {}, null, {
-        "user_id": tokenUserId // Pass tokenUserId in headers
-      });
-      const user = response.data.user
+      const response = await apiCall(
+        "GET",
+        "/user/user-details",
+        {},
+        {},
+        null,
+        {
+          user_id: tokenUserId, // Pass tokenUserId in headers
+        }
+      );
+      const user = response.data.user;
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setEmail(user.email);
@@ -157,6 +169,7 @@ const Index = () => {
           <Image
             style={{ borderRadius: "5px", border: "1px solid white" }}
             width={100}
+            height={100}
             src={
               profileImage === null ? "/images/icons/self.png" : profileImage
             }
@@ -301,14 +314,28 @@ const Index = () => {
             >
               Cancel
             </button>
-            <button className="proceedPay" disabled={disableBtn} onClick={() => {setDisableBtn(true); updateData(); }}>
+            <button
+              className="proceedPay"
+              disabled={disableBtn}
+              onClick={() => {
+                setDisableBtn(true);
+                updateData();
+              }}
+            >
               Update
             </button>
           </div>
         </div>
       )}
       <EditProfile
-        arg={{ openModal, closeModal, isModalOpen, setIsModalOpen, profileImage,fetchProfileImage }}
+        arg={{
+          openModal,
+          closeModal,
+          isModalOpen,
+          setIsModalOpen,
+          profileImage,
+          fetchProfileImage,
+        }}
       />
     </Layout>
   );

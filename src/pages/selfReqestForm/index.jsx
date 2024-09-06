@@ -9,7 +9,7 @@ import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
 import "./index.css";
 import Cookies from "universal-cookie";
-import DateAndTime from "../../components/dateAndTime";
+import DateAndTime from "../../components/dateAndTime"
 
 const Index = () => {
   const navigate = useNavigate();
@@ -166,7 +166,7 @@ const Index = () => {
           }
           autoComplete="off"
         >
-          <div className="input-group">
+          <div className="d-flex gap-2">
             <input
               type="text"
               name="firstName"
@@ -242,7 +242,7 @@ const Index = () => {
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
-          <div className="input-group ">
+          <div className="input-group mb-2">
             <label style={{ marginLeft: "1.4rem" }}>Drop Location</label>
             <select
               name="dropLocation"

@@ -158,13 +158,13 @@ input:-moz-placeholder {
   text-align: center;
   font-size: 15px;
   font-weight: 500;
-  /* position: absolute;
+  position: absolute;
   bottom: 1rem;
-  left: 20%; */
+  /* left: 20%; */
 }
 
 .d-container {
-  min-height: 76vh;
+  /* min-height: 76vh; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;

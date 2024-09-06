@@ -22,8 +22,9 @@ import BookingHistory from "../../pages/bookingHistory";
 import BookingDetails from "../../pages/bookingHistory/bookingDetails";
 import ContactUs from "../../pages/contactUs";
 import FeedbackForm from "../../pages/feedback";
-import TermCondition from "../../pages/terms&Conditions"
-import PrivecyPolicy from "../../pages/privacyPolicy"
+import TermCondition from "../../pages/terms&Conditions";
+import PrivecyPolicy from "../../pages/privacyPolicy";
+import "../../App.css";
 
 const Index = () => {
   let { pathname } = useLocation();
@@ -32,18 +33,38 @@ const Index = () => {
       ? "url(/images/icons/bg1.png)"
       : "url(/images/icons/bg2.png)";
 
+  const routeBackgroundStyle = {
+    backgroundImage: backgroundImage,
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
+    height: "100vh",
+    width: "100%",
+    backgroundRepeat: "no-repeat",
+    backgroundBlendMode: "darken",
+  };
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 430px)");
+
+    // Check the initial screen size
+    const handleScreenChange = (e) => {
+      setIsSmallScreen(e.matches);
+    };
+
+    // Add listener for screen size changes
+    mediaQuery.addEventListener("change", handleScreenChange);
+
+    // Check on component mount
+    handleScreenChange(mediaQuery);
+
+    // Clean up the listener on unmount
+    return () => {
+      mediaQuery.removeEventListener("change", handleScreenChange);
+    };
+  }, []);
   return (
-    <div
-      style={{
-        backgroundImage: backgroundImage,
-        backgroundPosition: "center center",
-        backgroundSize: "cover",
-        height: "100vh",
-        width: "100%",
-        backgroundRepeat: "no-repeat",
-        backgroundBlendMode: "darken",
-      }}
-    >
+    <div style={isSmallScreen ? {} : routeBackgroundStyle}>
       <ToastContainer theme="dark" autoClose={5000} />
       <Routes>
         <Route index element={<Home />} />

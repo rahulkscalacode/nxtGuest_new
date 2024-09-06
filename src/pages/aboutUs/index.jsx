@@ -33,9 +33,9 @@ const Index = () => {
           <div> About Us</div>
         </div>
         <div className="mt-3">
-          <h2 className="fontsixe15">Welcome to NextGuest!</h2>
+          <h2 className="fontsixe15">Welcome to NXTGUEST!</h2>
           <p className="fontsixe14">
-            At NextGuest, we are dedicated to revolutionizing the way you
+            At NXTGUEST, we are dedicated to revolutionizing the way you
             experience transportation bookings. Whether you're a guest at a
             hotel or arriving at an airport, our mission is to provide a
             seamless and efficient booking experience tailored to your needs.
@@ -54,7 +54,7 @@ const Index = () => {
           <h2 className="fontsixe15">Our Story</h2>
           <p className="fontsixe14">
             Founded with the vision of simplifying transportation logistics,
-            NextGuest has grown into a trusted platform for travelers around the
+            NXTGUEST has grown into a trusted platform for travelers around the
             world. We understand the challenges that come with arranging
             transportation, especially in unfamiliar cities. That's why we
             created a user-friendly solution that allows you to book rides
@@ -66,7 +66,7 @@ const Index = () => {
           <h2 className="fontsixe15">Our Story</h2>
           <p className="fontsixe14">
             Founded with the vision of simplifying transportation logistics,
-            NextGuest has grown into a trusted platform for travelers around the
+            NXTGUEST has grown into a trusted platform for travelers around the
             world. We understand the challenges that come with arranging
             transportation, especially in unfamiliar cities. That's why we
             created a user-friendly solution that allows you to book rides
@@ -109,7 +109,7 @@ const Index = () => {
         </p>
       </div>
       <div className="mt-2">
-        <h2 className="fontsixe15">Why Choose NextGuest?</h2>
+        <h2 className="fontsixe15">Why Choose NXTGUEST?</h2>
         <div className="mt-3">
           <img src="/images/icons/abb.png" alt="" className="w-100" />
         </div>

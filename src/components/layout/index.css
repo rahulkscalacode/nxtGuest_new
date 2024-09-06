@@ -27,8 +27,8 @@ main {
 }
 
 .layout-grid {
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* Header, main, footer */
+  /* display: grid;
+  grid-template-rows: auto 1fr auto; Header, main, footer */
   height: 100vh;
   background: #000;
 }

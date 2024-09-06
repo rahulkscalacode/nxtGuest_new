@@ -166,7 +166,7 @@ const Index = () => {
           }
           autoComplete="off"
         >
-          <div className="input-group">
+          <div className="d-flex gap-2">
             <input
               type="text"
               name="firstName"
@@ -242,7 +242,7 @@ const Index = () => {
             </select>
           </div>
           {/* ------------------Drop Location------------------ */}
-          <div className="input-group ">
+          <div className="input-group mb-2">
             <label style={{ marginLeft: "1.4rem" }}>Drop Location</label>
             <select
               name="dropLocation"

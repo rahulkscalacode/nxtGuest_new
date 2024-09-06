@@ -6,9 +6,9 @@ import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
-
   const navigate = useNavigate();
   const cookies = new Cookies();
+  const tokenC = cookies.get("token");
 
   const handleLogout = () => {
     cookies.remove("userId");
@@ -21,7 +21,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     toast.success("Logged out successfully");
   };
 
-  
   return (
     <div className={`sidebar ${isOpen ? "" : "close"}`}>
       <div className="sidebar-header">
@@ -38,12 +37,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <img src="/images/icons/UserCircleGear.png" alt="" /> Dashboard
           </div>
         </Link>
-        <Link to="/profile">
-          <div className="menu-item">
-            <img src="/images/icons/UserCircle.png" alt="" />
-            My Profile
-          </div>
-        </Link>
+        {tokenC && (
+          <Link to="/profile">
+            <div className="menu-item">
+              <img src="/images/icons/UserCircle.png" alt="" />
+              My Profile
+            </div>
+          </Link>
+        )}
         <Link to="/booking-history">
           <div className="menu-item">
             <img src="/images/icons/Car.png" alt="" /> Booking History

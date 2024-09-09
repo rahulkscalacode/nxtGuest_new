@@ -31,7 +31,7 @@ const Index = ({
         <TimePicker
           className="input-field p-1"
           onChange={handleTimeChange}
-          value={value}
+          value={form.time}
           amPmAriaLabel="AM"
           format="h:mm a"
           disableClock={true}

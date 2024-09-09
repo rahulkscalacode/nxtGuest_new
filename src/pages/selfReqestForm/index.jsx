@@ -10,6 +10,7 @@ import Footer from "../../components/footer";
 import "./index.css";
 import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
+import TimeValidator from "../../components/timeValidate";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Index = () => {
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
   const [minTime, setMinTime] = useState(today);
+  const [isTimeValid, setIsTimeValid] = useState(true);
 
   const previousData = useMemo(
     () => location.state?.data || {},
@@ -54,13 +56,8 @@ const Index = () => {
     }
   }, [location.state]);
 
-  // const handleDateChange = (value) => {
-  //   setForm({ ...form, dateOfRide: value });
-  //   setServiceDisable(false);
-  // };
   const handleDateChange = (selectedDate) => {
     setForm({ ...form, dateOfRide: selectedDate });
-    setServiceDisable(false);
 
     // If the selected date is today, set minimum time to the current time
     if (
@@ -73,12 +70,6 @@ const Index = () => {
       setMinTime(null); // Allow any time for future dates
     }
   };
-
-  // const handleTimeChange = (value) => {
-  //   setValue(value);
-  //   setForm({ ...form, time: value });
-  //   setServiceDisable(false);
-  // };
 
   const handleTimeChange = (selectedTime) => {
     setValue(selectedTime);
@@ -149,6 +140,7 @@ const Index = () => {
 
   const handleUpdateData = async (e) => {
     e.preventDefault();
+    console.log("currentTime");
     try {
       console.log("Form data before update:", form);
 
@@ -346,7 +338,6 @@ const Index = () => {
           <DateAndTime
             arg={{ form, value, handleDateChange, handleTimeChange, minTime }}
           />
-
           <button
             type="submit"
             className="submit-button"

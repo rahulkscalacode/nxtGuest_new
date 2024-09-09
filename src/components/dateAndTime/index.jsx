@@ -36,7 +36,7 @@ const Index = ({
           format="h:mm a"
           disableClock={true}
           required
-          minTime={new Date()}
+          minTime={minTime}
         />
       </div>
     </div>

@@ -17,6 +17,8 @@ const Index = () => {
   const cookies = new Cookies();
   const [value, setValue] = useState("00:00");
   const [serviceDisable, setServiceDisable] = useState(false);
+  const today = new Date();
+  const [minTime, setMinTime] = useState(today);
 
   const previousData = useMemo(
     () => location.state?.data || {},
@@ -52,14 +54,35 @@ const Index = () => {
     }
   }, [location.state]);
 
-  const handleDateChange = (value) => {
-    setForm({ ...form, dateOfRide: value });
+  // const handleDateChange = (value) => {
+  //   setForm({ ...form, dateOfRide: value });
+  //   setServiceDisable(false);
+  // };
+  const handleDateChange = (selectedDate) => {
+    setForm({ ...form, dateOfRide: selectedDate });
     setServiceDisable(false);
+
+    // If the selected date is today, set minimum time to the current time
+    if (
+      selectedDate.getDate() === today.getDate() &&
+      selectedDate.getMonth() === today.getMonth() &&
+      selectedDate.getFullYear() === today.getFullYear()
+    ) {
+      setMinTime(today); // Set minTime to current time for today
+    } else {
+      setMinTime(null); // Allow any time for future dates
+    }
   };
 
-  const handleTimeChange = (value) => {
-    setValue(value);
-    setForm({ ...form, time: value });
+  // const handleTimeChange = (value) => {
+  //   setValue(value);
+  //   setForm({ ...form, time: value });
+  //   setServiceDisable(false);
+  // };
+
+  const handleTimeChange = (selectedTime) => {
+    setValue(selectedTime);
+    setForm({ ...form, time: selectedTime });
     setServiceDisable(false);
   };
 
@@ -321,7 +344,7 @@ const Index = () => {
           </div>
 
           <DateAndTime
-            arg={{ form, value, handleDateChange, handleTimeChange }}
+            arg={{ form, value, handleDateChange, handleTimeChange, minTime }}
           />
 
           <button

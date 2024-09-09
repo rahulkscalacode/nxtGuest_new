@@ -9,7 +9,7 @@ import { CiCalendarDate } from "react-icons/ci";
 import "./index.css";
 
 const Index = ({
-  arg: { form, value, handleDateChange, handleTimeChange },
+  arg: { form, value, handleDateChange, handleTimeChange, minTime },
 }) => {
   return (
     <div className="d-flex gap-2 ">

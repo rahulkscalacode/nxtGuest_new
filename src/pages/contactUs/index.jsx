@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./index.css";
-import Layout1 from "../../components/layout1";
-import { apiCall } from '../../functions/api/apiGlobal';
-import { toast } from "react-toastify"
+import Layout from "../../components/layout";
+import { apiCall } from "../../functions/api/apiGlobal";
+import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 const Index = () => {
   const cookies = new Cookies();
@@ -26,9 +26,16 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await apiCall('POST', '/user/contact-feedback', formData, {}, null, {"user_id": tokenUserId});
-      
-      if(response.data.status === "success"){
+      const response = await apiCall(
+        "POST",
+        "/user/contact-feedback",
+        formData,
+        {},
+        null,
+        { user_id: tokenUserId }
+      );
+
+      if (response.data.status === "success") {
         toast.success(response.data.message);
         setFormData({
           name: "",
@@ -39,11 +46,11 @@ const Index = () => {
           type: "contact",
         });
         setDisableBtn(false);
-      } else if(response.data.status === "error") {
+      } else if (response.data.status === "error") {
         console.error(response.data.message);
         toast.error(response.data.message);
         setDisableBtn(false);
-      } 
+      }
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
@@ -64,7 +71,7 @@ const Index = () => {
   };
 
   return (
-    <Layout1>
+    <Layout>
       <div className="contact-us">
         <div className="head">Contact Us</div>
         <div className="contact-details row mt-3">
@@ -153,16 +160,25 @@ const Index = () => {
                 Phone:
               </label>
               <input
-                type="number"
+                type="tel"
                 placeholder="Enter phone number "
                 className="col-9 input-field1 no-spinner"
                 autoComplete="new-email"
                 name="phone"
                 value={formData.phone}
-                onChange={handleInputChange}
-                onKeyDown={(e) =>
-                  (e.key === "." || e.key === "-") && e.preventDefault()
-                }
+                // onChange={handleInputChange}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(/\D/g, "");
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    phone: newValue,
+                  }));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "." || e.key === "-" || e.key === "e") {
+                    e.preventDefault();
+                  }
+                }}
                 min="0"
               />
             </div>
@@ -187,14 +203,18 @@ const Index = () => {
               >
                 Cancel
               </button>
-              <button type="submit" onClick={()=> setDisableBtn(true)} className="submit-button1 col-6">
+              <button
+                type="submit"
+                onClick={() => setDisableBtn(true)}
+                className="submit-button1 col-6"
+              >
                 Submit
               </button>
             </div>
           </form>
         </div>
       </div>
-    </Layout1>
+    </Layout>
   );
 };
 

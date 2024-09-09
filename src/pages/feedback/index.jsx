@@ -1,4 +1,4 @@
-import Layout1 from "../../components/layout1";
+import Layout1 from "../../components/layout";
 import React, { useState } from "react";
 import "../contactUs/index.css";
 import { apiCall } from "../../functions/api/apiGlobal";

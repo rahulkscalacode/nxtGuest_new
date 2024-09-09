@@ -243,9 +243,18 @@ const Index = () => {
               <div className="inputcss align-items-center mt-2">
                 <div>Contact : </div>
                 <input
-                  type="number"
+                  type="tel"
                   value={contact}
-                  onChange={(e) => setContact(e.target.value)}
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/\D/g, "");
+                    setContact(newValue);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "." || e.key === "-" || e.key === "e") {
+                      e.preventDefault();
+                    }
+                  }}
+                  // onChange={(e) => setContact(e.target.value)}
                   className="input-field"
                   placeholder="Enter Contact"
                 />

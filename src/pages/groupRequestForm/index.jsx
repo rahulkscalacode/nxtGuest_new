@@ -197,11 +197,22 @@ const Index = () => {
           {/* -------------Contact Number---------- */}
           <div className="input-group">
             <input
-              type="number"
+              type="tel"
               name="contactNumber"
               placeholder="Contact Number*"
               value={form.contactNumber}
-              onChange={handleChange}
+              onChange={(e) => {
+                const newValue = e.target.value.replace(/\D/g, "");
+                setForm((prevData) => ({
+                  ...prevData,
+                  contactNumber: newValue,
+                }));
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "." || e.key === "-" || e.key === "e") {
+                  e.preventDefault();
+                }
+              }}
               className="input-field"
               autoComplete="new-email"
               required

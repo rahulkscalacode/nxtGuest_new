@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { timeFormatter } from "../../components/formatter/timeFormatter";
 import moment from "moment";
 import { apiCall } from "../../functions/api/apiGlobal";
-import Cookies from "universal-cookie";
+import Cookies from "universal-cookie"
 
 const Index = () => {
   const navigate = useNavigate();

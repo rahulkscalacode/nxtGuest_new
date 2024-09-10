@@ -206,7 +206,7 @@ const Index = () => {
                 setForm((prevData) => ({
                   ...prevData,
                   contactNumber: newValue,
-                }));
+                })); 
               }}
               onKeyDown={(e) => {
                 if (e.key === "." || e.key === "-" || e.key === "e") {

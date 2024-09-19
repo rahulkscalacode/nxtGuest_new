@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch } from "react-redux";
 import { userStripeReducer } from "../../components/toolkit/stripe";
-import Cookies from "universal-cookie";
+import Cookies from "universal-cookie"
 
 const Index = () => {
   const navigate = useNavigate();

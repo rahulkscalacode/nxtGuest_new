@@ -51,7 +51,7 @@ const Index = () => {
       "Content-Type": "application/json",
     };
     const response = await fetch(
-      "http://localhost:8000/nxtguest/payment/create-checkout-session",
+      `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
       {
         method: "POST",
         headers: headers,

@@ -4,6 +4,7 @@ import "../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
 import AddCardPopup from "./addCardPopup";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch } from "react-redux";
 import { userStripeReducer } from "../../components/toolkit/stripe";

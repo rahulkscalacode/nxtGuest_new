@@ -34,7 +34,7 @@ const Index = () => {
       : "url(/images/icons/bg2.png)";
 
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-
+  
   useEffect(() => {
     const handleResize = () => {
       // Get the visible viewport height
@@ -54,7 +54,7 @@ const Index = () => {
     };
   }, []);
 
-  console.log("viewportHeight=>", viewportHeight);
+  // console.log("viewportHeight=>", viewportHeight);
   const routeBackgroundStyle = {
     backgroundImage: backgroundImage,
     backgroundPosition: "center center",
@@ -85,6 +85,7 @@ const Index = () => {
       mediaQuery.removeEventListener("change", handleScreenChange);
     };
   }, []);
+
   return (
     <div style={isSmallScreen ? {} : routeBackgroundStyle}>
       <ToastContainer theme="dark" autoClose={5000} />

@@ -119,6 +119,7 @@ const Index = () => {
             "guestService",
             JSON.stringify(serializableData)
           );
+          cookies.set("phone", res.data.data.contactNumber);
           toast.success("Successfully created self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },
@@ -147,6 +148,7 @@ const Index = () => {
             "guestService",
             JSON.stringify(serializableData)
           );
+          cookies.set("phone", res.data.data.contactNumber);
           toast.success("Successfully updated self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },

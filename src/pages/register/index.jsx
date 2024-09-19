@@ -17,6 +17,7 @@ const Index = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    stripe_user_id: "",
   });
   const [loginDisabled, setLoginDisabled] = useState(false);
   // console.log(user.firstName.length);
@@ -31,9 +32,9 @@ const Index = () => {
   const inputHandler = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-    
+
     if (name === "password" || name === "confirmPassword") {
-      setUser({ ...user, [name]: value.replace(/\s/g, '') });
+      setUser({ ...user, [name]: value.replace(/\s/g, "") });
     } else {
       setUser({ ...user, [name]: value });
     }

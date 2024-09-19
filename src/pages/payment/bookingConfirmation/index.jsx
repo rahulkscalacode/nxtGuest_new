@@ -3,14 +3,25 @@ import Layout2 from "../../../components/layout2";
 import "../../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Cookies from "universal-cookie";
 
 const Index = () => {
+  const cookies = new Cookies();
+  const name = cookies.get("name");
+  const phone = cookies.get("phone");
+
+  const { stripe } = useSelector((state) => ({
+    ...state,
+  }));
+
+  console.log("clientSecret=>", stripe);
   const json = {
-    "Booking ID": "123456789",
-    "Transaction ID": "0123456789",
+    "Booking ID": stripe?.checkoutPayment?.id || "123456789",
+    "Transaction ID": stripe?.checkoutPayment?.customer || "cus_QsOZMb0g9g21Zr",
     "Card Number": "************1234",
-    Name: "Lokesh k Dewangan",
-    Contact: "1234567890",
+    Name: name || "",
+    Contact: phone || "1234567890",
   };
   const navigate = useNavigate();
   const handleNavigate = () => {
@@ -30,9 +41,11 @@ const Index = () => {
         </div>
         <div className="mt-4">
           {Object.keys(json).map((keys) => (
-            <div className="inputcss mt-2">
-              <div>{keys}</div>
-              <div>{json[keys]}</div>
+            <div className="row mt-2">
+              <div className="col-5">{keys} : </div>
+              <div className="col-7" style={{ wordBreak: "break-all" }}>
+                {json[keys]}
+              </div>
             </div>
           ))}
         </div>

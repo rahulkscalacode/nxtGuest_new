@@ -2,8 +2,13 @@ import React from "react";
 import Layout2 from "../../../components/layout2";
 import "../../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/payment");
+  };
   return (
     <Layout2>
       <div>
@@ -26,10 +31,15 @@ const Index = () => {
           <div className="mb-4" style={{ fontWeight: "600" }}>
             Contact for Assistance
           </div>
-          <div> 123456789</div>
-          <div className="mb-4">abc@gmail.com</div>
+          <div> (305) 600 0605</div>
+          <div> (305) 928 2433</div>
+          <div className="mb-4">info@nxtguest.com</div>
 
-          <button className="proceedPay" style={{ width: "11rem" }}>
+          <button
+            className="proceedPay"
+            style={{ width: "11rem" }}
+            onClick={handleNavigate}
+          >
             Back
           </button>
         </div>

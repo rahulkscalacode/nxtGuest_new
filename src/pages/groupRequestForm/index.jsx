@@ -96,6 +96,7 @@ const Index = () => {
             "guestService",
             JSON.stringify(serializableData)
           );
+          cookies.set("phone", res.data.data?.contactNumber);
           toast.success("Successfully created self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },
@@ -116,6 +117,7 @@ const Index = () => {
 
       await updateServiceForm(form, previousData._id)
         .then((res) => {
+          console.log(res);
           const serializableData = {
             data: res.data,
           };
@@ -123,6 +125,7 @@ const Index = () => {
             "guestService",
             JSON.stringify(serializableData)
           );
+          cookies.set("phone", res.data.data?.contactNumber);
           toast.success("Successfully updated self service request form.");
           navigate("/booking-summary", {
             state: { data: serializableData, previousRoute: location.pathname },
@@ -206,7 +209,7 @@ const Index = () => {
                 setForm((prevData) => ({
                   ...prevData,
                   contactNumber: newValue,
-                })); 
+                }));
               }}
               onKeyDown={(e) => {
                 if (e.key === "." || e.key === "-" || e.key === "e") {

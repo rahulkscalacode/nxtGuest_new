@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { timeFormatter } from "../../components/formatter/timeFormatter";
 import moment from "moment";
 import { apiCall } from "../../functions/api/apiGlobal";
-import Cookies from "universal-cookie"
+import Cookies from "universal-cookie";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,42 +18,43 @@ const Index = () => {
   // Check if data is defined and has the expected structure
   const nData = data?.data?.data || {};
 
- const [bookings, setBookings] = useState({});
-console.log("bookings-------------->>>>>",bookings)
+  const [bookings, setBookings] = useState({});
+  console.log("bookings-------------->>>>>", bookings);
   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await apiCall(
-            "GET",
-            "/service/booking-summary",
-            {},
-            {},
-            null,
-            {
-              user_id: tokenUserId, // Pass tokenUserId in headers
-            }
-          );
-          const result = response.data.bookingData
-          console.log("resultxxxxxxxxxxxxxxxxxxxx", result)
+    const fetchData = async () => {
+      try {
+        const response = await apiCall(
+          "GET",
+          "/service/booking-summary",
+          {},
+          {},
+          null,
+          {
+            user_id: tokenUserId, // Pass tokenUserId in headers
+          }
+        );
+        const result = response.data.bookingData;
+        console.log("resultxxxxxxxxxxxxxxxxxxxx", result);
 
-          setBookings({
-            Name: result.firstName ? `${result.firstName || "N/A"} ${result.lastName || ""}`: result.groupName,
-            Email: result.email || "N/A",
-            "Contact Number": result.contactNumber || "N/A",
-            "Pickup Location": result.pickupLocation || "N/A",
-            "Drop Location": result.dropLocation || "N/A",
-            "Pickup Date": timeFormatter(result.dateOfRide) || "N/A",
-            "Pickup Time":
-              moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
-            Fare: "$400.00",
-          });
+        setBookings({
+          Name: result.firstName
+            ? `${result.firstName || "N/A"} ${result.lastName || ""}`
+            : result.groupName,
+          Email: result.email || "N/A",
+          "Contact Number": result.contactNumber || "N/A",
+          "Pickup Location": result.pickupLocation || "N/A",
+          "Drop Location": result.dropLocation || "N/A",
+          "Pickup Date": timeFormatter(result.dateOfRide) || "N/A",
+          "Pickup Time":
+            moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
+          Fare: "$400.00",
+        });
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+      }
+    };
 
-        } catch (error) {
-          console.error("Failed to fetch user details:", error);
-        }
-      };
-
-      fetchData();
+    fetchData();
   }, [tokenUserId]);
 
   const handleClick = () => {

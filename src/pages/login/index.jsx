@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { loginApi } from "../../functions/api/auth";
 import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
-import { ClipLoader } from "react-spinners"; 
+import { ClipLoader } from "react-spinners";
+import { createStripeAccount } from "../../functions/api/stripe";
 
 const Index = () => {
   const [email, setEmail] = useState("");
@@ -65,9 +66,21 @@ const Index = () => {
         });
         cookies.set("userName", res.data.user.email);
         cookies.set("userId", res.data.user.id);
-        cookies.set("name", res.data.user.firstName + res.data.user.lastName);
+        cookies.set(
+          "name",
+          res.data.user.firstName + " " + res.data.user.lastName
+        );
         navigate("/dashboard");
         toast.success("You are logged in successfully.");
+
+        if (res.data.user.id) {
+          try {
+            const data = await createStripeAccount({ id: res.data.user.id });
+            console.log(data);
+          } catch (err) {
+            // Silently catch the error and do nothing
+          }
+        }
       } else {
         toast.error("Enter valid user credentials.");
         setPrevEmail(email); // Store current email and password
@@ -148,7 +161,11 @@ const Index = () => {
           </button>
         </form>
         <div className="separator">OR</div>
-        <button className="col-12 guest-btn" onClick={handleGuest} disabled={isLoading}>
+        <button
+          className="col-12 guest-btn"
+          onClick={handleGuest}
+          disabled={isLoading}
+        >
           Book as a Guest
         </button>
         <div className="signup-link">

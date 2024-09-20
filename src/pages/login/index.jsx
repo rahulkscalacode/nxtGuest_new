@@ -8,6 +8,7 @@ import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { createStripeAccount } from "../../functions/api/stripe";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Index = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ const Index = () => {
   const [prevEmail, setPrevEmail] = useState(""); // Store previous email
   const [prevPassword, setPrevPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [eye, setEye] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -109,6 +111,9 @@ const Index = () => {
     navigate("/dashboard");
   };
 
+  const onEyeClick = () => {
+    setEye(!eye);
+  };
   return (
     <Layout2>
       <div>
@@ -130,17 +135,25 @@ const Index = () => {
             required
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
           />
-          <input
-            value={password}
-            type="password"
-            name="password"
-            onChange={(e) => handleInputChange(setPassword, e.target.value)}
-            placeholder="Enter password*"
-            className="col-12 input-field"
-            autoComplete="new-password"
-            required
-            minLength="6"
-          />
+          <div className="form-group" style={{ position: "relative" }}>
+            <input
+              value={password}
+              type={eye ? "text" : "password"}
+              name="password"
+              onChange={(e) => handleInputChange(setPassword, e.target.value)}
+              placeholder="Enter password*"
+              className="col-12 input-field"
+              autoComplete="new-password"
+              required
+              minLength="6"
+            />
+            <span
+              style={{ position: "absolute", right: "10px", top: "32%" }}
+              onClick={onEyeClick}
+            >
+              {eye ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
           <div className="remember-me">
             <input
               type="checkbox"

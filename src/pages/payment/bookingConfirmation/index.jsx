@@ -19,9 +19,9 @@ const Index = () => {
   console.log("clientSecret=>", stripe);
   const json = {
     "Booking ID": stripe?.checkoutPayment?.customer || "cus_QsOZMb0g9g21Zr",
-    "Transaction ID": stripe?.clientSecret.substring(0, 15) || "123456789",
+    "Transaction ID": stripe?.clientSecret?.substring(0, 15) || "123456789",
     "Card Number": "************4242",
-    Name: name || "",
+    Name: name || "N/A",
     Contact: phone || "1234567890",
   };
   const navigate = useNavigate();

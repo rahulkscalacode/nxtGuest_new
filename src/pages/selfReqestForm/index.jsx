@@ -107,7 +107,7 @@ const Index = () => {
     }
   };
 
-  // console.log("serviceDisable", serviceDisable);
+  console.log("serviceDisable", serviceDisable);
   const handleSubmit = async (e) => {
     e.preventDefault();
 

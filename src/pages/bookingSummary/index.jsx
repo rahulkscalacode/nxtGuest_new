@@ -19,7 +19,7 @@ const Index = () => {
   const nData = data?.data?.data || {};
 
   const [bookings, setBookings] = useState({});
-  console.log("bookings-------------->>>>>", bookings);
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,7 +50,27 @@ const Index = () => {
           Fare: "$400.00",
         });
       } catch (error) {
-        console.error("Failed to fetch user details:", error);
+        console.error("Failed to fetch user details:", error.response.data.message);
+        if (error.response && error.response.data && error.response.data.message === "User ID is required") {
+          const localStorageData = localStorage.getItem("guestService");
+         
+          if (localStorageData) {
+            const parsedGuestUser = JSON.parse(localStorageData);
+            const parsedData = parsedGuestUser?.data?.data
+            setBookings({
+              Name: parsedData.firstName
+                ? `${parsedData.firstName || "N/A"} ${parsedData.lastName || ""}`
+                : parsedData.groupName,
+              Email: parsedData.email || "N/A",
+              "Contact Number": parsedData.contactNumber || "N/A",
+              "Pickup Location": parsedData.pickupLocation || "N/A",
+              "Drop Location": parsedData.dropLocation || "N/A",
+              "Pickup Date": timeFormatter(parsedData.dateOfRide) || "N/A",
+              "Pickup Time": moment(parsedData.time, "HH:mm").format("hh:mm A") || "N/A",
+              Fare: "$400.00",
+            });
+          }
+        }
       }
     };
 

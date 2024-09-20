@@ -36,7 +36,7 @@ const Index = () => {
         {
           price_data: {
             currency: "usd",
-            unit_amount: 500,
+            unit_amount: 40000,
             product_data: {
               name: "self",
               images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
@@ -62,12 +62,16 @@ const Index = () => {
     const session = await response.json();
     dispatch(userStripeReducer(session));
     console.log("session==>>", session);
+    if (session.status === "failed") {
+      toast.error("Login before checkout");
+      navigate("/login");
+    }
     const result = stripe.redirectToCheckout({
-      sessionId: session.checkoutPayment.id,
+      sessionId: session.checkoutPayment?.id,
     });
 
     if (result.error) {
-      console.log(result.error);
+      toast.error(result.error);
     }
   };
 

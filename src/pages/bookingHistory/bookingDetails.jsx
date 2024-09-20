@@ -5,11 +5,15 @@ import { useLocation } from "react-router-dom";
 import moment from "moment";
 import { bookingDetails } from "../../functions/api/booking";
 import { timeFormatter } from "../../components/formatter/timeFormatter";
+import { useSelector } from "react-redux";
 
 const BookingDetails = () => {
   const location = useLocation();
   const { state } = location || {};
   const [details, setDetails] = useState({});
+  const { stripe } = useSelector((state) => ({
+    ...state,
+  }));
   // console.log("state", state._id);
 
   const handleData = async () => {
@@ -32,15 +36,19 @@ const BookingDetails = () => {
       ? details?.pickupLocation
       : "N/A",
     "Drop Location": details?.dropLocation ? details?.dropLocation : "N/A",
-    "Date of Booking":details?.dateOfBooking ? timeFormatter(details?.dateOfBooking) : "N/A",
-    "Date of Ride": details?.dateOfRide ? timeFormatter(details?.dateOfRide) : "N/A",
+    "Date of Booking": details?.dateOfBooking
+      ? timeFormatter(details?.dateOfBooking)
+      : "N/A",
+    "Date of Ride": details?.dateOfRide
+      ? timeFormatter(details?.dateOfRide)
+      : "N/A",
     Time: moment(details && details?.time, "HH:mm").format("hh:mm A"),
     "Car Model Name": "Cadillac Escalade",
     "Car Number": "UP 16 BC 8765",
     "Driver Name": "Brian Lara",
     "Payment Mode": "Stripe",
-    "Card Number": "************1234",
-    "Transaction ID": "123456789098",
+    "Card Number": "************4242",
+    "Transaction ID": stripe?.clientSecret.substring(0, 15) || "123456789",
     Fare: state?.status === "Booked" ? "Pending" : "$400.00",
     "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
   };

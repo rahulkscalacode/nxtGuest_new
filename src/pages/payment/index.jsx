@@ -75,6 +75,9 @@ const Index = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/dashboard");
+  };
   return (
     <Layout2>
       <AddCardPopup toggleModal={toggleModal} showModal={showModal} />
@@ -131,7 +134,8 @@ const Index = () => {
         <div className="btncss">
           <button
             className="editBook"
-            style={{ background: "#999", border: "none", color: "black" }}
+            style={{ background: "#fbc810", border: "none", color: "black" }}
+            onClick={handleCancel}
           >
             Cancel
           </button>

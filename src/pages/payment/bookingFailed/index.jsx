@@ -31,8 +31,8 @@ const Index = () => {
           <div className="mb-4" style={{ fontWeight: "600" }}>
             Contact for Assistance
           </div>
-          <div> (305) 600 0605</div>
-          <div> (305) 928 2433</div>
+          <div>+ (305) 600 0605</div>
+          <div>+ (305) 928 2433</div>
           <div className="mb-4">info@nxtguest.com</div>
 
           <button

@@ -73,7 +73,7 @@ const Index = () => {
         <div
           className="callbtn"
           style={{ zIndex: "99", width: "16rem", cursor: "pointer" }}
-          onClick={() => (window.location.href = "tel:9602228608")}
+          onClick={() => (window.location.href = "tel:+1 (305) 928-2433")}
         >
           Call Now{" "}
           <span>

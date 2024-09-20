@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cookies from "universal-cookie";
 
-
 const Index = () => {
   const cookies = new Cookies();
   const name = cookies.get("name");
@@ -19,7 +18,8 @@ const Index = () => {
   console.log("clientSecret=>", stripe);
   const json = {
     "Booking ID": stripe?.checkoutPayment?.customer || "cus_QsOZMb0g9g21Zr",
-    "Transaction ID": stripe?.clientSecret?.substring(0, 15) || "123456789",
+    "Transaction ID":
+      stripe?.checkoutPayment?.id?.substring(20, 40) || "123456789",
     "Card Number": "************4242",
     Name: name || "N/A",
     Contact: phone || "1234567890",

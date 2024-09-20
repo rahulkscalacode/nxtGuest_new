@@ -14,7 +14,7 @@ const BookingDetails = () => {
   const { stripe } = useSelector((state) => ({
     ...state,
   }));
-  // console.log("state", state._id);
+  console.log("state", stripe);
 
   const handleData = async () => {
     await bookingDetails(state?._id)
@@ -48,7 +48,8 @@ const BookingDetails = () => {
     "Driver Name": "Brian Lara",
     "Payment Mode": "Stripe",
     "Card Number": "************4242",
-    "Transaction ID": stripe?.clientSecret?.substring(0, 15) || "123456789",
+    "Transaction ID":
+      stripe?.checkoutPayment?.id?.substring(20, 40) || "123456789",
     Fare: state?.status === "Booked" ? "Pending" : "$400.00",
     "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
   };

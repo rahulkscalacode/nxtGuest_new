@@ -48,7 +48,7 @@ const BookingDetails = () => {
     "Driver Name": "Brian Lara",
     "Payment Mode": "Stripe",
     "Card Number": "************4242",
-    "Transaction ID": stripe?.clientSecret.substring(0, 15) || "123456789",
+    "Transaction ID": stripe?.clientSecret?.substring(0, 15) || "123456789",
     Fare: state?.status === "Booked" ? "Pending" : "$400.00",
     "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
   };

@@ -8,7 +8,7 @@ import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { createStripeAccount } from "../../functions/api/stripe";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa"
 
 const Index = () => {
   const [email, setEmail] = useState("");

@@ -341,8 +341,8 @@ const Index = () => {
               required
             >
               <option value="">Vehicle Type*</option>
-              <option value="car">Car</option>
-              <option value="suv">SUV</option>
+              <option value="Car">Car</option>
+              <option value="Suv">SUV</option>
               <option value="Mini Bus">Mini Bus</option>
               <option value="Motor Coach">Motor Coach</option>
               {/* Add options here */}

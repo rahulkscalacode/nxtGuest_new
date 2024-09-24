@@ -343,8 +343,8 @@ const Index = () => {
               <option value="">Vehicle Type*</option>
               <option value="car">Car</option>
               <option value="suv">SUV</option>
-              <option value="minibus">Mini Bus</option>
-              <option value="motorcoach">Motor Coach</option>
+              <option value="Mini Bus">Mini Bus</option>
+              <option value="Motor Coach">Motor Coach</option>
               {/* Add options here */}
             </select>
           </div>

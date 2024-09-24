@@ -27,6 +27,7 @@ const Index = () => {
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
   };
+
   // payment integration
   const makePayment = async () => {
     const stripe = await loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
@@ -50,6 +51,21 @@ const Index = () => {
     const headers = {
       "Content-Type": "application/json",
     };
+
+    // Fetch saved payment methods for the user
+    // const paymentMethodsResponse = await fetch(
+    //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
+    //   {
+    //     method: "post",
+    //     headers,
+    //     body: JSON.stringify({ id: userId }),
+    //   }
+    // );
+    // const savedPaymentMethods = await paymentMethodsResponse.json();
+
+    // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
+
+    // Create checkout session
     const response = await fetch(
       `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
       {
@@ -62,16 +78,18 @@ const Index = () => {
     const session = await response.json();
     dispatch(userStripeReducer(session));
     console.log("session==>>", session);
+
     if (session.status === "failed") {
       toast.error("Login before checkout");
       navigate("/login");
     }
+
     const result = stripe.redirectToCheckout({
       sessionId: session.checkoutPayment?.id,
     });
 
     if (result.error) {
-      toast.error(result.error);
+      toast.error(result.error.message);
     }
   };
 

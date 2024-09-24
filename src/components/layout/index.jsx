@@ -5,6 +5,17 @@ import UserRoute from "../../functions/ProtectedRoute/UserProtecTedRoute";
 
 const Index = ({ children, footer }) => {
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebarOnMainClick = () => {
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,10 +43,12 @@ const Index = ({ children, footer }) => {
           style={{ height: `${viewportHeight}px` }}
         >
           <header>
-            <Header />
+            <Header
+              arg={{ toggleSidebar, isSidebarOpen, closeSidebarOnMainClick }}
+            />
           </header>
-          <main>{children}</main>
-          <footer>{footer}</footer>
+          <main onClick={closeSidebarOnMainClick}>{children}</main>
+          <footer onClick={closeSidebarOnMainClick}>{footer}</footer>
         </div>
       </div>
     </UserRoute>

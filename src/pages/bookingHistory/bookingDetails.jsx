@@ -14,7 +14,7 @@ const BookingDetails = () => {
   const { stripe } = useSelector((state) => ({
     ...state,
   }));
-  console.log("state", stripe);
+  console.log("state", stripe.status);
 
   const handleData = async () => {
     await bookingDetails(state?._id)
@@ -29,6 +29,8 @@ const BookingDetails = () => {
   useEffect(() => {
     handleData();
   }, [state?._id]);
+
+  const fare = localStorage.getItem("total_fare");
 
   console.log(details);
   const json = {
@@ -45,12 +47,12 @@ const BookingDetails = () => {
     Time: moment(details && details?.time, "HH:mm").format("hh:mm A"),
     "Car Model Name": "Cadillac Escalade",
     "Car Number": "UP 16 BC 8765",
-    "Driver Name": "Brian Lara",
+    "Driver Name": "N/A",
     "Payment Mode": "Stripe",
     "Card Number": "************4242",
     "Transaction ID":
       stripe?.checkoutPayment?.id?.substring(20, 40) || "123456789",
-    Fare: state?.status === "Booked" ? "Pending" : "$400.00",
+    Fare: fare ? `$ ${fare}` : "N/A",
     "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
   };
   return (

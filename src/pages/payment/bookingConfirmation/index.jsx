@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout2 from "../../../components/layout2";
 import "../../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cookies from "universal-cookie";
+import { listAllCustomerPaymentMethods } from "../../../functions/api/stripe";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 const Index = () => {
   const cookies = new Cookies();
   const name = cookies.get("name");
   const phone = cookies.get("phone");
+  const id = cookies.get("userId");
+  const location = useLocation();
 
   const { stripe } = useSelector((state) => ({
     ...state,
@@ -28,6 +34,62 @@ const Index = () => {
   const handleNavigate = () => {
     navigate("/booking-history");
   };
+
+  const listAllPaymentMethords = async () => {
+    await listAllCustomerPaymentMethods({ id })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    listAllPaymentMethords();
+  }, []);
+
+  const body = localStorage.getItem("registerdata");
+
+  const handleNewReservation = async () => {
+    const hasRun = localStorage.getItem("hasRunNewReservation");
+
+    // Ensure API is called only once
+    if (!hasRun && body) {
+      try {
+        const parsedBody = JSON.parse(body);
+
+        // Immediately set the flag before making the API call
+        localStorage.setItem("hasRunNewReservation", "true");
+
+        // API call to register endpoint
+        const response = await axios.post(
+          `${process.env.REACT_APP_NXTGUEST_API_URI}/limoanywhere/register`,
+          parsedBody
+        );
+
+        const resData = response.data;
+        console.log("res=>>", resData);
+
+        // Storing data in localStorage and cookies
+        const serializableData = { data: resData };
+        localStorage.setItem("guestService", JSON.stringify(serializableData));
+
+        // Success notification
+        toast.success("Successfully created self-service request form.");
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        toast.error("Something went wrong in zapier form!");
+        // Reset flag in case of failure
+        localStorage.removeItem("hasRunNewReservation");
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleNewReservation();
+  }, []);
+
   return (
     <Layout2>
       <div>

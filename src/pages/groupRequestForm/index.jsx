@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Layout1 from "../../components/layout1";
 import Footer from "../../components/footer";
@@ -10,14 +10,125 @@ import {
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
+import CalculatePrice from "../../components/calculatePrice";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const cookies = new Cookies();
   const [value, setValue] = useState("00:00");
+  const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
   const [minTime, setMinTime] = useState(today);
+
+   //--------------------Coordinates fetch api---------------------------------
+   const [pickupCoordinates, setPickupCoordinates] = useState(null);
+   const [dropCoordinates, setDropCoordinates] = useState(null);
+   const [error, setError] = useState("");
+   const [distance, setDistance] = useState(null);
+ 
+   const pickupRef = useRef(null);
+   const dropRef = useRef(null);
+ 
+   useEffect(() => {
+     // Check if Google Maps API has loaded, then initialize autocomplete for each input
+     const interval = setInterval(() => {
+       if (window.google && window.google.maps) {
+         clearInterval(interval);
+         initializeAutocomplete();
+       }
+     }, 100);
+ 
+     return () => clearInterval(interval);
+   }, []);
+ 
+   const initializeAutocomplete = () => {
+     const pickupAutocomplete = new window.google.maps.places.Autocomplete(
+       pickupRef?.current,
+       { types: ["establishment"] } // For broader location types
+     );
+ 
+     const dropAutocomplete = new window.google.maps.places.Autocomplete(
+       dropRef.current,
+       { types: ["establishment"] }
+     );
+ 
+     pickupAutocomplete.addListener("place_changed", () => {
+       const place = pickupAutocomplete.getPlace();
+       if (place.geometry) {
+         setPickupCoordinates({
+           latitude: place.geometry.location.lat(),
+           longitude: place.geometry.location.lng(),
+         });
+         setForm((prevForm) => ({
+           ...prevForm,
+           pickupLocation: place.formatted_address,
+         }));
+         setError("");
+       } else {
+         setError("No details available for the selected place.");
+       }
+     });
+ 
+     dropAutocomplete.addListener("place_changed", () => {
+       const place = dropAutocomplete.getPlace();
+       if (place.geometry) {
+         setDropCoordinates({
+           latitude: place.geometry.location.lat(),
+           longitude: place.geometry.location.lng(),
+         });
+         setForm((prevForm) => ({
+           ...prevForm,
+           dropLocation: place.formatted_address,
+         }));
+         setError("");
+       } else {
+         setError("No details available for the selected place.");
+       }
+     });
+   };
+   //-----------------Calculate Distance from google api---------------------
+   const calculateDistance = async () => {
+     // console.log("helloo==========");
+     if (pickupCoordinates && dropCoordinates) {
+       const origin = `${pickupCoordinates.latitude},${pickupCoordinates.longitude}`;
+       const destination = `${dropCoordinates.latitude},${dropCoordinates.longitude}`;
+       console.log("origin==>>", origin, destination);
+       try {
+         const response = await fetch(
+           `${process.env.REACT_APP_NXTGUEST_API_URI}/limoanywhere/distance?origins=${origin}&destinations=${destination}`
+         );
+         const data = await response.json();
+ 
+         if (data.rows[0].elements[0].status === "OK") {
+           const distanceMeters = data.rows[0].elements[0].distance.value;
+           const distanceMiles = (distanceMeters * 0.000621371).toFixed(2);
+ 
+           console.log("distanceMiles==>", distanceMiles);
+           setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
+           setError("");
+         } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
+           setError("No route found between the selected locations.");
+         } else {
+           setError("Unable to calculate distance. Please check the locations.");
+         }
+       } catch (err) {
+         setError("Error calculating distance. Please try again later.");
+       }
+     } else {
+       setError("Please select both pickup and drop-off locations.");
+     }
+   };
+ 
+   console.log(
+     "distance=>",
+     distance,
+     "setPickupCoordinates===>>>",
+     pickupCoordinates,
+     dropCoordinates
+   );
+ 
+   //--------------------Coordinates fetch api---------------------------------
 
   const previousData = useMemo(
     () => location.state?.data || {},
@@ -84,6 +195,71 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setServiceDisable(true);
+
+    // Construct body object from form data
+    if (form) {
+      const pickupDateTime = new Date(
+        `${form.dateOfRide.toISOString().split("T")[0]}T${form.time}:00`
+      ).toISOString();
+
+      const dropoffDateTime = new Date(
+        new Date(pickupDateTime).getTime() + 6 * 60 * 60 * 1000
+      ).toISOString();
+
+      const body = {
+        userId: cookies.get("userId"),
+        company_alias: "",
+        pickup_Date_Time: pickupDateTime,
+        dropoff_date_time: dropoffDateTime,
+        rate_id: "12345678",
+        total_fare: form?.total_fare,
+        pickup: {
+          name: form.pickupLocation,
+          airport_iata_code: "",
+          airline_iata_code: "",
+          flight_number: "",
+          location: {
+            latitude: pickupCoordinates?.latitude,
+            longitude: pickupCoordinates?.longitude,
+          },
+        },
+        drop_off: {
+          name: form?.dropLocation || "",
+          airport_iata_code: "",
+          airline_iata_code: "",
+          flight_number: "",
+          location: {
+            latitude: dropCoordinates?.latitude || "",
+            longitude: dropCoordinates?.longitude || "",
+          },
+        },
+        passenger: {
+          first_name: form.firstName,
+          last_name: form.lastName,
+          Company: form.companyName,
+          phone: `+1${form?.contactNumber}`,
+          email: form?.email || "",
+        },
+        passenger_count: form.numberOfPassengers || "1",
+        luggage_count: form.luggage_count || "",
+        billing_contact: {
+          first_name: form.firstName,
+          last_name: form.lastName,
+          Company: form.companyName,
+          phone: `+1${form?.contactNumber}`,
+          email: form?.email || "",
+        },
+        service_type: form?.service_type || "205683",
+        vehicle_type: "118351",
+      };
+
+      console.log("bodyy=======????>>>>>", body, pickupDateTime);
+
+      if (body) {
+        localStorage.setItem("registerdata", JSON.stringify(body));
+      }
+    }
 
     try {
       await groupServiceReqest(form)
@@ -103,10 +279,13 @@ const Index = () => {
           });
         })
         .catch((err) => {
+          console.log(err);
+          setServiceDisable(true);
           toast.error("Something went wrong!");
         });
     } catch (error) {
       console.log("error=>>>", error);
+      setServiceDisable(true);
     }
   };
 
@@ -139,16 +318,27 @@ const Index = () => {
       toast.error(error);
     }
   };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    await calculateDistance();
+    if (error) {
+      console.error("Distance calculation failed:", error);
+      return;
+    }
+    if (Object.keys(previousData).length > 0) {
+      handleUpdateData(e);
+    } else {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
         <div className="head">Service Request</div>
         <form
-          onSubmit={
-            Object.keys(previousData).length > 0
-              ? handleUpdateData
-              : handleSubmit
-          }
+          onSubmit={handleFormSubmit}
           autoComplete="off"
         >
           <div className="">
@@ -310,7 +500,8 @@ const Index = () => {
               placeholder={`Enter Pickup Location Manually${
                 form.locationType === "manual" ? "*" : ""
               }`}
-              value={form.locationType === "manual" ? form.pickupLocation : ""}
+              ref={pickupRef}
+              // value={form.locationType === "manual" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
@@ -325,7 +516,8 @@ const Index = () => {
               placeholder={`Enter Drop Location Manually${
                 form.locationType === "manual" ? "*" : ""
               }`}
-              value={form.locationType === "manual" ? form.dropLocation : ""}
+              ref={dropRef}
+              // value={form.locationType === "manual" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
@@ -341,8 +533,9 @@ const Index = () => {
               required
             >
               <option value="">Vehicle Type*</option>
-              <option value="Car">Car</option>
-              <option value="Suv">SUV</option>
+              <option value="118351">Car</option>
+              <option value="118352">SUV</option>
+              <option value="118353">Escalade</option>
               <option value="Mini Bus">Mini Bus</option>
               <option value="Motor Coach">Motor Coach</option>
               {/* Add options here */}
@@ -352,7 +545,12 @@ const Index = () => {
           <DateAndTime
             arg={{ form, value, handleDateChange, handleTimeChange, minTime }}
           />
-
+          <CalculatePrice
+            arg={{ distance, form, setForm }}
+            onPriceUpdate={(price) =>
+              setForm((prev) => ({ ...prev, total_fare: price }))
+            }
+          />
           <button
             type="submit"
             className="submit-button"

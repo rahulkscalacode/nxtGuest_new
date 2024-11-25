@@ -108,8 +108,12 @@ const Index = () => {
                       <td>{timeFormatter(booking.dateOfRide)}</td>
                       <td>{booking.pickupLocation}</td>
                       <td>{booking.dropLocation}</td>
-                      <td className={getStatusClass("Completed")}>
-                        {booking.status ?? "Completed"}
+                      <td
+                        className={getStatusClass(
+                          booking.type === "group" ? "Pending" : "Booked"
+                        )}
+                      >
+                        {booking.type === "group" ? "Pending" : "Booked"}
                       </td>
                       <td
                         style={{ color: "#1052FB", cursor: "pointer" }}

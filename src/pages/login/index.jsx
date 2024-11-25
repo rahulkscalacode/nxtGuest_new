@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Layout2 from "../../components/layout2";
 import "./index.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginApi } from "../../functions/api/auth";
 import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { createStripeAccount } from "../../functions/api/stripe";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import CryptoJS from "crypto-js"; // Import crypto-js
 
 const Index = () => {
   const [email, setEmail] = useState("");
@@ -16,12 +16,30 @@ const Index = () => {
   const [prevEmail, setPrevEmail] = useState(""); // Store previous email
   const [prevPassword, setPrevPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false); // Add state for remember me
   const [eye, setEye] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
   const tokenC = cookies.get("token");
   const userNameC = cookies.get("userName");
+
+  // Secret key for encryption (should be stored securely, not hard-coded in production)
+  const SECRET_KEY = "mysecretkey123"; 
+
+  // Load email and password from cookies (if rememberMe is set) and decrypt them
+  useEffect(() => {
+    const encryptedEmail = cookies.get("rememberMeEmail");
+    const encryptedPassword = cookies.get("rememberMePassword");
+
+    if (encryptedEmail && encryptedPassword) {
+      const decryptedEmail = CryptoJS.AES.decrypt(encryptedEmail, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+      const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+      setEmail(decryptedEmail);
+      setPassword(decryptedPassword);
+      setRememberMe(true); // Automatically check "Remember Me" if data exists
+    }
+  }, []);
 
   useEffect(() => {
     if (tokenC && userNameC) {
@@ -75,6 +93,17 @@ const Index = () => {
         navigate("/dashboard");
         toast.success("You are logged in successfully.");
 
+        // Store email and password in encrypted form in cookies if "Remember Me" is checked
+        if (rememberMe) {
+          const encryptedEmail = CryptoJS.AES.encrypt(email, SECRET_KEY).toString();
+          const encryptedPassword = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
+          cookies.set("rememberMeEmail", encryptedEmail, { expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) });
+          cookies.set("rememberMePassword", encryptedPassword, { expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) });
+        } else {
+          cookies.remove("rememberMeEmail");
+          cookies.remove("rememberMePassword");
+        }
+
         if (res.data.user.id) {
           try {
             const data = await createStripeAccount({ id: res.data.user.id });
@@ -114,6 +143,7 @@ const Index = () => {
   const onEyeClick = () => {
     setEye(!eye);
   };
+
   return (
     <Layout2>
       <div>
@@ -158,6 +188,8 @@ const Index = () => {
             <input
               type="checkbox"
               id="rememberMe"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)} // Toggle remember me state
               style={{ width: "16px", height: "16px" }}
               className="form-check-input"
             />

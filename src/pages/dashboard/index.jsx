@@ -11,6 +11,12 @@ const Index = () => {
   };
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
+  const hasRun = localStorage.getItem("hasRunNewReservation");
+
+  if (hasRun) {
+    localStorage.removeItem("hasRunNewReservation");
+  }
+
   useEffect(() => {
     const handleResize = () => {
       // Get the visible viewport height

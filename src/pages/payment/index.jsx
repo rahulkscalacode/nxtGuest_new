@@ -23,6 +23,8 @@ const Index = () => {
 
   const [paymentType, setPaymentType] = useState("manual");
 
+  const total_fare = localStorage.getItem("total_fare");
+
   // Handler for radio button change
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -32,67 +34,69 @@ const Index = () => {
   const makePayment = async () => {
     const stripe = await loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
-    const body = {
-      items: [
-        {
-          price_data: {
-            currency: "usd",
-            unit_amount: 40000,
-            product_data: {
-              name: "self",
-              images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
+    if (total_fare) {
+      const body = {
+        items: [
+          {
+            price_data: {
+              currency: "usd",
+              unit_amount: total_fare * 100,
+              product_data: {
+                name: "self",
+                images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
+              },
             },
+            quantity: "1",
           },
-          quantity: "1",
-        },
-      ],
-      id: userId,
-    };
-    const headers = {
-      "Content-Type": "application/json",
-    };
+        ],
+        id: userId,
+      };
 
-    // Fetch saved payment methods for the user
-    // const paymentMethodsResponse = await fetch(
-    //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
-    //   {
-    //     method: "post",
-    //     headers,
-    //     body: JSON.stringify({ id: userId }),
-    //   }
-    // );
-    // const savedPaymentMethods = await paymentMethodsResponse.json();
+      const headers = {
+        "Content-Type": "application/json",
+      };
 
-    // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
+      // Fetch saved payment methods for the user
+      // const paymentMethodsResponse = await fetch(
+      //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
+      //   {
+      //     method: "post",
+      //     headers,
+      //     body: JSON.stringify({ id: userId }),
+      //   }
+      // );
+      // const savedPaymentMethods = await paymentMethodsResponse.json();
 
-    // Create checkout session
-    const response = await fetch(
-      `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
-      {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(body),
+      // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
+
+      // Create checkout session
+      const response = await fetch(
+        `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
+        {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(body),
+        }
+      );
+
+      const session = await response.json();
+      dispatch(userStripeReducer(session));
+      console.log("session==>>", session);
+
+      if (session.status === "failed") {
+        toast.error("Login before checkout");
+        navigate("/login");
       }
-    );
 
-    const session = await response.json();
-    dispatch(userStripeReducer(session));
-    console.log("session==>>", session);
+      const result = stripe.redirectToCheckout({
+        sessionId: session.checkoutPayment?.id,
+      });
 
-    if (session.status === "failed") {
-      toast.error("Login before checkout");
-      navigate("/login");
-    }
-
-    const result = stripe.redirectToCheckout({
-      sessionId: session.checkoutPayment?.id,
-    });
-
-    if (result.error) {
-      toast.error(result.error.message);
+      if (result.error) {
+        toast.error(result.error.message);
+      }
     }
   };
-
   const handleCancel = () => {
     navigate("/dashboard");
   };

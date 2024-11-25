@@ -19,7 +19,8 @@ const Index = () => {
   const nData = data?.data?.data || {};
 
   const [bookings, setBookings] = useState({});
- 
+  const total_fare = localStorage.getItem("total_fare");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,38 +37,64 @@ const Index = () => {
         const result = response.data.bookingData;
         console.log("resultxxxxxxxxxxxxxxxxxxxx", result);
 
-        setBookings({
-          Name: result.firstName
-            ? `${result.firstName || "N/A"} ${result.lastName || ""}`
-            : result.groupName,
-          Email: result.email || "N/A",
-          "Contact Number": result.contactNumber || "N/A",
-          "Pickup Location": result.pickupLocation || "N/A",
-          "Drop Location": result.dropLocation || "N/A",
-          "Pickup Date": timeFormatter(result.dateOfRide) || "N/A",
-          "Pickup Time":
-            moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
-          Fare: "$400.00",
-        });
+        if (result.type === "group") {
+          setBookings({
+            "Group Name": result?.groupName && result?.groupName,
+            Occasion : result?.occasion,
+            "Company Name" : result?.companyName,
+            Email: result.email || "N/A",
+            "Contact Number": result.contactNumber || "N/A",
+            "No. of passengers" : result?.numberOfPassengers || "N/A",
+            "Pickup Location": result.pickupLocation || "N/A",
+            "Drop Location": result.dropLocation || "N/A",
+            "Date": timeFormatter(result.dateOfRide) || "N/A",
+            "Pickup Time":
+              moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
+          });
+        } else {
+          setBookings({
+            Name: result.firstName
+              ? `${result.firstName || "N/A"} ${result.lastName || ""}`
+              : result.groupName,
+            Email: result.email || "N/A",
+            "Contact Number": result.contactNumber || "N/A",
+            "Pickup Location": result.pickupLocation || "N/A",
+            "Drop Location": result.dropLocation || "N/A",
+            "Pickup Date": timeFormatter(result.dateOfRide) || "N/A",
+            "Pickup Time":
+              moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
+            Fare: `$ ${total_fare}`,
+          });
+        }
       } catch (error) {
-        console.error("Failed to fetch user details:", error.response.data.message);
-        if (error.response && error.response.data && error.response.data.message === "User ID is required") {
+        console.error(
+          "Failed to fetch user details:",
+          error.response.data.message
+        );
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message === "User ID is required"
+        ) {
           const localStorageData = localStorage.getItem("guestService");
-         
+
           if (localStorageData) {
             const parsedGuestUser = JSON.parse(localStorageData);
-            const parsedData = parsedGuestUser?.data?.data
+            const parsedData = parsedGuestUser?.data?.data;
             setBookings({
               Name: parsedData.firstName
-                ? `${parsedData.firstName || "N/A"} ${parsedData.lastName || ""}`
+                ? `${parsedData.firstName || "N/A"} ${
+                    parsedData.lastName || ""
+                  }`
                 : parsedData.groupName,
               Email: parsedData.email || "N/A",
               "Contact Number": parsedData.contactNumber || "N/A",
               "Pickup Location": parsedData.pickupLocation || "N/A",
               "Drop Location": parsedData.dropLocation || "N/A",
               "Pickup Date": timeFormatter(parsedData.dateOfRide) || "N/A",
-              "Pickup Time": moment(parsedData.time, "HH:mm").format("hh:mm A") || "N/A",
-              Fare: "$400.00",
+              "Pickup Time":
+                moment(parsedData.time, "HH:mm").format("hh:mm A") || "N/A",
+              Fare: `$ ${total_fare}`,
             });
           }
         }
@@ -87,17 +114,6 @@ const Index = () => {
   };
 
   console.log(location);
-  // const json = {
-  //   Name: nData.firstName ? `${nData.firstName || "N/A"} ${nData.lastName || ""}`: nData.groupName,
-  //   Email: nData.email || "N/A",
-  //   "Contact Number": nData.contactNumber || "N/A",
-  //   "Pickup Location": nData.pickupLocation || "N/A",
-  //   "Drop Location": nData.dropLocation || "N/A",
-  //   "Pickup Date": timeFormatter(nData.dateOfRide) || "N/A",
-  //   "Pickup Time":
-  //     moment(nData && nData.time, "HH:mm").format("hh:mm A") || "N/A",
-  //   Fare: "$400.00",
-  // };
 
   return (
     <Layout2>

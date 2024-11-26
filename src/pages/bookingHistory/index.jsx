@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
-import moment from "moment";
+import moment from "moment"
 
 import { timeFormatter } from "../../components/formatter/timeFormatter";
 

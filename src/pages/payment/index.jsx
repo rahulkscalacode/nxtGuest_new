@@ -3,7 +3,7 @@ import Layout2 from "../../components/layout2";
 import "../bookingSummary/index.css";
 import { TfiPlus } from "react-icons/tfi";
 import AddCardPopup from "./addCardPopup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch } from "react-redux";
@@ -15,6 +15,8 @@ const Index = () => {
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const cookies = new Cookies();
+  const location = useLocation();
+  const { fare } = location.state || {};
   const userId = cookies.get("userId");
 
   const toggleModal = () => {
@@ -22,8 +24,6 @@ const Index = () => {
   };
 
   const [paymentType, setPaymentType] = useState("manual");
-
-  const total_fare = localStorage.getItem("total_fare");
 
   // Handler for radio button change
   const handlePaymentTypeChange = (event) => {
@@ -34,72 +34,72 @@ const Index = () => {
   const makePayment = async () => {
     const stripe = await loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
-    if (total_fare) {
-      const body = {
-        items: [
-          {
-            price_data: {
-              currency: "usd",
-              unit_amount: total_fare * 100,
-              product_data: {
-                name: "self",
-                images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
-              },
-            },
-            quantity: "1",
-          },
-        ],
-        id: userId,
-      };
-
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      // Fetch saved payment methods for the user
-      // const paymentMethodsResponse = await fetch(
-      //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
-      //   {
-      //     method: "post",
-      //     headers,
-      //     body: JSON.stringify({ id: userId }),
-      //   }
-      // );
-      // const savedPaymentMethods = await paymentMethodsResponse.json();
-
-      // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
-
-      // Create checkout session
-      const response = await fetch(
-        `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
+    const body = {
+      items: [
         {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(body),
-        }
-      );
+          price_data: {
+            currency: "usd",
+            unit_amount: fare && fare * 100,
+            product_data: {
+              name: "self",
+              images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
+            },
+          },
+          quantity: "1",
+        },
+      ],
+      id: userId,
+    };
 
-      const session = await response.json();
-      dispatch(userStripeReducer(session));
-      console.log("session==>>", session);
+    const headers = {
+      "Content-Type": "application/json",
+    };
 
-      if (session.status === "failed") {
-        toast.error("Login before checkout");
-        navigate("/login");
+    // Fetch saved payment methods for the user
+    // const paymentMethodsResponse = await fetch(
+    //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
+    //   {
+    //     method: "post",
+    //     headers,
+    //     body: JSON.stringify({ id: userId }),
+    //   }
+    // );
+    // const savedPaymentMethods = await paymentMethodsResponse.json();
+
+    // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
+
+    // Create checkout session
+    const response = await fetch(
+      `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
+      {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
       }
+    );
 
-      const result = stripe.redirectToCheckout({
-        sessionId: session.checkoutPayment?.id,
-      });
+    const session = await response.json();
+    dispatch(userStripeReducer(session));
+    console.log("session==>>", session);
 
-      if (result.error) {
-        toast.error(result.error.message);
-      }
+    if (session.status === "failed") {
+      toast.error("Login before checkout");
+      navigate("/login");
+    }
+
+    const result = stripe.redirectToCheckout({
+      sessionId: session.checkoutPayment?.id,
+    });
+
+    if (result.error) {
+      toast.error(result.error.message);
     }
   };
   const handleCancel = () => {
     navigate("/dashboard");
   };
+
+  console.log("data==>", fare);
   return (
     <Layout2>
       <AddCardPopup toggleModal={toggleModal} showModal={showModal} />

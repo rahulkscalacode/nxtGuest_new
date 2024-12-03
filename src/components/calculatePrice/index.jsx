@@ -81,13 +81,16 @@ const CalculatePrice = ({
   const vehicleTypeId = form?.vehicleType;
   const price = calculatePrice(distance, vehicleTypeId);
   const vehicleType = vehicleTypeMap[vehicleTypeId] || "Unknown";
-  console.log("vehicleTypeId==>>", vehicleTypeId, price, vehicleType);
+  console.log("vehicleTypeId==>>", vehicleTypeId, price, vehicleType, distance);
 
   useEffect(() => {
     const price = calculatePrice(distance, vehicleTypeId);
     if (price !== null) {
       onPriceUpdate(price);
-      setForm((prev) => ({ ...prev, total_fare: price }));
+      setForm((prev) => ({
+        ...prev,
+        total_fare: price || prev.total_fare || "",
+      }));
     }
   }, [distance, vehicleTypeId]);
 

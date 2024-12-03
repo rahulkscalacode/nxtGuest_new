@@ -14,7 +14,7 @@ const BookingDetails = () => {
   const { stripe } = useSelector((state) => ({
     ...state,
   }));
-  console.log("state", stripe.status);
+  // console.log("state", stripe.status);
 
   const handleData = async () => {
     await bookingDetails(state?._id)
@@ -45,14 +45,14 @@ const BookingDetails = () => {
       ? timeFormatter(details?.dateOfRide)
       : "N/A",
     Time: moment(details && details?.time, "HH:mm").format("hh:mm A"),
-    "Car Model Name": "Cadillac Escalade",
+    "Car Model Name": details?.vehicleType || "N/A",
     "Car Number": "UP 16 BC 8765",
     "Driver Name": "N/A",
     "Payment Mode": "Stripe",
     "Card Number": "************4242",
     "Transaction ID":
       stripe?.checkoutPayment?.id?.substring(20, 40) || "123456789",
-    Fare: fare ? `$ ${fare}` : "N/A",
+    Fare: details.total_fare ? `$ ${details.total_fare}` : "N/A",
     "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
   };
   return (

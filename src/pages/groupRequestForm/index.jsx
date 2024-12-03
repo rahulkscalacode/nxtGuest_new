@@ -11,6 +11,9 @@ import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
 import CalculatePrice from "../../components/calculatePrice";
+import airportCoordinates from "../../components/airportCoordinates";
+import hotelCoordinates from "../../components/hotelCoordinates";
+import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,114 +24,115 @@ const Index = () => {
   const today = new Date();
   const [minTime, setMinTime] = useState(today);
 
-   //--------------------Coordinates fetch api---------------------------------
-   const [pickupCoordinates, setPickupCoordinates] = useState(null);
-   const [dropCoordinates, setDropCoordinates] = useState(null);
-   const [error, setError] = useState("");
-   const [distance, setDistance] = useState(null);
- 
-   const pickupRef = useRef(null);
-   const dropRef = useRef(null);
- 
-   useEffect(() => {
-     // Check if Google Maps API has loaded, then initialize autocomplete for each input
-     const interval = setInterval(() => {
-       if (window.google && window.google.maps) {
-         clearInterval(interval);
-         initializeAutocomplete();
-       }
-     }, 100);
- 
-     return () => clearInterval(interval);
-   }, []);
- 
-   const initializeAutocomplete = () => {
-     const pickupAutocomplete = new window.google.maps.places.Autocomplete(
-       pickupRef?.current,
-       { types: ["establishment"] } // For broader location types
-     );
- 
-     const dropAutocomplete = new window.google.maps.places.Autocomplete(
-       dropRef.current,
-       { types: ["establishment"] }
-     );
- 
-     pickupAutocomplete.addListener("place_changed", () => {
-       const place = pickupAutocomplete.getPlace();
-       if (place.geometry) {
-         setPickupCoordinates({
-           latitude: place.geometry.location.lat(),
-           longitude: place.geometry.location.lng(),
-         });
-         setForm((prevForm) => ({
-           ...prevForm,
-           pickupLocation: place.formatted_address,
-         }));
-         setError("");
-       } else {
-         setError("No details available for the selected place.");
-       }
-     });
- 
-     dropAutocomplete.addListener("place_changed", () => {
-       const place = dropAutocomplete.getPlace();
-       if (place.geometry) {
-         setDropCoordinates({
-           latitude: place.geometry.location.lat(),
-           longitude: place.geometry.location.lng(),
-         });
-         setForm((prevForm) => ({
-           ...prevForm,
-           dropLocation: place.formatted_address,
-         }));
-         setError("");
-       } else {
-         setError("No details available for the selected place.");
-       }
-     });
-   };
-   //-----------------Calculate Distance from google api---------------------
-   const calculateDistance = async () => {
-     // console.log("helloo==========");
-     if (pickupCoordinates && dropCoordinates) {
-       const origin = `${pickupCoordinates.latitude},${pickupCoordinates.longitude}`;
-       const destination = `${dropCoordinates.latitude},${dropCoordinates.longitude}`;
-       console.log("origin==>>", origin, destination);
-       try {
-         const response = await fetch(
-           `${process.env.REACT_APP_NXTGUEST_API_URI}/limoanywhere/distance?origins=${origin}&destinations=${destination}`
-         );
-         const data = await response.json();
- 
-         if (data.rows[0].elements[0].status === "OK") {
-           const distanceMeters = data.rows[0].elements[0].distance.value;
-           const distanceMiles = (distanceMeters * 0.000621371).toFixed(2);
- 
-           console.log("distanceMiles==>", distanceMiles);
-           setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
-           setError("");
-         } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
-           setError("No route found between the selected locations.");
-         } else {
-           setError("Unable to calculate distance. Please check the locations.");
-         }
-       } catch (err) {
-         setError("Error calculating distance. Please try again later.");
-       }
-     } else {
-       setError("Please select both pickup and drop-off locations.");
-     }
-   };
- 
-   console.log(
-     "distance=>",
-     distance,
-     "setPickupCoordinates===>>>",
-     pickupCoordinates,
-     dropCoordinates
-   );
- 
-   //--------------------Coordinates fetch api---------------------------------
+  //--------------------Coordinates fetch api---------------------------------
+  const [pickupCoordinates, setPickupCoordinates] = useState(null);
+  const [dropCoordinates, setDropCoordinates] = useState(null);
+  const [error, setError] = useState("");
+  const [distance, setDistance] = useState(null);
+
+  const pickupRef = useRef(null);
+  const dropRef = useRef(null);
+
+  useEffect(() => {
+    // Check if Google Maps API has loaded, then initialize autocomplete for each input
+    const interval = setInterval(() => {
+      if (window.google && window.google.maps) {
+        clearInterval(interval);
+        initializeAutocomplete();
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const initializeAutocomplete = () => {
+    const pickupAutocomplete = new window.google.maps.places.Autocomplete(
+      pickupRef?.current,
+      { types: ["establishment"] } // For broader location types
+    );
+
+    const dropAutocomplete = new window.google.maps.places.Autocomplete(
+      dropRef.current,
+      { types: ["establishment"] }
+    );
+
+    pickupAutocomplete.addListener("place_changed", () => {
+      const place = pickupAutocomplete.getPlace();
+      if (place.geometry) {
+        setPickupCoordinates({
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+        });
+        setForm((prevForm) => ({
+          ...prevForm,
+          pickupLocation: place.formatted_address,
+        }));
+        setError("");
+      } else {
+        setError("No details available for the selected place.");
+      }
+    });
+
+    dropAutocomplete.addListener("place_changed", () => {
+      const place = dropAutocomplete.getPlace();
+      if (place.geometry) {
+        setDropCoordinates({
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+        });
+        setForm((prevForm) => ({
+          ...prevForm,
+          dropLocation: place.formatted_address,
+        }));
+        setError("");
+      } else {
+        setError("No details available for the selected place.");
+      }
+    });
+  };
+  //-----------------Calculate Distance from google api---------------------
+  const calculateDistance = async () => {
+    if (pickupCoordinates && dropCoordinates) {
+      const origin = `${pickupCoordinates.latitude},${pickupCoordinates.longitude}`;
+      const destination = `${dropCoordinates.latitude},${dropCoordinates.longitude}`;
+      console.log("origin==>>", origin, destination);
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_NXTGUEST_API_URI}/limoanywhere/distance?origins=${origin}&destinations=${destination}`
+        );
+        const data = await response.json();
+
+        if (data.rows[0].elements[0].status === "OK") {
+          const distanceMeters = data.rows[0].elements[0].distance.value;
+          const distanceMiles = (distanceMeters * 0.000621371).toFixed(2);
+
+          console.log("distanceMiles==>", distanceMiles);
+          setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
+          setError("");
+          return distanceMiles;
+        } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
+          setError("No route found between the selected locations.");
+        } else {
+          setError("Unable to calculate distance. Please check the locations.");
+        }
+      } catch (err) {
+        setError("Error calculating distance. Please try again later.");
+      }
+    } else {
+      setError("Please select both pickup and drop-off locations.");
+    }
+    return null;
+  };
+
+  console.log(
+    "distance=>",
+    distance,
+    "setPickupCoordinates===>>>",
+    pickupCoordinates,
+    dropCoordinates
+  );
+
+  //--------------------Coordinates fetch api---------------------------------
 
   const previousData = useMemo(
     () => location.state?.data || {},
@@ -136,8 +140,9 @@ const Index = () => {
   );
 
   useEffect(() => {
-    console.log("Received data:", previousData);
+    console.log("Group Received data:", previousData);
   }, [previousData]);
+  const afterTotalFare = localStorage.getItem("total_fare");
 
   const [form, setForm] = useState({
     groupName: previousData.groupName || "",
@@ -154,7 +159,11 @@ const Index = () => {
     time: previousData.time || value ? value : "",
     userId: cookies.get("userId"),
     type: "group",
+    total_fare:
+      (afterTotalFare && afterTotalFare) || previousData?.total_fare || "",
     numberOfPassengers: previousData.numberOfPassengers || "",
+    pickupCoordinatesData: previousData?.pickupCoordinatesData || null,
+    dropCoordinatesData: previousData?.dropCoordinatesData || null,
   });
 
   useEffect(() => {
@@ -166,19 +175,18 @@ const Index = () => {
     }
   }, [location.state]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
-
   const handleDateChange = (selectedDate) => {
-    setForm({ ...form, dateOfRide: selectedDate });
+    const newDate = new Date(selectedDate);
+    setForm((prevForm) => ({
+      ...prevForm,
+      dateOfRide: newDate,
+    }));
 
-    // If the selected date is today, set minimum time to the current time
+    const today = new Date();
     if (
-      selectedDate.getDate() === today.getDate() &&
-      selectedDate.getMonth() === today.getMonth() &&
-      selectedDate.getFullYear() === today.getFullYear()
+      newDate.getDate() === today.getDate() &&
+      newDate.getMonth() === today.getMonth() &&
+      newDate.getFullYear() === today.getFullYear()
     ) {
       setMinTime(today); // Set minTime to current time for today
     } else {
@@ -187,8 +195,51 @@ const Index = () => {
   };
 
   const handleTimeChange = (selectedTime) => {
+    // console.log("selectedTime==>>", selectedTime);
     setValue(selectedTime);
-    setForm({ ...form, time: selectedTime });
+    setForm((prevForm) => ({
+      ...prevForm,
+      time: selectedTime, // Set time as a string in "HH:MM" format
+    }));
+    setServiceDisable(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "locationType") {
+      setForm((prev) => ({
+        ...prev,
+        locationType: value,
+        pickupLocation: "",
+        dropLocation: "",
+        pickupCoordinatesData: null,
+        dropCoordinatesData: null,
+      }));
+      setServiceDisable(false);
+    } else if (name === "pickupLocation") {
+      const pickupCoordinatesData = airportCoordinates[value] || null;
+      setForm((prev) => ({
+        ...prev,
+        pickupLocation: value,
+        pickupCoordinatesData,
+      }));
+      setPickupCoordinates(pickupCoordinatesData);
+    } else if (name === "dropLocation") {
+      const dropCoordinatesData = hotelCoordinates[value] || null;
+      setForm((prev) => ({
+        ...prev,
+        dropLocation: value,
+        dropCoordinatesData,
+      }));
+      setDropCoordinates(dropCoordinatesData);
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setServiceDisable(false);
+    }
   };
 
   const passengerOptions = Array.from({ length: 20 }, (_, index) => index + 1);
@@ -251,7 +302,7 @@ const Index = () => {
           email: form?.email || "",
         },
         service_type: form?.service_type || "205683",
-        vehicle_type: "118351",
+        vehicle_type: form?.vehicleType,
       };
 
       console.log("bodyy=======????>>>>>", body, pickupDateTime);
@@ -260,87 +311,121 @@ const Index = () => {
         localStorage.setItem("registerdata", JSON.stringify(body));
       }
     }
+    const totalFare = localStorage.getItem("total_fare");
+    const updatedForm = {
+      ...form,
+      total_fare: totalFare || form.total_fare,
+    };
 
-    try {
-      await groupServiceReqest(form)
-        .then((res) => {
-          console.log("res=>>", res);
-          const serializableData = {
-            data: res.data,
-          };
-          localStorage.setItem(
-            "guestService",
-            JSON.stringify(serializableData)
-          );
-          cookies.set("phone", res.data.data?.contactNumber);
-          toast.success("Successfully created self service request form.");
-          navigate("/booking-summary", {
-            state: { data: serializableData, previousRoute: location.pathname },
+    if (updatedForm.total_fare) {
+      try {
+        // console.log("Payload being sent to API:", updatedForm);
+        await groupServiceReqest(updatedForm)
+          .then((res) => {
+            console.log("res=>>", res);
+            const serializableData = {
+              data: res.data,
+            };
+            localStorage.setItem(
+              "guestService",
+              JSON.stringify(serializableData)
+            );
+            cookies.set("phone", res.data.data?.contactNumber);
+            toast.success("Successfully created self service request form.");
+            navigate("/booking-summary", {
+              state: {
+                data: serializableData,
+                previousRoute: location.pathname,
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            setServiceDisable(true);
+            toast.error("Something went wrong!");
           });
-        })
-        .catch((err) => {
-          console.log(err);
-          setServiceDisable(true);
-          toast.error("Something went wrong!");
-        });
-    } catch (error) {
-      console.log("error=>>>", error);
-      setServiceDisable(true);
+      } catch (error) {
+        console.log("error=>>>", error);
+        setServiceDisable(true);
+      }
     }
   };
 
   const handleUpdateData = async (e) => {
     e.preventDefault();
-    try {
-      console.log("Form data before update:", form);
+    const totalFare = localStorage.getItem("total_fare");
+    const updatedForm = {
+      ...form,
+      total_fare: totalFare || form.total_fare,
+    };
 
-      await updateServiceForm(form, previousData._id)
-        .then((res) => {
-          console.log(res);
-          const serializableData = {
-            data: res.data,
-          };
-          localStorage.setItem(
-            "guestService",
-            JSON.stringify(serializableData)
-          );
-          cookies.set("phone", res.data.data?.contactNumber);
-          toast.success("Successfully updated self service request form.");
-          navigate("/booking-summary", {
-            state: { data: serializableData, previousRoute: location.pathname },
+    if (updatedForm.total_fare) {
+      try {
+        // console.log("Form data before update:", updatedForm);
+        await updateServiceForm(updatedForm, previousData._id)
+          .then((res) => {
+            console.log(res);
+            const serializableData = {
+              data: res.data,
+            };
+            localStorage.setItem(
+              "guestService",
+              JSON.stringify(serializableData)
+            );
+            cookies.set("phone", res.data.data?.contactNumber);
+            toast.success("Successfully updated self service request form.");
+            navigate("/booking-summary", {
+              state: {
+                data: serializableData,
+                previousRoute: location.pathname,
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            setServiceDisable(true);
+            toast.error("Something went wrong!");
           });
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Something went wrong!");
-        });
-    } catch (error) {
-      toast.error(error);
+      } catch (error) {
+        setServiceDisable(true);
+        toast.error(error);
+      }
     }
   };
+
+  if (form?.total_fare) {
+    localStorage.setItem("total_fare", form?.total_fare);
+  }
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     await calculateDistance();
+
     if (error) {
       console.error("Distance calculation failed:", error);
-      return;
     }
-    if (Object.keys(previousData).length > 0) {
-      handleUpdateData(e);
-    } else {
-      handleSubmit(e);
-    }
+    setTimeout(() => {
+      const totalFare = localStorage.getItem("total_fare");
+
+      if (form.total_fare || totalFare) {
+        if (Object.keys(previousData).length > 0) {
+          handleUpdateData(e); // Update existing data
+        } else {
+          handleSubmit(e); // Submit new data
+        }
+      } else {
+        toast.error("Total fare not set. Cannot proceed.");
+      }
+    }, 10);
   };
+
+  console.log("form==>>", form);
 
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
         <div className="head">Service Request</div>
-        <form
-          onSubmit={handleFormSubmit}
-          autoComplete="off"
-        >
+        <form onSubmit={handleFormSubmit} autoComplete="off">
           <div className="">
             <input
               type="text"
@@ -406,6 +491,8 @@ const Index = () => {
                   e.preventDefault();
                 }
               }}
+              minLength={7}
+              maxLength={13}
               className="input-field"
               autoComplete="new-email"
               required
@@ -429,54 +516,9 @@ const Index = () => {
             </select>
           </div>
           {/* -----------------Pickup Location------------------ */}
-          <div className="input-group">
-            <label className="">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="locationType"
-                value="select"
-                checked={form.locationType === "select"}
-                onChange={handleChange}
-                style={{ marginRight: "8px" }}
-              />
-              Pickup Location
-            </label>
-            <select
-              name="pickupLocation"
-              value={form.locationType === "select" ? form.pickupLocation : ""}
-              onChange={handleChange}
-              disabled={form.locationType !== "select"}
-              className="input-field"
-              required={form.locationType === "select"}
-            >
-              <option value="">
-                Select{form.locationType === "select" ? "*" : ""}
-              </option>
-              <option value="New York">New York</option>
-              <option value="Miami">Miami</option>
-              <option value="Florida">Florida</option>
-            </select>
-          </div>
-          {/* ------------------Drop Location------------------ */}
-          <div className="input-group ">
-            <label style={{ marginLeft: "1.4rem" }}>Drop Location</label>
-            <select
-              name="dropLocation"
-              value={form.locationType === "select" ? form.dropLocation : ""}
-              onChange={handleChange}
-              disabled={form.locationType !== "select"}
-              className="input-field"
-              required={form.locationType === "select"}
-            >
-              <option value="">
-                Select{form.locationType === "select" ? "*" : ""}
-              </option>
-              <option value="New York">New York</option>
-              <option value="Miami">Miami</option>
-              <option value="Florida">Florida</option>
-            </select>
-          </div>
+
+          <FormSelectDropDown arg={{ form, handleChange }} />
+
           {/* -------------Other------------ */}
           <div className="input-group mt-2">
             <label className="">
@@ -554,7 +596,8 @@ const Index = () => {
           <button
             type="submit"
             className="submit-button"
-            // style={{ marginTop: "6px", padding: "5px" }}
+            style={{ marginTop: "15px", padding: "5px" }}
+            disabled={serviceDisable}
           >
             Confirm Booking
           </button>

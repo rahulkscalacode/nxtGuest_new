@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout2 from "../../components/layout2";
 import "./index.css";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { timeFormatter } from "../../components/formatter/timeFormatter";
 import moment from "moment";
 import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
+import { useSelector } from "react-redux";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,9 +17,16 @@ const Index = () => {
   const tokenC = cookies.get("token");
   // Check if data is defined and has the expected structure
   const nData = data?.data?.data || {};
+  const [summaryData, setSummaryData] = useState({});
 
   const [bookings, setBookings] = useState({});
-  const total_fare = localStorage.getItem("total_fare");
+  const totalFare = localStorage.getItem("total_fare");
+
+  if (totalFare) {
+    localStorage.removeItem("total_fare");
+  }
+
+  console.log("totalFare====>>>", summaryData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,19 +42,20 @@ const Index = () => {
           }
         );
         const result = response.data.bookingData;
-        console.log("resultxxxxxxxxxxxxxxxxxxxx", result);
+        setSummaryData(response.data.bookingData);
+        // console.log("resultxxxxxxxxxxxxxxxxxxxx", result);
 
         if (result.type === "group") {
           setBookings({
             "Group Name": result?.groupName && result?.groupName,
-            Occasion : result?.occasion,
-            "Company Name" : result?.companyName,
+            Occasion: result?.occasion,
+            "Company Name": result?.companyName,
             Email: result.email || "N/A",
             "Contact Number": result.contactNumber || "N/A",
-            "No. of passengers" : result?.numberOfPassengers || "N/A",
+            "No. of passengers": result?.numberOfPassengers || "N/A",
             "Pickup Location": result.pickupLocation || "N/A",
             "Drop Location": result.dropLocation || "N/A",
-            "Date": timeFormatter(result.dateOfRide) || "N/A",
+            Date: timeFormatter(result.dateOfRide) || "N/A",
             "Pickup Time":
               moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
           });
@@ -63,7 +71,7 @@ const Index = () => {
             "Pickup Date": timeFormatter(result.dateOfRide) || "N/A",
             "Pickup Time":
               moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
-            Fare: `$ ${total_fare}`,
+            Fare: result.total_fare ? `$ ${result.total_fare}` : "N/A",
           });
         }
       } catch (error) {
@@ -94,7 +102,9 @@ const Index = () => {
               "Pickup Date": timeFormatter(parsedData.dateOfRide) || "N/A",
               "Pickup Time":
                 moment(parsedData.time, "HH:mm").format("hh:mm A") || "N/A",
-              Fare: `$ ${total_fare}`,
+              Fare: parsedData.total_fare
+                ? `$ ${parsedData.total_fare}`
+                : "N/A",
             });
           }
         }
@@ -105,7 +115,17 @@ const Index = () => {
   }, [tokenUserId]);
 
   const handleClick = () => {
-    navigate("/payment");
+    if (summaryData?.total_fare) {
+      navigate("/payment", {
+        state: {
+          fare: summaryData?.total_fare,
+        },
+      });
+    }
+  };
+
+  const handleGroupNavigate = () => {
+    navigate("/request-to-admin");
   };
 
   const handleEditBooking = () => {
@@ -113,7 +133,7 @@ const Index = () => {
     navigate(previousRoute, { state: { data: nData } }); // This will navigate to the previous page
   };
 
-  console.log(location);
+  console.log("summaryData==>", location, summaryData);
 
   return (
     <Layout2>
@@ -131,9 +151,15 @@ const Index = () => {
           <button className="editBook" onClick={handleEditBooking}>
             Edit My Booking
           </button>
-          <button className="proceedPay" onClick={handleClick}>
-            Proceed to Pay
-          </button>
+          {summaryData.type === "group" ? (
+            <button className="proceedPay" onClick={handleGroupNavigate}>
+              Confirm
+            </button>
+          ) : (
+            <button className="proceedPay" onClick={handleClick}>
+              Proceed to Pay
+            </button>
+          )}
         </div>
       </div>
     </Layout2>

@@ -12,11 +12,18 @@ import Cookies from "universal-cookie";
 import DateAndTime from "../../components/dateAndTime";
 import TimeValidator from "../../components/timeValidate";
 import CalculatePrice from "../../components/calculatePrice";
+import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
+import airportCoordinates from "../../components/airportCoordinates";
+import hotelCoordinates from "../../components/hotelCoordinates";
+import { useDispatch } from "react-redux";
+import { userTotalFare } from "../../components/toolkit/totalFare";
 
+// ----------
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const cookies = new Cookies();
+  const dispatch = useDispatch();
   const [value, setValue] = useState("00:00");
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
@@ -90,7 +97,6 @@ const Index = () => {
   };
   //-----------------Calculate Distance from google api---------------------
   const calculateDistance = async () => {
-    // console.log("helloo==========");
     if (pickupCoordinates && dropCoordinates) {
       const origin = `${pickupCoordinates.latitude},${pickupCoordinates.longitude}`;
       const destination = `${dropCoordinates.latitude},${dropCoordinates.longitude}`;
@@ -108,6 +114,7 @@ const Index = () => {
           console.log("distanceMiles==>", distanceMiles);
           setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
           setError("");
+          return distanceMiles;
         } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
           setError("No route found between the selected locations.");
         } else {
@@ -119,6 +126,7 @@ const Index = () => {
     } else {
       setError("Please select both pickup and drop-off locations.");
     }
+    return null;
   };
 
   console.log(
@@ -139,22 +147,26 @@ const Index = () => {
   useEffect(() => {
     console.log("Received data:", previousData);
   }, [previousData]);
+  const afterTotalFare = localStorage.getItem("total_fare");
 
   const [form, setForm] = useState({
-    firstName: previousData.firstName || "",
-    lastName: previousData.lastName || "",
-    contactNumber: previousData.contactNumber || "",
-    email: previousData.email || "",
-    locationType: previousData.locationType || "select",
-    pickupLocation: previousData.pickupLocation || "",
-    dropLocation: previousData.dropLocation || "",
-    vehicleType: previousData.vehicleType || "",
-    dateOfRide: previousData.dateOfRide || "",
-    dateOfBooking: previousData.dateOfBooking || new Date().toString(),
-    time: previousData.time || value,
+    firstName: previousData?.firstName || "",
+    lastName: previousData?.lastName || "",
+    contactNumber: previousData?.contactNumber || "",
+    email: previousData?.email || "",
+    locationType: previousData?.locationType || "select",
+    pickupLocation: previousData?.pickupLocation || "",
+    dropLocation: previousData?.dropLocation || "",
+    vehicleType: previousData?.vehicleType || "",
+    dateOfRide: previousData?.dateOfRide || "",
+    dateOfBooking: previousData?.dateOfBooking || new Date().toString(),
+    time: previousData?.time || value,
     userId: cookies.get("userId"),
     type: "self",
-    total_fare: previousData.total_fare,
+    total_fare:
+      (afterTotalFare && afterTotalFare) || previousData?.total_fare || "",
+    pickupCoordinatesData: previousData?.pickupCoordinatesData || null,
+    dropCoordinatesData: previousData?.dropCoordinatesData || null,
   });
 
   useEffect(() => {
@@ -172,9 +184,7 @@ const Index = () => {
       ...prevForm,
       dateOfRide: newDate,
     }));
-    // console.log("selectedDate==>", newDate);
 
-    // Set minimum time if the selected date is today
     const today = new Date();
     if (
       newDate.getDate() === today.getDate() &&
@@ -201,28 +211,36 @@ const Index = () => {
     const { name, value } = e.target;
 
     if (name === "locationType") {
-      if (value === "manual") {
-        setForm({
-          ...form,
-          locationType: value,
-          pickupLocation: "",
-          dropLocation: "",
-        });
-        setServiceDisable(false);
-      } else if (value === "select") {
-        setForm({
-          ...form,
-          locationType: value,
-          pickupLocation: "",
-          dropLocation: "",
-        });
-        setServiceDisable(false);
-      }
+      setForm((prev) => ({
+        ...prev,
+        locationType: value,
+        pickupLocation: "",
+        dropLocation: "",
+        pickupCoordinatesData: null,
+        dropCoordinatesData: null,
+      }));
+      setServiceDisable(false);
+    } else if (name === "pickupLocation") {
+      const pickupCoordinatesData = airportCoordinates[value] || null;
+      setForm((prev) => ({
+        ...prev,
+        pickupLocation: value,
+        pickupCoordinatesData,
+      }));
+      setPickupCoordinates(pickupCoordinatesData);
+    } else if (name === "dropLocation") {
+      const dropCoordinatesData = hotelCoordinates[value] || null;
+      setForm((prev) => ({
+        ...prev,
+        dropLocation: value,
+        dropCoordinatesData,
+      }));
+      setDropCoordinates(dropCoordinatesData);
     } else {
-      setForm({
-        ...form,
+      setForm((prev) => ({
+        ...prev,
         [name]: value,
-      });
+      }));
       setServiceDisable(false);
     }
   };
@@ -285,7 +303,7 @@ const Index = () => {
           email: form?.email || "",
         },
         service_type: form?.service_type || "205683",
-        vehicle_type: "118351",
+        vehicle_type: form?.vehicleType,
       };
 
       console.log("bodyy=======????>>>>>", body, pickupDateTime);
@@ -294,83 +312,115 @@ const Index = () => {
         localStorage.setItem("registerdata", JSON.stringify(body));
       }
     }
-    try {
-      await selfserviceReqest(form)
-        .then((res) => {
-          // console.log("res=>>", res);
-          const serializableData = {
-            data: res.data,
-          };
-          localStorage.setItem(
-            "guestService",
-            JSON.stringify(serializableData)
-          );
-          cookies.set("phone", res.data.data.contactNumber);
-          toast.success("Successfully created self service request form.");
-          navigate("/booking-summary", {
-            state: { data: serializableData, previousRoute: location.pathname },
+    const totalFare = localStorage.getItem("total_fare");
+    const updatedForm = {
+      ...form,
+      total_fare: totalFare || form.total_fare,
+    };
+
+    if (updatedForm.total_fare) {
+      try {
+        console.log("Payload being sent to API:", updatedForm);
+        await selfserviceReqest(updatedForm)
+          .then((res) => {
+            // console.log("res=>>", res);
+            const serializableData = {
+              data: res.data,
+            };
+            localStorage.setItem(
+              "guestService",
+              JSON.stringify(serializableData)
+            );
+            cookies.set("phone", res.data.data.contactNumber);
+            toast.success("Successfully created self service request form.");
+            navigate("/booking-summary", {
+              state: {
+                data: serializableData,
+                previousRoute: location.pathname,
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            setServiceDisable(true);
+            toast.error("Something went wrong!");
           });
-        })
-        .catch((err) => {
-          console.log(err);
-          setServiceDisable(true);
-          toast.error("Something went wrong!");
-        });
-    } catch (error) {
-      // console.log("error=>>>", error);
-      setServiceDisable(true);
+      } catch (error) {
+        // console.log("error=>>>", error);
+        setServiceDisable(true);
+      }
     }
   };
 
   const handleUpdateData = async (e) => {
     e.preventDefault();
-    // console.log("currentTime");
-    try {
-      await updateServiceForm(form, previousData._id)
-        .then((res) => {
-          const serializableData = {
-            data: res.data,
-          };
-          toast.success("Successfully updated self service request form.");
-          localStorage.setItem(
-            "guestService",
-            JSON.stringify(serializableData)
-          );
-          cookies.set("phone", res.data.data.contactNumber);
-          navigate("/booking-summary", {
-            state: { data: serializableData, previousRoute: location.pathname },
+    const totalFare = localStorage.getItem("total_fare");
+    const updatedForm = {
+      ...form,
+      total_fare: totalFare || form.total_fare,
+    };
+
+    if (updatedForm.total_fare) {
+      try {
+        await updateServiceForm(updatedForm, previousData._id)
+          .then((res) => {
+            const serializableData = {
+              data: res.data,
+            };
+            toast.success("Successfully updated self service request form.");
+            localStorage.setItem(
+              "guestService",
+              JSON.stringify(serializableData)
+            );
+            cookies.set("phone", res.data.data.contactNumber);
+            navigate("/booking-summary", {
+              state: {
+                data: serializableData,
+                previousRoute: location.pathname,
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            setServiceDisable(true);
+            toast.error("Something went wrong!");
           });
-        })
-        .catch((err) => {
-          console.log(err);
-          setServiceDisable(true);
-          toast.error("Something went wrong!");
-        });
-    } catch (error) {
-      setServiceDisable(true);
-      toast.error(error);
+      } catch (error) {
+        setServiceDisable(true);
+        toast.error(error);
+      }
     }
   };
 
-  if (form.total_fare) {
+  if (form?.total_fare) {
     localStorage.setItem("total_fare", form?.total_fare);
+    dispatch(userTotalFare(form?.total_fare));
   }
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     await calculateDistance();
+
     if (error) {
       console.error("Distance calculation failed:", error);
-      return;
     }
-    if (Object.keys(previousData).length > 0) {
-      handleUpdateData(e);
-    } else {
-      handleSubmit(e);
-    }
+    setTimeout(() => {
+      const totalFare = localStorage.getItem("total_fare");
+
+      if (form.total_fare || totalFare) {
+        if (Object.keys(previousData).length > 0) {
+          handleUpdateData(e); // Update existing data
+        } else {
+          handleSubmit(e); // Submit new data
+        }
+      } else {
+        toast.error("Total fare not set. Cannot proceed.");
+      }
+    }, 10);
   };
 
   console.log("form==>>", form);
+
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
@@ -410,6 +460,8 @@ const Index = () => {
                   contactNumber: newValue,
                 }));
               }}
+              minLength={7}
+              maxLength={13}
               onKeyDown={(e) => {
                 if (e.key === "." || e.key === "-" || e.key === "e") {
                   e.preventDefault();
@@ -432,55 +484,11 @@ const Index = () => {
               required
             />
           </div>
-          {/* -----------------Pickup Location------------------ */}
-          <div className="input-group">
-            <label className="">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="locationType"
-                value="select"
-                checked={form.locationType === "select"}
-                onChange={handleChange}
-                style={{ marginRight: "8px" }}
-              />
-              Pickup Location
-            </label>
-            <select
-              name="pickupLocation"
-              value={form.locationType === "select" ? form.pickupLocation : ""}
-              onChange={handleChange}
-              disabled={form.locationType !== "select"}
-              className="input-field"
-              required={form.locationType === "select"}
-            >
-              <option value="">
-                Select{form.locationType === "select" ? "*" : ""}
-              </option>
-              <option value="New York">New York</option>
-              <option value="Miami">Miami</option>
-              <option value="Florida">Florida</option>
-            </select>
-          </div>
-          {/* ------------------Drop Location------------------ */}
-          <div className="input-group mb-2">
-            <label style={{ marginLeft: "1.4rem" }}>Drop Location</label>
-            <select
-              name="dropLocation"
-              value={form.locationType === "select" ? form.dropLocation : ""}
-              onChange={handleChange}
-              disabled={form.locationType !== "select"}
-              className="input-field"
-              required={form.locationType === "select"}
-            >
-              <option value="">
-                Select{form.locationType === "select" ? "*" : ""}
-              </option>
-              <option value="New York">New York</option>
-              <option value="Miami">Miami</option>
-              <option value="Florida">Florida</option>
-            </select>
-          </div>
+
+          {/*------------- Form DropDown ---------------*/}
+
+          <FormSelectDropDown arg={{ form, handleChange }} />
+
           {/* -------------Other------------ */}
           <div className="input-group mt-2">
             <label className="">

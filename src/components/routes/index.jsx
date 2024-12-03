@@ -24,6 +24,7 @@ import ContactUs from "../../pages/contactUs";
 import FeedbackForm from "../../pages/feedback";
 import TermCondition from "../../pages/terms&Conditions";
 import PrivecyPolicy from "../../pages/privacyPolicy";
+import ReqestSendtoAdmin from "../../pages/groupConfirmationPage";
 import "../../App.css";
 
 const Index = () => {
@@ -34,7 +35,7 @@ const Index = () => {
       : "url(/images/icons/bg2.png)";
 
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-  
+
   useEffect(() => {
     const handleResize = () => {
       // Get the visible viewport height
@@ -102,6 +103,7 @@ const Index = () => {
         <Route path="/booking-summary" element={<BookingSummary />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+        <Route path="/request-to-admin" element={<ReqestSendtoAdmin />} />
         <Route path="/booking-failed" element={<BookingFailed />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/profile" element={<Profile />} />

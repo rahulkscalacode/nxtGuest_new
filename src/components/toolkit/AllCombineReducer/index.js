@@ -2,6 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import stripe from "../stripe";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import totalFare from "../totalFare";
 
 // Persist configuration for redux-persist
 const persistConfig = {
@@ -13,6 +14,7 @@ const persistConfig = {
 // Combine your reducers
 const rootReducer = combineReducers({
   stripe,
+  totalFare,
   // Add more reducers here as needed
 });
 

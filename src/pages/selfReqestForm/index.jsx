@@ -402,7 +402,8 @@ const Index = () => {
     await calculateDistance();
 
     if (error) {
-      console.error("Distance calculation failed:", error);
+      toast.error(error);
+      console.log("Distance calculation failed:", error);
     }
     setTimeout(() => {
       const totalFare = localStorage.getItem("total_fare");

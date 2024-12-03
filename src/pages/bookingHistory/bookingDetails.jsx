@@ -30,31 +30,56 @@ const BookingDetails = () => {
     handleData();
   }, [state?._id]);
 
-  const fare = localStorage.getItem("total_fare");
-
   console.log(details);
-  const json = {
-    "Pickup Location": details?.pickupLocation
-      ? details?.pickupLocation
-      : "N/A",
-    "Drop Location": details?.dropLocation ? details?.dropLocation : "N/A",
-    "Date of Booking": details?.dateOfBooking
-      ? timeFormatter(details?.dateOfBooking)
-      : "N/A",
-    "Date of Ride": details?.dateOfRide
-      ? timeFormatter(details?.dateOfRide)
-      : "N/A",
-    Time: moment(details && details?.time, "HH:mm").format("hh:mm A"),
-    "Car Model Name": details?.vehicleType || "N/A",
-    "Car Number": "UP 16 BC 8765",
-    "Driver Name": "N/A",
-    "Payment Mode": "Stripe",
-    "Card Number": "************4242",
-    "Transaction ID":
-      stripe?.checkoutPayment?.id?.substring(20, 40) || "123456789",
-    Fare: details.total_fare ? `$ ${details.total_fare}` : "N/A",
-    "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
-  };
+  const json =
+    details.type === "group"
+      ? {
+          "Pickup Location": details?.pickupLocation
+            ? details?.pickupLocation
+            : "N/A",
+          "Drop Location": details?.dropLocation
+            ? details?.dropLocation
+            : "N/A",
+          "Date of Booking": details?.dateOfBooking
+            ? timeFormatter(details?.dateOfBooking)
+            : "N/A",
+          "Date of Ride": details?.dateOfRide
+            ? timeFormatter(details?.dateOfRide)
+            : "N/A",
+          Time: moment(details && details?.time, "HH:mm").format("hh:mm A"),
+          "Group Name": details?.groupName && details?.groupName,
+          Occasion: details?.occasion,
+          "Company Name": details?.companyName,
+          Email: details.email || "N/A",
+          "Contact Number": details.contactNumber || "N/A",
+          "No. of passengers": details?.numberOfPassengers || "N/A",
+          "Pickup Time":
+            moment(details && details.time, "HH:mm").format("hh:mm A") || "N/A",
+        }
+      : {
+          "Pickup Location": details?.pickupLocation
+            ? details?.pickupLocation
+            : "N/A",
+          "Drop Location": details?.dropLocation
+            ? details?.dropLocation
+            : "N/A",
+          "Date of Booking": details?.dateOfBooking
+            ? timeFormatter(details?.dateOfBooking)
+            : "N/A",
+          "Date of Ride": details?.dateOfRide
+            ? timeFormatter(details?.dateOfRide)
+            : "N/A",
+          Time: moment(details && details?.time, "HH:mm").format("hh:mm A"),
+          "Car Model Name": details?.vehicleType || "N/A",
+          "Car Number": "UP 16 BC 8765",
+          "Driver Name": "N/A",
+          "Payment Mode": "Stripe",
+          "Card Number": "************4242",
+          "Transaction ID":
+            stripe?.checkoutPayment?.id?.substring(20, 40) || "123456789",
+          Fare: details.total_fare ? `$ ${details.total_fare}` : "N/A",
+          "Vehicle Type": details?.vehicleType ? details?.vehicleType : "N/A",
+        };
   return (
     <Layout2 footer={<Footer />}>
       <div>

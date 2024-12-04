@@ -3,7 +3,8 @@ import airportCoordinates from "../airportCoordinates";
 import hotelCoordinates from "../hotelCoordinates";
 import "../../pages/selfReqestForm/index.css";
 
-const Index = ({ arg: { form, handleChange } }) => {
+const Index = ({ arg: { form, handleChange, routeData } }) => {
+  console.log(routeData);
   return (
     <div>
       {/* -----------------Pickup Location------------------ */}
@@ -25,17 +26,23 @@ const Index = ({ arg: { form, handleChange } }) => {
           value={form.locationType === "select" ? form.pickupLocation : ""}
           onChange={handleChange}
           disabled={form.locationType !== "select"}
-          className="input-field dropdown-menu1"
+          className="input-field"
           required={form.locationType === "select"}
         >
           <option value="">
             Select{form.locationType === "select" ? "*" : ""}
           </option>
-          {Object.keys(airportCoordinates).map((airport) => (
-            <option key={airport} value={airport}>
-              {airport}
-            </option>
-          ))}
+          {routeData === "toAirport"
+            ? Object.keys(hotelCoordinates).map((hotel) => (
+                <option key={hotel} value={hotel}>
+                  {hotel}
+                </option>
+              ))
+            : Object.keys(airportCoordinates).map((airport) => (
+                <option key={airport} value={airport}>
+                  {airport}
+                </option>
+              ))}
         </select>
       </div>
       {/* ------------------Drop Location------------------ */}
@@ -52,11 +59,17 @@ const Index = ({ arg: { form, handleChange } }) => {
           <option value="">
             Select{form.locationType === "select" ? "*" : ""}
           </option>
-          {Object.keys(hotelCoordinates).map((hotel) => (
-            <option key={hotel} value={hotel}>
-              {hotel}
-            </option>
-          ))}
+          {routeData === "toAirport"
+            ? Object.keys(airportCoordinates).map((airport) => (
+                <option key={airport} value={airport}>
+                  {airport}
+                </option>
+              ))
+            : Object.keys(hotelCoordinates).map((hotel) => (
+                <option key={hotel} value={hotel}>
+                  {hotel}
+                </option>
+              ))}
         </select>
       </div>
     </div>

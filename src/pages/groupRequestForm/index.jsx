@@ -573,6 +573,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               required
+              style={{padding : "6px"}}
             >
               <option value="">Vehicle Type*</option>
               <option value="118351">Car</option>

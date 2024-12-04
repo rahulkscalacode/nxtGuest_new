@@ -31,6 +31,7 @@
   color: #fff;
   margin-top: 10px;
   padding: 4px;
+  position: relative;
 }
 
 .radio-group {
@@ -86,24 +87,4 @@ button.submit-button {
 
 .react-time-picker__inputGroup__amPm option {
   color: black;
-}
-
-.dropdown-menu1 {
-  max-height: 100px;
-  overflow-y: auto;
-  width: 100%;
-  scrollbar-width: thin;
-}
-
-.dropdown-menu1::-webkit-scrollbar {
-  width: 8px; /* Adjust scrollbar width */
-}
-
-.dropdown-menu1::-webkit-scrollbar-thumb {
-  background-color: #ccc; /* Color of the scrollbar */
-  border-radius: 4px; /* Rounded edges for the scrollbar */
-}
-
-.dropdown-menu1::-webkit-scrollbar-thumb:hover {
-  background-color: #aaa; /* Darker color on hover */
 }

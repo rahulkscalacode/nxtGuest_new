@@ -28,6 +28,7 @@ const Index = () => {
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
   const [minTime, setMinTime] = useState(today);
+  const { routeData } = location.state || {};
 
   //--------------------Coordinates fetch api---------------------------------
   const [pickupCoordinates, setPickupCoordinates] = useState(null);
@@ -220,7 +221,7 @@ const Index = () => {
       }));
       setServiceDisable(false);
     } else if (name === "pickupLocation") {
-      const pickupCoordinatesData = airportCoordinates[value] || null;
+      const pickupCoordinatesData = routeData === "toAirport" ? hotelCoordinates[value] :airportCoordinates[value] || null;
       setForm((prev) => ({
         ...prev,
         pickupLocation: value,
@@ -228,7 +229,7 @@ const Index = () => {
       }));
       setPickupCoordinates(pickupCoordinatesData);
     } else if (name === "dropLocation") {
-      const dropCoordinatesData = hotelCoordinates[value] || null;
+      const dropCoordinatesData = routeData === "toAirport" ? airportCoordinates[value] :hotelCoordinates[value] || null;
       setForm((prev) => ({
         ...prev,
         dropLocation: value,
@@ -487,7 +488,7 @@ const Index = () => {
 
           {/*------------- Form DropDown ---------------*/}
 
-          <FormSelectDropDown arg={{ form, handleChange }} />
+          <FormSelectDropDown arg={{ form, handleChange, routeData }} />
 
           {/* -------------Other------------ */}
           <div className="input-group mt-2">
@@ -543,6 +544,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               required
+              style={{ padding: "6px" }}
             >
               <option value="">Vehicle Type*</option>
               <option value="118351">Car</option>

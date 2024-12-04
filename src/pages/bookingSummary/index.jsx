@@ -133,7 +133,7 @@ const Index = () => {
     navigate(previousRoute, { state: { data: nData } }); // This will navigate to the previous page
   };
 
-  console.log("summaryData==>", location, summaryData);
+  console.log("summaryData==>", summaryData);
 
   return (
     <Layout2>

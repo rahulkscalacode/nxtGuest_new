@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/role");
+  const handleClick = (data) => {
+    navigate("/role", { state: { data } });
   };
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
@@ -35,11 +35,12 @@ const Index = () => {
       window.removeEventListener("orientationchange", handleResize);
     };
   }, []);
+
   return (
     <Layout>
       <div className="d-container" style={{ height: `${viewportHeight}px` }}>
-        <div class="cards-container">
-          <div className="imgcard" onClick={handleClick}>
+        <div className="cards-container">
+          <div className="imgcard" onClick={() => handleClick("fromAirport")}>
             <img
               src="/images/icons/F8.png"
               alt="From Airport"
@@ -47,7 +48,7 @@ const Index = () => {
             />
             <p className="card-text">From Airport</p>
           </div>
-          <div className="imgcard" onClick={handleClick}>
+          <div className="imgcard" onClick={() => handleClick("toAirport")}>
             <img
               src="/images/icons/F9.png"
               alt="From Airport"
@@ -56,7 +57,7 @@ const Index = () => {
             <p className="card-text">To Airport</p>
           </div>
           <Link to="/group-request">
-            <div className="imgcard" onClick={handleClick}>
+            <div className="imgcard" onClick={() => handleClick("")}>
               <img
                 src="/images/icons/F10.png"
                 alt="From Airport"
@@ -67,7 +68,7 @@ const Index = () => {
               </p>
             </div>
           </Link>
-          <div className="imgcard" onClick={handleClick}>
+          <div className="imgcard" onClick={() => handleClick("")}>
             <img
               src="/images/icons/F11.png"
               alt="From Airport"

@@ -186,14 +186,13 @@ const Index = () => {
     }));
 
     const today = new Date();
-    if (
-      newDate.getDate() === today.getDate() &&
-      newDate.getMonth() === today.getMonth() &&
-      newDate.getFullYear() === today.getFullYear()
-    ) {
-      setMinTime(today); // Set minTime to current time for today
+    today.setHours(0, 0, 0, 0); // Reset today's time to midnight for comparison
+
+    if (newDate.getTime() === today.getTime()) {
+      const currentTime = new Date();
+      setMinTime(currentTime); // Set minTime to the current time
     } else {
-      setMinTime(null); // Allow any time for future dates
+      setMinTime(new Date(0, 0, 0, 0, 0, 0, 0)); // Allow any time (start from 12:00 AM)
     }
   };
 
@@ -514,7 +513,7 @@ const Index = () => {
                 form.locationType === "manual" ? "*" : ""
               }`}
               ref={pickupRef}
-              // value={form.locationType === "manual" ? form.pickupLocation : ""}
+              value={form.locationType === "manual" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
@@ -530,7 +529,7 @@ const Index = () => {
                 form.locationType === "manual" ? "*" : ""
               }`}
               ref={dropRef}
-              // value={form.locationType === "manual" ? form.dropLocation : ""}
+              value={form.locationType === "manual" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"

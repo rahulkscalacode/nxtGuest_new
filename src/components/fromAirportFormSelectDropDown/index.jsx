@@ -1,6 +1,7 @@
 import React from "react";
 import airportCoordinates from "../airportCoordinates";
 import hotelCoordinates from "../hotelCoordinates";
+import "../../pages/selfReqestForm/index.css";
 
 const Index = ({ arg: { form, handleChange } }) => {
   return (
@@ -24,7 +25,7 @@ const Index = ({ arg: { form, handleChange } }) => {
           value={form.locationType === "select" ? form.pickupLocation : ""}
           onChange={handleChange}
           disabled={form.locationType !== "select"}
-          className="input-field"
+          className="input-field dropdown-menu1"
           required={form.locationType === "select"}
         >
           <option value="">
@@ -45,7 +46,7 @@ const Index = ({ arg: { form, handleChange } }) => {
           value={form.locationType === "select" ? form.dropLocation : ""}
           onChange={handleChange}
           disabled={form.locationType !== "select"}
-          className="input-field"
+          className="input-field dropdown-menu1"
           required={form.locationType === "select"}
         >
           <option value="">

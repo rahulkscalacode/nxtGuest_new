@@ -23,6 +23,7 @@ const Index = () => {
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
   const [minTime, setMinTime] = useState(today);
+  const { routeData } = location.state || {};
 
   //--------------------Coordinates fetch api---------------------------------
   const [pickupCoordinates, setPickupCoordinates] = useState(null);
@@ -109,9 +110,9 @@ const Index = () => {
           console.log("distanceMiles==>", distanceMiles);
           setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
           setError("");
-          return distanceMiles;
         } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
           setError("No route found between the selected locations.");
+          return;
         } else {
           setError("Unable to calculate distance. Please check the locations.");
         }
@@ -218,7 +219,11 @@ const Index = () => {
       }));
       setServiceDisable(false);
     } else if (name === "pickupLocation") {
-      const pickupCoordinatesData = airportCoordinates[value] || null;
+      const pickupCoordinatesData =
+        routeData === "toAirport"
+          ? hotelCoordinates[value]
+          : airportCoordinates[value] || null;
+
       setForm((prev) => ({
         ...prev,
         pickupLocation: value,
@@ -226,7 +231,11 @@ const Index = () => {
       }));
       setPickupCoordinates(pickupCoordinatesData);
     } else if (name === "dropLocation") {
-      const dropCoordinatesData = hotelCoordinates[value] || null;
+      const dropCoordinatesData =
+        routeData === "toAirport"
+          ? airportCoordinates[value]
+          : hotelCoordinates[value] || null;
+
       setForm((prev) => ({
         ...prev,
         dropLocation: value,
@@ -402,7 +411,9 @@ const Index = () => {
     await calculateDistance();
 
     if (error) {
-      console.error("Distance calculation failed:", error);
+      toast.error(error);
+      console.log("Distance calculation failed:", error);
+      return;
     }
     setTimeout(() => {
       const totalFare = localStorage.getItem("total_fare");
@@ -517,7 +528,16 @@ const Index = () => {
           </div>
           {/* -----------------Pickup Location------------------ */}
 
-          <FormSelectDropDown arg={{ form, handleChange }} />
+          <FormSelectDropDown
+            arg={{
+              form,
+              handleChange,
+              setForm,
+              routeData,
+              setPickupCoordinates,
+              setDropCoordinates,
+            }}
+          />
 
           {/* -------------Other------------ */}
           <div className="input-group mt-2">
@@ -573,7 +593,7 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               required
-              style={{padding : "6px"}}
+              style={{ padding: "6px" }}
             >
               <option value="">Vehicle Type*</option>
               <option value="118351">Car</option>

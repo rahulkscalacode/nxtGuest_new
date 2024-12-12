@@ -1,0 +1,24 @@
+.stripe-card-container {
+  background-color: #3b3b3b;
+  border: 1px solid #3b3b3b;
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin-top: 10px;
+  width: 100%;
+  color: white;
+}
+
+.stripe-card-container input {
+  background-color: transparent !important; /* Ensure inner input background matches */
+  border: none !important; /* Remove default border */
+}
+
+.stripe-card-container .StripeElement--invalid {
+  border-color: #ff4d4f; /* Highlight invalid input */
+}
+.input-group2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: start;
+  align-items: center;
+}

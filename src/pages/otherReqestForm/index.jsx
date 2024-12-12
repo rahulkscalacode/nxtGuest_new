@@ -108,9 +108,9 @@ const Index = () => {
           console.log("distanceMiles==>", distanceMiles);
           setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
           setError("");
-          return distanceMiles;
         } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
           setError("No route found between the selected locations.");
+          return;
         } else {
           setError("Unable to calculate distance. Please check the locations.");
         }
@@ -395,7 +395,9 @@ const Index = () => {
 
     await calculateDistance();
     if (error) {
-      console.error("Distance calculation failed:", error);
+      toast.error(error);
+      console.log("Distance calculation failed:", error);
+      return;
     }
 
     setTimeout(() => {
@@ -408,7 +410,7 @@ const Index = () => {
           handleSubmit(e); // Submit new data
         }
       } else {
-        console.error("Total fare not set. Cannot proceed.");
+        toast.error("Total fare not set. Cannot proceed.");
       }
     }, 10);
   };
@@ -492,7 +494,7 @@ const Index = () => {
           </div>
           {/* -----------------Pickup Location------------------ */}
 
-          <FormSelectDropDown arg={{ form, handleChange, routeData }} />
+          <FormSelectDropDown arg={{ form, handleChange, setForm, routeData,setPickupCoordinates, setDropCoordinates }} />
 
           {/* -------------Other------------ */}
           <div className="input-group" style={{ marginTop: "4px" }}>

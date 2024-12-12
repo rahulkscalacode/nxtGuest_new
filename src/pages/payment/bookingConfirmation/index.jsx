@@ -12,7 +12,7 @@ import { useLocation } from "react-router-dom";
 
 const Index = () => {
   const cookies = new Cookies();
-  const name = cookies.get("name");
+  const name = cookies.get("userName");
   const phone = cookies.get("phone");
   const id = cookies.get("userId");
   const location = useLocation();

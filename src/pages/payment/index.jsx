@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout2 from "../../components/layout2";
 import "../bookingSummary/index.css";
+import axios from "axios";
 import { TfiPlus } from "react-icons/tfi";
 import AddCardPopup from "./addCardPopup";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -9,97 +10,109 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch } from "react-redux";
 import { userStripeReducer } from "../../components/toolkit/stripe";
 import Cookies from "universal-cookie";
+import CardView from "../../components/creditCardView";
+import { listAllCustomerPaymentMethods } from "../../functions/api/stripe";
 
 const Index = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [listAllPaymentMethod, setListAllPaymentMethod] = useState([]);
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const location = useLocation();
   const { fare } = location.state || {};
-  const userId = cookies.get("userId");
+  const id = cookies.get("userId");
+  const email = cookies.get("useEmail");
+  const [paymentType, setPaymentType] = useState("manual");
+  const [selectedCard, setSelectedCard] = useState("");
+  const [toggleSelect, setToggleSelect] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-
-  const [paymentType, setPaymentType] = useState("manual");
+  const toggleSelectCard = () => {
+    setToggleSelect(!toggleSelect);
+  };
 
   // Handler for radio button change
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
   };
 
-  // payment integration
-  const makePayment = async () => {
-    const stripe = await loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
-
-    const body = {
-      items: [
-        {
-          price_data: {
-            currency: "usd",
-            unit_amount: fare && fare * 100,
-            product_data: {
-              name: "self",
-              images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
-            },
-          },
-          quantity: "1",
-        },
-      ],
-      id: userId,
-    };
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    // Fetch saved payment methods for the user
-    // const paymentMethodsResponse = await fetch(
-    //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
-    //   {
-    //     method: "post",
-    //     headers,
-    //     body: JSON.stringify({ id: userId }),
-    //   }
-    // );
-    // const savedPaymentMethods = await paymentMethodsResponse.json();
-
-    // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
-
-    // Create checkout session
-    const response = await fetch(
-      `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
-      {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(body),
-      }
-    );
-
-    const session = await response.json();
-    dispatch(userStripeReducer(session));
-    console.log("session==>>", session);
-
-    if (session.status === "failed") {
-      toast.error("Login before checkout");
-      navigate("/login");
-    }
-
-    const result = stripe.redirectToCheckout({
-      sessionId: session.checkoutPayment?.id,
-    });
-
-    if (result.error) {
-      toast.error(result.error.message);
-    }
-  };
   const handleCancel = () => {
     navigate("/dashboard");
   };
 
-  console.log("data==>", fare);
+  const listAllPaymentMethords = async () => {
+    await listAllCustomerPaymentMethods({ id })
+      .then((res) => {
+        console.log(res);
+        setListAllPaymentMethod(res.data?.defaultPaymentMethod);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    listAllPaymentMethords();
+  }, [showModal]);
+
+  const selectCard = (card) => {
+    setSelectedCard(card); // Sets the selected card
+  };
+
+  const makePayment = async () => {
+    if (!fare) {
+      navigate("/dashboard");
+      toast.error("An unexpected error occurred in payment. Please try again.");
+      return;
+    }
+
+    if (selectedCard) {
+      // Proceed with saved card
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-payment-intent`,
+          {
+            paymentMethodId: selectedCard.id,
+            amount: fare * 100,
+            email,
+            id: id && id,
+          }
+        );
+
+        if (response.data?.success) {
+          toast.success("Payment Successful!");
+          navigate("/booking-confirmation");
+        } else {
+          toast.error("Payment failed. Please try again.");
+          navigate("/booking-failed");
+        }
+      } catch (error) {
+        console.error("Payment error:", error);
+        toast.error("Payment failed. Please try again.");
+      }
+    } else {
+      // Redirect to Stripe payment page
+      navigate("/stripe-payment", {
+        state: {
+          fare,
+        },
+      });
+    }
+  };
+  useEffect(() => {
+    if (toggleSelect) {
+      if (listAllPaymentMethod) {
+        setSelectedCard(toggleSelect ? listAllPaymentMethod : null);
+      }
+    } else if (!toggleSelect) {
+      setSelectedCard("");
+    }
+  }, [toggleSelect]);
+
+  console.log("data==>", selectedCard && toggleSelect);
   return (
     <Layout2>
       <AddCardPopup toggleModal={toggleModal} showModal={showModal} />
@@ -145,11 +158,19 @@ const Index = () => {
           Saved Cards
         </div>
         {/* -----image */}
-        {paymentType === "manual" ? (
-          <img src="/images/icons/card.png" alt="" className="imgsty" />
-        ) : (
+        {/* {paymentType === "manual" ? ( */}
+        <CardView
+          arg={{
+            listAllPaymentMethod,
+            selectedCard,
+            setSelectedCard,
+            toggleSelectCard,
+            toggleSelect,
+          }}
+        />
+        {/* ) : (
           <div className="mt-3 ms-1 text-danger">No Saved card</div>
-        )}
+        )} */}
       </div>
       {/* --------button------- */}
       <div className="displayContent">
@@ -171,3 +192,69 @@ const Index = () => {
 };
 
 export default Index;
+
+// payment integration
+// const makePayment = async () => {
+//   const stripe = await loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
+
+//   const body = {
+//     items: [
+//       {
+//         price_data: {
+//           currency: "usd",
+//           unit_amount: fare && fare * 100,
+//           product_data: {
+//             name: "self",
+//             images: ["https://nxtguest.vercel.app/images/asset/logo1.png"],
+//           },
+//         },
+//         quantity: "1",
+//       },
+//     ],
+//     id: userId,
+//   };
+
+//   const headers = {
+//     "Content-Type": "application/json",
+//   };
+
+//   // Fetch saved payment methods for the user
+//   // const paymentMethodsResponse = await fetch(
+//   //   `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/list-payment-methords`,
+//   //   {
+//   //     method: "post",
+//   //     headers,
+//   //     body: JSON.stringify({ id: userId }),
+//   //   }
+//   // );
+//   // const savedPaymentMethods = await paymentMethodsResponse.json();
+
+//   // console.log("savedPaymentMethods=>", savedPaymentMethods.paymentMethods.data);
+
+//   // Create checkout session
+//   const response = await fetch(
+//     `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-checkout-session`,
+//     {
+//       method: "POST",
+//       headers: headers,
+//       body: JSON.stringify(body),
+//     }
+//   );
+
+//   const session = await response.json();
+//   dispatch(userStripeReducer(session));
+//   console.log("session==>>", session);
+
+//   if (session.status === "failed") {
+//     toast.error("Login before checkout");
+//     navigate("/login");
+//   }
+
+//   const result = stripe.redirectToCheckout({
+//     sessionId: session.checkoutPayment?.id,
+//   });
+
+//   if (result.error) {
+//     toast.error(result.error.message);
+//   }
+// };

@@ -25,7 +25,7 @@ const Index = () => {
   const userNameC = cookies.get("userName");
 
   // Secret key for encryption (should be stored securely, not hard-coded in production)
-  const SECRET_KEY = "mysecretkey123"; 
+  const SECRET_KEY = "mysecretkey123";
 
   // Load email and password from cookies (if rememberMe is set) and decrypt them
   useEffect(() => {
@@ -33,8 +33,14 @@ const Index = () => {
     const encryptedPassword = cookies.get("rememberMePassword");
 
     if (encryptedEmail && encryptedPassword) {
-      const decryptedEmail = CryptoJS.AES.decrypt(encryptedEmail, SECRET_KEY).toString(CryptoJS.enc.Utf8);
-      const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+      const decryptedEmail = CryptoJS.AES.decrypt(
+        encryptedEmail,
+        SECRET_KEY
+      ).toString(CryptoJS.enc.Utf8);
+      const decryptedPassword = CryptoJS.AES.decrypt(
+        encryptedPassword,
+        SECRET_KEY
+      ).toString(CryptoJS.enc.Utf8);
       setEmail(decryptedEmail);
       setPassword(decryptedPassword);
       setRememberMe(true); // Automatically check "Remember Me" if data exists
@@ -84,21 +90,34 @@ const Index = () => {
           expires: new Date(new Date().getTime() + 7 * 60 * 60 * 1000),
           maxAge: 7 * 60 * 60,
         });
-        cookies.set("userName", res.data.user.email);
+        cookies.set("useEmail", res.data.user.email);
         cookies.set("userId", res.data.user.id);
         cookies.set(
-          "name",
+          "userName",
           res.data.user.firstName + " " + res.data.user.lastName
         );
-        navigate("/dashboard");
+        const userId = cookies.get("userId");
+        if (userId) {
+          navigate("/dashboard");
+        }
         toast.success("You are logged in successfully.");
 
         // Store email and password in encrypted form in cookies if "Remember Me" is checked
         if (rememberMe) {
-          const encryptedEmail = CryptoJS.AES.encrypt(email, SECRET_KEY).toString();
-          const encryptedPassword = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
-          cookies.set("rememberMeEmail", encryptedEmail, { expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) });
-          cookies.set("rememberMePassword", encryptedPassword, { expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) });
+          const encryptedEmail = CryptoJS.AES.encrypt(
+            email,
+            SECRET_KEY
+          ).toString();
+          const encryptedPassword = CryptoJS.AES.encrypt(
+            password,
+            SECRET_KEY
+          ).toString();
+          cookies.set("rememberMeEmail", encryptedEmail, {
+            expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+          });
+          cookies.set("rememberMePassword", encryptedPassword, {
+            expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+          });
         } else {
           cookies.remove("rememberMeEmail");
           cookies.remove("rememberMePassword");

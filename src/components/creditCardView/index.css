@@ -1,0 +1,9 @@
+.rccs__card--unknown > div {
+  background: linear-gradient(25deg, #0f899e, #c4dce5) !important;
+}
+
+.tickClass{
+  position: absolute;
+  right: 4rem;
+  z-index: 99;
+}

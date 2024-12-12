@@ -25,9 +25,13 @@ import FeedbackForm from "../../pages/feedback";
 import TermCondition from "../../pages/terms&Conditions";
 import PrivecyPolicy from "../../pages/privacyPolicy";
 import ReqestSendtoAdmin from "../../pages/groupConfirmationPage";
+import CustomPayment from "../../pages/payment/customPayment";
 import "../../App.css";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardNumberElement } from "@stripe/react-stripe-js";
 
 const Index = () => {
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
   let { pathname } = useLocation();
   const backgroundImage =
     pathname === "/"
@@ -101,7 +105,14 @@ const Index = () => {
         <Route path="/other-request" element={<OtherRequsetForm />} />
         <Route path="/group-request" element={<GroupRequestForm />} />
         <Route path="/booking-summary" element={<BookingSummary />} />
-        <Route path="/payment" element={<Payment />} />
+        <Route
+          path="/payment"
+          element={
+            <Elements stripe={stripePromise}>
+              <Payment />
+            </Elements>
+          }
+        />
         <Route path="/booking-confirmation" element={<BookingConfirmation />} />
         <Route path="/request-to-admin" element={<ReqestSendtoAdmin />} />
         <Route path="/booking-failed" element={<BookingFailed />} />
@@ -111,6 +122,14 @@ const Index = () => {
         <Route path="/booking-details" element={<BookingDetails />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/feedback" element={<FeedbackForm />} />
+        <Route
+          path="/stripe-payment"
+          element={
+            <Elements stripe={stripePromise}>
+              <CustomPayment />{" "}
+            </Elements>
+          }
+        />
         <Route path="/privacy-policy" element={<PrivecyPolicy />} />
         <Route path="/terms-conditions" element={<TermCondition />} />
       </Routes>

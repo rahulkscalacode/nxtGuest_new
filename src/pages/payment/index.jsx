@@ -123,7 +123,7 @@ const Index = () => {
                 type="radio"
                 name="paymentType"
                 value="manual"
-                checked={paymentType === "manual"}
+                checked={!toggleSelect}
                 onChange={handlePaymentTypeChange}
                 style={{ marginRight: "6px" }}
               />

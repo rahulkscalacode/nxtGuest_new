@@ -60,14 +60,18 @@ const Index = () => {
     pickupAutocomplete.addListener("place_changed", () => {
       const place = pickupAutocomplete.getPlace();
       if (place.geometry) {
-        setPickupCoordinates({
+        const coordinates = {
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-        });
-        setForm((prevForm) => ({
-          ...prevForm,
-          pickupLocation: place.formatted_address,
-        }));
+        };
+        if (coordinates) {
+          setForm((prevForm) => ({
+            ...prevForm,
+            pickupLocation: place.formatted_address,
+            pickupCoordinatesData: coordinates,
+          }));
+          setPickupCoordinates(coordinates);
+        }
         setError("");
       } else {
         setError("No details available for the selected place.");
@@ -77,14 +81,18 @@ const Index = () => {
     dropAutocomplete.addListener("place_changed", () => {
       const place = dropAutocomplete.getPlace();
       if (place.geometry) {
-        setDropCoordinates({
+        const coordinates = {
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-        });
-        setForm((prevForm) => ({
-          ...prevForm,
-          dropLocation: place.formatted_address,
-        }));
+        };
+        if (coordinates) {
+          setForm((prevForm) => ({
+            ...prevForm,
+            dropLocation: place.formatted_address,
+            dropCoordinatesData: coordinates,
+          }));
+          setDropCoordinates(coordinates);
+        }
         setError("");
       } else {
         setError("No details available for the selected place.");
@@ -141,8 +149,10 @@ const Index = () => {
   );
 
   useEffect(() => {
-    console.log("Group Received data:", previousData);
+    setPickupCoordinates(previousData?.pickupCoordinatesData);
+    setDropCoordinates(previousData?.dropCoordinatesData);
   }, [previousData]);
+
   const afterTotalFare = localStorage.getItem("total_fare");
 
   const [form, setForm] = useState({
@@ -219,10 +229,13 @@ const Index = () => {
       }));
       setServiceDisable(false);
     } else if (name === "pickupLocation") {
-      const pickupCoordinatesData =
-        routeData === "toAirport"
-          ? hotelCoordinates[value]
-          : airportCoordinates[value] || null;
+      let pickupCoordinatesData = null;
+      if (form.locationType === "select") {
+        pickupCoordinatesData =
+          routeData === "toAirport"
+            ? hotelCoordinates[value]
+            : airportCoordinates[value] || null;
+      }
 
       setForm((prev) => ({
         ...prev,
@@ -231,10 +244,13 @@ const Index = () => {
       }));
       setPickupCoordinates(pickupCoordinatesData);
     } else if (name === "dropLocation") {
-      const dropCoordinatesData =
-        routeData === "toAirport"
-          ? airportCoordinates[value]
-          : hotelCoordinates[value] || null;
+      let dropCoordinatesData = null;
+      if (form.locationType === "select") {
+        dropCoordinatesData =
+          routeData === "toAirport"
+            ? airportCoordinates[value]
+            : hotelCoordinates[value] || null;
+      }
 
       setForm((prev) => ({
         ...prev,
@@ -563,7 +579,7 @@ const Index = () => {
                 form.locationType === "manual" ? "*" : ""
               }`}
               ref={pickupRef}
-              // value={form.locationType === "manual" ? form.pickupLocation : ""}
+              value={form.locationType === "manual" ? form.pickupLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"
@@ -579,7 +595,7 @@ const Index = () => {
                 form.locationType === "manual" ? "*" : ""
               }`}
               ref={dropRef}
-              // value={form.locationType === "manual" ? form.dropLocation : ""}
+              value={form.locationType === "manual" ? form.dropLocation : ""}
               onChange={handleChange}
               disabled={form.locationType !== "manual"}
               className="input-field"

@@ -130,7 +130,7 @@ const Index = () => {
 
   const handleEditBooking = () => {
     const previousRoute = location.state?.previousRoute || "/self-request";
-    navigate(previousRoute, { state: { data: nData } }); // This will navigate to the previous page
+    navigate(previousRoute, { state: { data: { ...nData, total_fare: "" } } }); // This will navigate to the previous page
   };
 
   console.log("summaryData==>", summaryData);

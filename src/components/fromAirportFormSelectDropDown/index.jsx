@@ -54,8 +54,9 @@ const Index = ({
             }}
           >
             <div>
-              {form.pickupLocation ||
-                `Select Location${form.locationType === "select" ? "*" : ""}`}
+              {form.locationType === "select" && form.pickupLocation
+                ? form.pickupLocation
+                : `Select Location${form.locationType === "select" ? "*" : ""}`}
             </div>
             <IoChevronDown />
           </div>
@@ -126,8 +127,9 @@ const Index = ({
             }}
           >
             <div>
-              {form.dropLocation ||
-                `Select Location${form.locationType === "select" ? "*" : ""}`}
+              {form.locationType === "select" && form.dropLocation
+                ? form.dropLocation
+                : `Select Location${form.locationType === "select" ? "*" : ""}`}
             </div>
             <IoChevronDown />
           </div>

@@ -58,10 +58,6 @@ const Index = () => {
     listAllPaymentMethords();
   }, [showModal]);
 
-  const selectCard = (card) => {
-    setSelectedCard(card); // Sets the selected card
-  };
-
   const makePayment = async () => {
     if (!fare) {
       navigate("/dashboard");
@@ -151,7 +147,7 @@ const Index = () => {
             type="radio"
             name="paymentType"
             value="saved"
-            checked={paymentType === "saved"}
+            checked={toggleSelect}
             onChange={handlePaymentTypeChange}
             style={{ marginRight: "6px" }}
           />

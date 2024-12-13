@@ -65,14 +65,18 @@ const Index = () => {
     pickupAutocomplete.addListener("place_changed", () => {
       const place = pickupAutocomplete.getPlace();
       if (place.geometry) {
-        setPickupCoordinates({
+        const coordinates = {
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-        });
-        setForm((prevForm) => ({
-          ...prevForm,
-          pickupLocation: place.formatted_address,
-        }));
+        };
+        if (coordinates) {
+          setForm((prevForm) => ({
+            ...prevForm,
+            pickupLocation: place.formatted_address,
+            pickupCoordinatesData: coordinates,
+          }));
+          setPickupCoordinates(coordinates);
+        }
         setError("");
       } else {
         setError("No details available for the selected place.");
@@ -82,14 +86,18 @@ const Index = () => {
     dropAutocomplete.addListener("place_changed", () => {
       const place = dropAutocomplete.getPlace();
       if (place.geometry) {
-        setDropCoordinates({
+        const coordinates = {
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng(),
-        });
-        setForm((prevForm) => ({
-          ...prevForm,
-          dropLocation: place.formatted_address,
-        }));
+        };
+        if (coordinates) {
+          setForm((prevForm) => ({
+            ...prevForm,
+            dropLocation: place.formatted_address,
+            dropCoordinatesData: coordinates,
+          }));
+          setDropCoordinates(coordinates);
+        }
         setError("");
       } else {
         setError("No details available for the selected place.");
@@ -98,7 +106,9 @@ const Index = () => {
   };
   //-----------------Calculate Distance from google api---------------------
   const calculateDistance = async () => {
+    console.log("1handleFormSubmit==>>>");
     if (pickupCoordinates && dropCoordinates) {
+      console.log("2handleFormSubmit==>>>");
       const origin = `${pickupCoordinates.latitude},${pickupCoordinates.longitude}`;
       const destination = `${dropCoordinates.latitude},${dropCoordinates.longitude}`;
       console.log("origin==>>", origin, destination);
@@ -135,6 +145,7 @@ const Index = () => {
     distance,
     "setPickupCoordinates===>>>",
     pickupCoordinates,
+    "setdropCoordinates===>>>",
     dropCoordinates
   );
 
@@ -146,8 +157,11 @@ const Index = () => {
   );
 
   useEffect(() => {
-    console.log("Received data:", previousData);
+    // console.log("Received data:", previousData);
+    setPickupCoordinates(previousData?.pickupCoordinatesData);
+    setDropCoordinates(previousData?.dropCoordinatesData);
   }, [previousData]);
+
   const afterTotalFare = localStorage.getItem("total_fare");
 
   const [form, setForm] = useState({
@@ -166,8 +180,8 @@ const Index = () => {
     type: "self",
     total_fare:
       (afterTotalFare && afterTotalFare) || previousData?.total_fare || "",
-    pickupCoordinatesData: previousData?.pickupCoordinatesData || null,
-    dropCoordinatesData: previousData?.dropCoordinatesData || null,
+    pickupCoordinatesData: previousData?.pickupCoordinatesData || {},
+    dropCoordinatesData: previousData?.dropCoordinatesData || {},
   });
 
   useEffect(() => {
@@ -221,10 +235,13 @@ const Index = () => {
       }));
       setServiceDisable(false);
     } else if (name === "pickupLocation") {
-      const pickupCoordinatesData =
-        routeData === "toAirport"
-          ? hotelCoordinates[value]
-          : airportCoordinates[value] || null;
+      let pickupCoordinatesData = null;
+      if (form.locationType === "select") {
+        pickupCoordinatesData =
+          routeData === "toAirport"
+            ? hotelCoordinates[value]
+            : airportCoordinates[value] || null;
+      }
 
       setForm((prev) => ({
         ...prev,
@@ -233,10 +250,13 @@ const Index = () => {
       }));
       setPickupCoordinates(pickupCoordinatesData);
     } else if (name === "dropLocation") {
-      const dropCoordinatesData =
-        routeData === "toAirport"
-          ? airportCoordinates[value]
-          : hotelCoordinates[value] || null;
+      let dropCoordinatesData = null;
+      if (form.locationType === "select") {
+        dropCoordinatesData =
+          routeData === "toAirport"
+            ? airportCoordinates[value]
+            : hotelCoordinates[value] || null;
+      }
 
       setForm((prev) => ({
         ...prev,
@@ -321,6 +341,7 @@ const Index = () => {
       }
     }
     const totalFare = localStorage.getItem("total_fare");
+
     const updatedForm = {
       ...form,
       total_fare: totalFare || form.total_fare,
@@ -335,10 +356,7 @@ const Index = () => {
             const serializableData = {
               data: res.data,
             };
-            localStorage.setItem(
-              "guestService",
-              JSON.stringify(serializableData)
-            );
+            localStorage.setItem("guestService", JSON.stringify(updatedForm));
             cookies.set("phone", res.data.data.contactNumber);
             toast.success("Successfully created self service request form.");
             navigate("/booking-summary", {
@@ -497,7 +515,16 @@ const Index = () => {
 
           {/*------------- Form DropDown ---------------*/}
 
-          <FormSelectDropDown arg={{ form, handleChange, setForm, routeData,setPickupCoordinates, setDropCoordinates }} />
+          <FormSelectDropDown
+            arg={{
+              form,
+              handleChange,
+              setForm,
+              routeData,
+              setPickupCoordinates,
+              setDropCoordinates,
+            }}
+          />
 
           {/* -------------Other------------ */}
           <div className="input-group mt-2">

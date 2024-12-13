@@ -124,7 +124,7 @@ const Index = () => {
                 name="paymentType"
                 value="manual"
                 checked={!toggleSelect}
-                onChange={handlePaymentTypeChange}
+                onChange={toggleSelectCard}
                 style={{ marginRight: "6px" }}
               />
               Credit Card
@@ -148,7 +148,7 @@ const Index = () => {
             name="paymentType"
             value="saved"
             checked={toggleSelect}
-            onChange={handlePaymentTypeChange}
+            onChange={toggleSelectCard}
             style={{ marginRight: "6px" }}
           />
           Saved Cards

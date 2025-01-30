@@ -33,7 +33,11 @@ const Index = () => {
     e.preventDefault();
     const { name, value } = e.target;
 
-    if (name === "password" || name === "confirmPassword") {
+    if (name === "firstName" || name === "lastName") {
+      if (/^[A-Za-z]*$/.test(value)) {
+        setUser({ ...user, [name]: value });
+      }
+    } else if (name === "password" || name === "confirmPassword") {
       setUser({ ...user, [name]: value.replace(/\s/g, "") });
     } else {
       setUser({ ...user, [name]: value });
@@ -106,6 +110,8 @@ const Index = () => {
             name="firstName"
             onChange={inputHandler}
             value={user.firstName}
+            pattern="^[A-Za-z]+$"
+            title="Only alphabets are allowed"
             required
           />
           <input
@@ -116,6 +122,8 @@ const Index = () => {
             name="lastName"
             onChange={inputHandler}
             value={user.lastName}
+            pattern="^[A-Za-z]+$"
+            title="Only alphabets are allowed"
           />
           <input
             type="email"

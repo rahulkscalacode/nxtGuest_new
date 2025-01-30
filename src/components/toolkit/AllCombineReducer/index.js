@@ -12,7 +12,7 @@ const persistConfig = {
 };
 
 // Combine your reducers
-const rootReducer = combineReducers({
+const rootReducer = combineReducers({      
   stripe,
   totalFare,
   // Add more reducers here as needed

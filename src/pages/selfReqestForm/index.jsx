@@ -582,12 +582,15 @@ const Index = () => {
               required
               style={{ padding: "6px" }}
             >
-              <option value="">Vehicle Type*</option>
-              <option value="118351">Car</option>
-              <option value="118352">SUV</option>
-              <option value="118353">Escalade</option>
-              <option value="Mini Bus">Mini Bus</option>
-              <option value="Motor Coach">Motor Coach</option>
+              <option value="" disabled>
+                Vehicle Type*
+              </option>
+              <option value="154479">Sedan</option>
+              <option value="155644">SUV</option>
+              <option value="155645">Mini Bus</option>
+              <option value="155647">Motor Coach</option>
+              <option value="155648">Executive Sprinter</option>
+              <option value="155649">VIP Sprinter</option>
               {/* Add options here */}
             </select>
           </div>

@@ -6,7 +6,7 @@ const Loading = () => {
       <div className="loader">
         <div className="loader-logo">
           <img
-            src="/images/asset/logo1.png"
+            src="/images/asset/fav2.png"
             alt="TipStars Logo"
             className="loader-image"
           />

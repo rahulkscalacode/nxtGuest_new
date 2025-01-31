@@ -6,9 +6,9 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "./components/toolkit";
+import { store, persistor } from "./components/toolkit/perSistor";
 import { Provider } from "react-redux";
-import reducer from "./components/toolkit";
+import reducer from "./components/toolkit/perSistor";
 
 // const store = configureStore({
 //   reducer: reducer,

@@ -3,6 +3,7 @@ import stripe from "../stripe";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import totalFare from "../totalFare";
+import loader from "../loader";
 
 // Persist configuration for redux-persist
 const persistConfig = {
@@ -12,10 +13,10 @@ const persistConfig = {
 };
 
 // Combine your reducers
-const rootReducer = combineReducers({      
+const rootReducer = combineReducers({
   stripe,
   totalFare,
-  // Add more reducers here as needed
+  loader,
 });
 
 // Wrap the combined reducers with persistReducer

@@ -88,7 +88,7 @@ const Index = () => {
 
           if (localStorageData) {
             const parsedGuestUser = JSON.parse(localStorageData);
-            const parsedData = parsedGuestUser?.data?.data;
+            const parsedData = parsedGuestUser;
             setBookings({
               Name: parsedData.firstName
                 ? `${parsedData.firstName || "N/A"} ${

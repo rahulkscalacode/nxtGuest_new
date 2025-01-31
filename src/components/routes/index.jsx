@@ -29,6 +29,8 @@ import CustomPayment from "../../pages/payment/customPayment";
 import "../../App.css";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardNumberElement } from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
+import Loading from "../loader";
 
 const Index = () => {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
@@ -39,6 +41,7 @@ const Index = () => {
       : "url(/images/icons/bg2.png)";
 
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+  const { loader } = useSelector((state) => ({ ...state }));
 
   useEffect(() => {
     const handleResize = () => {
@@ -94,6 +97,7 @@ const Index = () => {
   return (
     <div style={isSmallScreen ? {} : routeBackgroundStyle}>
       <ToastContainer theme="dark" autoClose={5000} />
+      {loader && <Loading />}
       <Routes>
         <Route index element={<Home />} />
         <Route path="*" element={<InvalidRoute />} />

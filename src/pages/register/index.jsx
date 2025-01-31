@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout2 from "../../components/layout2";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../functions/api/auth";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
+import { loaderReducer } from "../../components/toolkit/loader";
+import { useDispatch } from "react-redux";
 
 const Index = () => {
   const cookies = new Cookies();
   const navigate = useNavigate();
   const tokenC = cookies.get("token");
   const userNameC = cookies.get("userName");
+  const dispatch = useDispatch();
 
   const [user, setUser] = useState({
     firstName: "",
@@ -19,9 +22,9 @@ const Index = () => {
     confirmPassword: "",
     stripe_user_id: "",
   });
-  const [loginDisabled, setLoginDisabled] = useState(false);
-  // console.log(user.firstName.length);
-  const [loading, setLoading] = useState(false);
+
+  // Store previous form state for comparison
+  const prevUserRef = useRef(user);
 
   useEffect(() => {
     if (tokenC && userNameC) {
@@ -35,19 +38,18 @@ const Index = () => {
 
     if (name === "firstName" || name === "lastName") {
       if (/^[A-Za-z]*$/.test(value)) {
-        setUser({ ...user, [name]: value });
+        setUser((prev) => ({ ...prev, [name]: value }));
       }
     } else if (name === "password" || name === "confirmPassword") {
-      setUser({ ...user, [name]: value.replace(/\s/g, "") });
+      setUser((prev) => ({ ...prev, [name]: value.replace(/\s/g, "") }));
     } else {
-      setUser({ ...user, [name]: value });
+      setUser((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loading) return;
-
+    dispatch(loaderReducer(true));
     const trimmedUser = {
       firstName: user.firstName.trim(),
       lastName: user.lastName.trim(),
@@ -55,48 +57,60 @@ const Index = () => {
       password: user.password.trim(),
       confirmPassword: user.confirmPassword.trim(),
     };
+
     const { firstName, email, password, confirmPassword } = trimmedUser;
+
+    // Check if input values changed from previous state
+    const prevUser = prevUserRef.current;
+    if (
+      firstName === prevUser.firstName &&
+      email === prevUser.email &&
+      password === prevUser.password &&
+      confirmPassword === prevUser.confirmPassword
+    ) {
+      return;
+    }
+
+    // Update previous state reference
+    prevUserRef.current = trimmedUser;
 
     if (!firstName || !email || !password || !confirmPassword) {
       toast.error("Please fill in all required fields.");
-      setLoginDisabled(true);
+      dispatch(loaderReducer(false));
       return;
     }
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long.");
-      setLoginDisabled(true);
+      dispatch(loaderReducer(false));
       return;
     }
-
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
-      setLoginDisabled(true);
+      dispatch(loaderReducer(false));
       return;
     }
 
-    setLoading(true);
-
     try {
+      dispatch(loaderReducer(true));
       const res = await register(trimmedUser);
       if (res.status === 201) {
+        dispatch(loaderReducer(false));
         toast.success("Account created successfully.");
         navigate("/login");
       }
     } catch (err) {
-      setLoginDisabled(true);
+      dispatch(loaderReducer(false));
       console.error(err);
-      if (err.response.status === 409) {
+      if (err.response?.status === 409) {
         toast.error("Email already exists.");
       } else {
         toast.error("Failed to create account.");
       }
     } finally {
-      setLoginDisabled(false);
-      setLoading(false);
+      dispatch(loaderReducer(false));
     }
   };
 
-  console.log("loginDisabled=>", loginDisabled);
   return (
     <Layout2>
       <div>
@@ -157,12 +171,8 @@ const Index = () => {
             value={user.confirmPassword}
             required
           />
-          <button
-            type="submit"
-            className="col-12 login-btn"
-            disabled={loginDisabled}
-          >
-            {loading ? "Creating Account..." : "Create Account"}
+          <button type="submit" className="col-12 login-btn">
+            Create Account
           </button>
         </form>
         <div className="signup-link">

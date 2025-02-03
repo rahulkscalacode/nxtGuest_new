@@ -6,11 +6,13 @@ import { timeFormatter } from "../../components/formatter/timeFormatter";
 import moment from "moment";
 import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../components/toolkit/loader";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const { data } = location.state || {};
   const cookies = new Cookies();
   const tokenUserId = cookies.get("userId");
@@ -31,6 +33,7 @@ const Index = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        dispatch(loaderReducer(true));
         const response = await apiCall(
           "GET",
           "/service/booking-summary",
@@ -59,6 +62,7 @@ const Index = () => {
             "Pickup Time":
               moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
           });
+          dispatch(loaderReducer(false));
         } else {
           setBookings({
             Name: result.firstName
@@ -73,8 +77,10 @@ const Index = () => {
               moment(result && result.time, "HH:mm").format("hh:mm A") || "N/A",
             Fare: result.total_fare ? `$ ${result.total_fare}` : "N/A",
           });
+          dispatch(loaderReducer(false));
         }
       } catch (error) {
+        dispatch(loaderReducer(false));
         console.error(
           "Failed to fetch user details:",
           error.response.data.message

@@ -13,6 +13,8 @@ import CalculatePrice from "../../components/calculatePrice";
 import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
 import airportCoordinates from "../../components/airportCoordinates";
 import hotelCoordinates from "../../components/hotelCoordinates";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../components/toolkit/loader";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const Index = () => {
   const [value, setValue] = useState("00:00");
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
+  const dispatch = useDispatch();
   const [minTime, setMinTime] = useState(today);
   const { routeData } = location.state || {};
 
@@ -266,7 +269,7 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServiceDisable(true);
-
+    dispatch(loaderReducer(true));
     // Construct body object from form data
     if (form) {
       const pickupDateTime = new Date(
@@ -338,9 +341,11 @@ const Index = () => {
 
     if (updatedForm.total_fare) {
       try {
+        dispatch(loaderReducer(true));
         console.log("Payload being sent to API:", updatedForm);
         await otherServiceReqest(updatedForm)
           .then((res) => {
+            dispatch(loaderReducer(false));
             console.log("res=>>", res);
             const serializableData = {
               data: res.data,
@@ -359,10 +364,12 @@ const Index = () => {
             });
           })
           .catch((err) => {
+            dispatch(loaderReducer(false));
             setServiceDisable(true);
             toast.error("Something went wrong!");
           });
       } catch (error) {
+        dispatch(loaderReducer(false));
         setServiceDisable(true);
         toast.error("Something went wrong!", error);
       }
@@ -371,6 +378,7 @@ const Index = () => {
 
   const handleUpdateData = async (e) => {
     e.preventDefault();
+    dispatch(loaderReducer(true));
     const totalFare = localStorage.getItem("total_fare");
     const updatedForm = {
       ...form,
@@ -379,9 +387,11 @@ const Index = () => {
 
     if (updatedForm.total_fare) {
       try {
+        dispatch(loaderReducer(true));
         console.log("Updated Form data before update:", updatedForm);
         await updateServiceForm(updatedForm, previousData._id)
           .then((res) => {
+            dispatch(loaderReducer(false));
             const serializableData = {
               data: res.data,
             };
@@ -400,10 +410,12 @@ const Index = () => {
           })
           .catch((err) => {
             console.log(err);
+            dispatch(loaderReducer(false));
             setServiceDisable(true);
             toast.error("Something went wrong!");
           });
       } catch (error) {
+        dispatch(loaderReducer(false));
         toast.error(error);
         setServiceDisable(true);
       }

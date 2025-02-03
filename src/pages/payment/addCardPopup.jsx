@@ -9,19 +9,23 @@ import {
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../components/toolkit/loader";
 
 const AddCardPopup = ({ toggleModal, showModal }) => {
   const stripe = useStripe();
   const elements = useElements();
   const cookies = new Cookies();
   const email = cookies.get("useEmail");
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
 
   const handleAddCard = async (e) => {
     e.preventDefault();
-    console.log("email=>", email);
+    dispatch(loaderReducer(true));
 
     if (!stripe || !elements) {
+      dispatch(loaderReducer(false));
       toast.error(
         "Stripe is not properly initialized. Please try again later."
       );
@@ -31,6 +35,7 @@ const AddCardPopup = ({ toggleModal, showModal }) => {
     const cardElement = elements.getElement(CardNumberElement);
 
     if (!cardElement) {
+      dispatch(loaderReducer(false));
       toast.error(
         "Card details are not available. Please refresh and try again."
       );
@@ -38,6 +43,7 @@ const AddCardPopup = ({ toggleModal, showModal }) => {
     }
 
     try {
+      dispatch(loaderReducer(true));
       // Create a payment method
       const { paymentMethod, error: paymentMethodError } =
         await stripe.createPaymentMethod({
@@ -50,6 +56,7 @@ const AddCardPopup = ({ toggleModal, showModal }) => {
         });
 
       if (paymentMethodError) {
+        dispatch(loaderReducer(false));
         toast.error(
           paymentMethodError.message || "Failed to create payment method."
         );
@@ -80,14 +87,17 @@ const AddCardPopup = ({ toggleModal, showModal }) => {
         responseData
       );
       if (response.ok && responseData.status === "success") {
+        dispatch(loaderReducer(false));
         toast.success("Card added successfully!");
         toggleModal();
       } else {
         toast.error(
           responseData.message || "Failed to add card. Please try again."
         );
+        dispatch(loaderReducer(false));
       }
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Unexpected error:", error);
       toast.error("An unexpected error occurred. Please try again later.");
     }

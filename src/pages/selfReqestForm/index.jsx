@@ -430,7 +430,7 @@ const Index = () => {
 
   if (form?.total_fare) {
     localStorage.setItem("total_fare", form?.total_fare);
-    dispatch(userTotalFare(form.total_fare));
+    // dispatch(userTotalFare(form.total_fare));
   }
 
   const handleFormSubmit = async (e) => {

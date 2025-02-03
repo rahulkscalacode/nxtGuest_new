@@ -14,11 +14,14 @@ import CalculatePrice from "../../components/calculatePrice";
 import airportCoordinates from "../../components/airportCoordinates";
 import hotelCoordinates from "../../components/hotelCoordinates";
 import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../components/toolkit/loader";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const cookies = new Cookies();
+  const dispatch = useDispatch();
   const [value, setValue] = useState("00:00");
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
@@ -272,7 +275,7 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServiceDisable(true);
-
+    dispatch(loaderReducer(true));
     // Construct body object from form data
     if (form) {
       const pickupDateTime = new Date(
@@ -344,9 +347,11 @@ const Index = () => {
 
     if (updatedForm.total_fare) {
       try {
+        dispatch(loaderReducer(true));
         // console.log("Payload being sent to API:", updatedForm);
         await groupServiceReqest(updatedForm)
           .then((res) => {
+            dispatch(loaderReducer(false));
             console.log("res=>>", res);
             const serializableData = {
               data: res.data,
@@ -365,11 +370,13 @@ const Index = () => {
             });
           })
           .catch((err) => {
+            dispatch(loaderReducer(false));
             console.log(err);
             setServiceDisable(true);
             toast.error("Something went wrong!");
           });
       } catch (error) {
+        dispatch(loaderReducer(false));
         console.log("error=>>>", error);
         setServiceDisable(true);
       }

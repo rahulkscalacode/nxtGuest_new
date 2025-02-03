@@ -6,12 +6,12 @@ import { TfiPlus } from "react-icons/tfi";
 import AddCardPopup from "./addCardPopup";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch } from "react-redux";
 import { userStripeReducer } from "../../components/toolkit/stripe";
 import Cookies from "universal-cookie";
 import CardView from "../../components/creditCardView";
 import { listAllCustomerPaymentMethods } from "../../functions/api/stripe";
+import { loaderReducer } from "../../components/toolkit/loader";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -44,12 +44,15 @@ const Index = () => {
   };
 
   const listAllPaymentMethords = async () => {
+    dispatch(loaderReducer(true));
     await listAllCustomerPaymentMethods({ id })
       .then((res) => {
-        console.log(res);
+        dispatch(loaderReducer(false));
         setListAllPaymentMethod(res.data?.defaultPaymentMethod);
       })
       .catch((err) => {
+        dispatch(loaderReducer(false));
+        // toast.error(err);
         console.log(err);
       });
   };
@@ -59,7 +62,9 @@ const Index = () => {
   }, [showModal]);
 
   const makePayment = async () => {
+    dispatch(loaderReducer(true));
     if (!fare) {
+      dispatch(loaderReducer(false));
       navigate("/dashboard");
       toast.error("An unexpected error occurred in payment. Please try again.");
       return;
@@ -68,6 +73,7 @@ const Index = () => {
     if (selectedCard) {
       // Proceed with saved card
       try {
+        dispatch(loaderReducer(true));
         const response = await axios.post(
           `${process.env.REACT_APP_NXTGUEST_API_URI}/payment/create-payment-intent`,
           {
@@ -79,17 +85,21 @@ const Index = () => {
         );
 
         if (response.data?.success) {
+          dispatch(loaderReducer(false));
           toast.success("Payment Successful!");
           navigate("/booking-confirmation");
         } else {
+          dispatch(loaderReducer(false));
           toast.error("Payment failed. Please try again.");
           navigate("/booking-failed");
         }
       } catch (error) {
+        dispatch(loaderReducer(false));
         console.error("Payment error:", error);
         toast.error("Payment failed. Please try again.");
       }
     } else {
+      dispatch(loaderReducer(false));
       // Redirect to Stripe payment page
       navigate("/stripe-payment", {
         state: {
@@ -98,6 +108,7 @@ const Index = () => {
       });
     }
   };
+  
   useEffect(() => {
     if (toggleSelect) {
       if (listAllPaymentMethod) {

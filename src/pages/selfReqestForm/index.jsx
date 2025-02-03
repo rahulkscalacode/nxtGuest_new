@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"
 import {
   selfserviceReqest,
   updateServiceForm,
@@ -16,7 +16,8 @@ import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
 import airportCoordinates from "../../components/airportCoordinates";
 import hotelCoordinates from "../../components/hotelCoordinates";
 import { useDispatch } from "react-redux";
-import { userTotalFare } from "../../components/toolkit/totalFare";
+import { loaderReducer } from "../../components/toolkit/loader";
+import {userTotalFare} from "../../components/toolkit/totalFare";
 
 // ----------
 const Index = () => {
@@ -106,7 +107,7 @@ const Index = () => {
   };
   //-----------------Calculate Distance from google api---------------------
   const calculateDistance = async () => {
-    console.log("1handleFormSubmit==>>>");
+    dispatch(loaderReducer(true));
     if (pickupCoordinates && dropCoordinates) {
       console.log("2handleFormSubmit==>>>");
       const origin = `${pickupCoordinates.latitude},${pickupCoordinates.longitude}`;
@@ -122,20 +123,24 @@ const Index = () => {
           const distanceMeters = data.rows[0].elements[0].distance.value;
           const distanceMiles = (distanceMeters * 0.000621371).toFixed(2);
 
-          console.log("distanceMiles==>", distanceMiles);
+          dispatch(loaderReducer(false));
           setDistance({ text: `${distanceMiles} miles`, value: distanceMiles });
           setError("");
         } else if (data.rows[0].elements[0].status === "ZERO_RESULTS") {
           setError("No route found between the selected locations.");
+          dispatch(loaderReducer(false));
           return;
         } else {
           setError("Unable to calculate distance. Please check the locations.");
+          dispatch(loaderReducer(false));
         }
       } catch (err) {
         setError("Error calculating distance. Please try again later.");
+        dispatch(loaderReducer(false));
       }
     } else {
       setError("Please select both pickup and drop-off locations.");
+      dispatch(loaderReducer(false));
     }
     return null;
   };
@@ -276,6 +281,7 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServiceDisable(true);
+    dispatch(loaderReducer(true));
 
     // Construct body object from form data
     if (form) {
@@ -349,9 +355,10 @@ const Index = () => {
 
     if (updatedForm.total_fare) {
       try {
-        console.log("Payload being sent to API:", updatedForm);
+        dispatch(loaderReducer(true));
         await selfserviceReqest(updatedForm)
           .then((res) => {
+            dispatch(loaderReducer(false));
             // console.log("res=>>", res);
             const serializableData = {
               data: res.data,
@@ -367,12 +374,12 @@ const Index = () => {
             });
           })
           .catch((err) => {
-            console.log(err);
+            dispatch(loaderReducer(false));
             setServiceDisable(true);
             toast.error("Something went wrong!");
           });
       } catch (error) {
-        // console.log("error=>>>", error);
+        dispatch(loaderReducer(false));
         setServiceDisable(true);
       }
     }
@@ -380,6 +387,7 @@ const Index = () => {
 
   const handleUpdateData = async (e) => {
     e.preventDefault();
+    dispatch(loaderReducer(true));
     const totalFare = localStorage.getItem("total_fare");
     const updatedForm = {
       ...form,
@@ -390,6 +398,7 @@ const Index = () => {
       try {
         await updateServiceForm(updatedForm, previousData._id)
           .then((res) => {
+            dispatch(loaderReducer(false));
             const serializableData = {
               data: res.data,
             };
@@ -407,20 +416,21 @@ const Index = () => {
             });
           })
           .catch((err) => {
-            console.log(err);
+            dispatch(loaderReducer(false));
             setServiceDisable(true);
             toast.error("Something went wrong!");
           });
       } catch (error) {
         setServiceDisable(true);
         toast.error(error);
+        dispatch(loaderReducer(false));
       }
     }
   };
 
   if (form?.total_fare) {
     localStorage.setItem("total_fare", form?.total_fare);
-    dispatch(userTotalFare(form?.total_fare));
+    // dispatch(userTotalFare(form.total_fare));
   }
 
   const handleFormSubmit = async (e) => {
@@ -582,12 +592,15 @@ const Index = () => {
               required
               style={{ padding: "6px" }}
             >
-              <option value="">Vehicle Type*</option>
-              <option value="118351">Car</option>
-              <option value="118352">SUV</option>
-              <option value="118353">Escalade</option>
-              <option value="Mini Bus">Mini Bus</option>
-              <option value="Motor Coach">Motor Coach</option>
+              <option value="" disabled>
+                Vehicle Type*
+              </option>
+              <option value="154479">Sedan</option>
+              <option value="155644">SUV</option>
+              <option value="155645">Mini Bus</option>
+              <option value="155647">Motor Coach</option>
+              <option value="155648">Executive Sprinter</option>
+              <option value="155649">VIP Sprinter</option>
               {/* Add options here */}
             </select>
           </div>

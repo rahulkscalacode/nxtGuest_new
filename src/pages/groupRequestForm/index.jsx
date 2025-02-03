@@ -14,11 +14,14 @@ import CalculatePrice from "../../components/calculatePrice";
 import airportCoordinates from "../../components/airportCoordinates";
 import hotelCoordinates from "../../components/hotelCoordinates";
 import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../components/toolkit/loader";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const cookies = new Cookies();
+  const dispatch = useDispatch();
   const [value, setValue] = useState("00:00");
   const [serviceDisable, setServiceDisable] = useState(false);
   const today = new Date();
@@ -272,7 +275,7 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServiceDisable(true);
-
+    dispatch(loaderReducer(true));
     // Construct body object from form data
     if (form) {
       const pickupDateTime = new Date(
@@ -344,9 +347,11 @@ const Index = () => {
 
     if (updatedForm.total_fare) {
       try {
+        dispatch(loaderReducer(true));
         // console.log("Payload being sent to API:", updatedForm);
         await groupServiceReqest(updatedForm)
           .then((res) => {
+            dispatch(loaderReducer(false));
             console.log("res=>>", res);
             const serializableData = {
               data: res.data,
@@ -365,11 +370,13 @@ const Index = () => {
             });
           })
           .catch((err) => {
+            dispatch(loaderReducer(false));
             console.log(err);
             setServiceDisable(true);
             toast.error("Something went wrong!");
           });
       } catch (error) {
+        dispatch(loaderReducer(false));
         console.log("error=>>>", error);
         setServiceDisable(true);
       }
@@ -611,13 +618,15 @@ const Index = () => {
               required
               style={{ padding: "6px" }}
             >
-              <option value="">Vehicle Type*</option>
-              <option value="118351">Car</option>
-              <option value="118352">SUV</option>
-              <option value="118353">Escalade</option>
-              <option value="Mini Bus">Mini Bus</option>
-              <option value="Motor Coach">Motor Coach</option>
-              {/* Add options here */}
+              <option value="" disabled>
+                Vehicle Type*
+              </option>
+              <option value="154479">Sedan</option>
+              <option value="155644">SUV</option>
+              <option value="155645">Mini Bus</option>
+              <option value="155647">Motor Coach</option>
+              <option value="155648">Executive Sprinter</option>
+              <option value="155649">VIP Sprinter</option>
             </select>
           </div>
 

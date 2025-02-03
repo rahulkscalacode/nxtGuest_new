@@ -5,21 +5,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginApi } from "../../functions/api/auth";
 import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
-import { ClipLoader } from "react-spinners";
 import { createStripeAccount } from "../../functions/api/stripe";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import CryptoJS from "crypto-js"; // Import crypto-js
+import { loaderReducer } from "../../components/toolkit/loader";
+import { useDispatch } from "react-redux";
 
 const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [prevEmail, setPrevEmail] = useState(""); // Store previous email
   const [prevPassword, setPrevPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false); // Add state for remember me
   const [eye, setEye] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cookies = new Cookies();
   const tokenC = cookies.get("token");
   const userNameC = cookies.get("userName");
@@ -78,10 +79,11 @@ const Index = () => {
       return;
     }
 
-    setIsLoading(true);
     try {
+      dispatch(loaderReducer(true));
       const res = await loginApi({ email, password });
       if (res.data.user) {
+        dispatch(loaderReducer(false));
         cookies.set("token", res.data.token.accessToken, {
           expires: new Date(new Date().getTime() + 7 * 60 * 60 * 1000),
           maxAge: 7 * 60 * 60,
@@ -132,18 +134,20 @@ const Index = () => {
           }
         }
       } else {
+        dispatch(loaderReducer(false));
         toast.error("Enter valid user credentials.");
         setPrevEmail(email); // Store current email and password
         setPrevPassword(password);
       }
     } catch (err) {
+      dispatch(loaderReducer(false));
       toast.error(
         err.response?.data?.message || "Incorrect email or password."
       );
       setPrevEmail(email); // Store current email and password
       setPrevPassword(password);
     } finally {
-      setIsLoading(false); // Stop loading
+      dispatch(loaderReducer(false));
     }
   };
 
@@ -216,20 +220,12 @@ const Index = () => {
               Remember Me
             </label>
           </div>
-          <button
-            type="submit"
-            className="col-12 login-btn"
-            disabled={isLoading} // Disable the button if needed
-          >
-            {isLoading ? <ClipLoader color={"#fff"} size={20} /> : "Login"}
+          <button type="submit" className="col-12 login-btn">
+            Login
           </button>
         </form>
         <div className="separator">OR</div>
-        <button
-          className="col-12 guest-btn"
-          onClick={handleGuest}
-          disabled={isLoading}
-        >
+        <button className="col-12 guest-btn" onClick={handleGuest}>
           Book as a Guest
         </button>
         <div className="signup-link">

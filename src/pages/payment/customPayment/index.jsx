@@ -8,6 +8,8 @@ import Layout2 from "../../../components/layout2";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../../components/toolkit/loader";
 
 const Index = () => {
   const stripe = useStripe();
@@ -16,6 +18,7 @@ const Index = () => {
   const cookies = new Cookies();
   const userId = cookies.get("userId");
   const location = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { fare } = location.state || {};
@@ -24,9 +27,10 @@ const Index = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
-
+    dispatch(loaderReducer(true));
     // Check if Stripe and Elements are loaded
     if (!stripe || !elements) {
+      dispatch(loaderReducer(false));
       console.error("Stripe or Elements not loaded");
       setMessage("Stripe is not properly initialized. Please try again later.");
       return;
@@ -37,6 +41,7 @@ const Index = () => {
 
     if (!cardElement) {
       console.error("Card Element not found");
+      dispatch(loaderReducer(false));
       setMessage(
         "Card details are not available. Please refresh and try again."
       );
@@ -44,6 +49,7 @@ const Index = () => {
     }
 
     try {
+      dispatch(loaderReducer(true));
       // Create the payment method
       const { paymentMethod, error: paymentMethodError } =
         await stripe.createPaymentMethod({
@@ -55,6 +61,7 @@ const Index = () => {
         });
 
       if (paymentMethodError) {
+        dispatch(loaderReducer(false));
         console.error("Error creating payment method:", paymentMethodError);
         setMessage(
           paymentMethodError.message ||
@@ -78,11 +85,13 @@ const Index = () => {
 
       // Handle server response
       if (response.data && response.data.success) {
+        dispatch(loaderReducer(false));
         setMessage("Payment Successful!");
         console.log("Payment succeeded:", response.data);
         toast.success("Payment Successful!");
         navigate("/booking-confirmation");
       } else {
+        dispatch(loaderReducer(false));
         console.error("Payment failed:", response.data);
         setMessage(
           response.data.message || "Payment failed. Please try again."
@@ -91,6 +100,7 @@ const Index = () => {
         navigate("/booking-failed");
       }
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Unexpected error:", error);
       setMessage(
         error.response?.data?.message ||

@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
 
 const vehicleTypeMap = {
-  118351: "Car",
-  118352: "SUV",
-  118353: "Escalade",
-  "Motor Coach": "Motor Coach",
+  154479: "Sedan",
+  155644: "SUV",
+  155645: "Mini Bus",
+  155647: "Motor Coach",
+  155648: "Executive Sprinter",
+  155649: "VIP Sprinter",
 };
 
 // Define rates for each vehicle type
 const ratesByVehicleType = {
-  Car: [
+  Sedan: [
     { miles: 10, price: 52.0 },
     { miles: 14, price: 58.0 },
     { miles: 17, price: 63.0 },
@@ -32,7 +34,7 @@ const ratesByVehicleType = {
     { miles: 58, price: 234.0 },
     { miles: 77, price: 260.0 },
   ],
-  Escalade: [
+  "Mini Bus": [
     { miles: 13, price: 82.0 },
     { miles: 17, price: 91.0 },
     { miles: 24, price: 98.0 },
@@ -43,7 +45,39 @@ const ratesByVehicleType = {
     { miles: 58, price: 254.0 },
     { miles: 77, price: 280.0 },
   ],
-  "Motor Coach": [], // Add rates as needed
+  "Motor Coach": [
+    { miles: 13, price: 82.0 },
+    { miles: 17, price: 91.0 },
+    { miles: 24, price: 98.0 },
+    { miles: 28, price: 104.0 },
+    { miles: 37, price: 147.0 },
+    { miles: 41, price: 153.0 },
+    { miles: 54, price: 205.0 },
+    { miles: 58, price: 254.0 },
+    { miles: 77, price: 280.0 },
+  ],
+  "Executive Sprinter": [
+    { miles: 13, price: 82.0 },
+    { miles: 17, price: 91.0 },
+    { miles: 24, price: 98.0 },
+    { miles: 28, price: 104.0 },
+    { miles: 37, price: 147.0 },
+    { miles: 41, price: 153.0 },
+    { miles: 54, price: 205.0 },
+    { miles: 58, price: 254.0 },
+    { miles: 77, price: 280.0 },
+  ],
+  "VIP Sprinter": [
+    { miles: 13, price: 82.0 },
+    { miles: 17, price: 91.0 },
+    { miles: 24, price: 98.0 },
+    { miles: 28, price: 104.0 },
+    { miles: 37, price: 147.0 },
+    { miles: 41, price: 153.0 },
+    { miles: 54, price: 205.0 },
+    { miles: 58, price: 254.0 },
+    { miles: 77, price: 280.0 },
+  ],
 };
 
 // Function to calculate the price based on distance and vehicle type

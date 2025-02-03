@@ -9,6 +9,8 @@ import { listAllCustomerPaymentMethods } from "../../../functions/api/stripe";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loaderReducer } from "../../../components/toolkit/loader";
 
 const Index = () => {
   const cookies = new Cookies();
@@ -16,6 +18,7 @@ const Index = () => {
   const phone = cookies.get("phone");
   const id = cookies.get("userId");
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const { stripe } = useSelector((state) => ({
     ...state,
@@ -36,11 +39,14 @@ const Index = () => {
   };
 
   const listAllPaymentMethords = async () => {
+    dispatch(loaderReducer(true));
     await listAllCustomerPaymentMethods({ id })
       .then((res) => {
+        dispatch(loaderReducer(false));
         console.log(res);
       })
       .catch((err) => {
+        dispatch(loaderReducer(false));
         console.log(err);
       });
   };
@@ -52,13 +58,12 @@ const Index = () => {
   const body = localStorage.getItem("registerdata");
 
   const handleNewReservation = async () => {
+    dispatch(loaderReducer(true));
     const hasRun = localStorage.getItem("hasRunNewReservation");
-
     // Ensure API is called only once
     if (!hasRun && body) {
       try {
         const parsedBody = JSON.parse(body);
-
         // Immediately set the flag before making the API call
         localStorage.setItem("hasRunNewReservation", "true");
 
@@ -77,9 +82,11 @@ const Index = () => {
 
         // Success notification
         toast.success("Successfully created self-service request form.");
+        dispatch(loaderReducer(false));
       } catch (error) {
+        dispatch(loaderReducer(false));
         console.error("Error submitting form:", error);
-        toast.error("Something went wrong in zapier form!");
+        toast.warning("Something went wrong in zapier form!");
         // Reset flag in case of failure
         localStorage.removeItem("hasRunNewReservation");
       }

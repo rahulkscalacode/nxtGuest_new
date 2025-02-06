@@ -4,11 +4,18 @@ import "../contactUs/index.css";
 import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
+import { loaderReducer } from "../../components/toolkit/loader";
+import { useDispatch } from "react-redux";
+
 const FeedbackForm = () => {
   const cookies = new Cookies();
+  const dispatch = useDispatch();
   // const tokenC = cookies.get("token");
   const tokenUserId = cookies.get("userId");
   const [disableBtn, setDisableBtn] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -19,15 +26,47 @@ const FeedbackForm = () => {
   });
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setDisableBtn(false);
+    if (name === "name") {
+      // Allow only alphabets and spaces
+      const regex = /^[A-Za-z\s]*$/;
+      if (!regex.test(value)) return; // Prevent update if invalid input
+    }
+
+    if (name === "email") {
+      // Email validation regex
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(value)) {
+        setErrors((prev) => ({ ...prev, email: "Invalid email address" }));
+      } else {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(loaderReducer(true));
+    if (errors.email || !formData.email) {
+      dispatch(loaderReducer(false));
+      toast.error("Please enter a valid email address.");
+      return;
+    }
     try {
-      const response = await apiCall('POST', '/user/contact-feedback', formData, {}, null, {"user_id": tokenUserId});
-      
-      if(response.data.status === "success"){
+      const response = await apiCall(
+        "POST",
+        "/user/contact-feedback",
+        formData,
+        {},
+        null,
+        { user_id: tokenUserId }
+      );
+
+      if (response.data.status === "success") {
+        dispatch(loaderReducer(false));
         toast.success(response.data.message);
         setFormData({
           name: "",
@@ -38,11 +77,13 @@ const FeedbackForm = () => {
         });
         setDisableBtn(false);
       } else if (response.data.status === "error") {
+        dispatch(loaderReducer(false));
         console.error(response.data.message);
         toast.error(response.data.message);
         setDisableBtn(false);
       }
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
       setDisableBtn(false);
@@ -120,6 +161,7 @@ const FeedbackForm = () => {
                 placeholder="Enter Message"
                 value={formData.message}
                 onChange={handleInputChange}
+                minLength={10}
               ></textarea>
             </div>
           </form>
@@ -169,8 +211,12 @@ const FeedbackForm = () => {
         </button>
         <button
           type="submit"
-          onClick={(e) => {setDisableBtn(true); handleSubmit(e)}}
+          onClick={(e) => {
+            setDisableBtn(true);
+            handleSubmit(e);
+          }}
           className="submit-button1 col-6"
+          disabled={disableBtn}
         >
           Submit
         </button>

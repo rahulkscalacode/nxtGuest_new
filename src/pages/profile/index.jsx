@@ -8,15 +8,19 @@ import EditProfile from "./editImage";
 import Cookies from "universal-cookie";
 import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
+import { loaderReducer } from "../../components/toolkit/loader";
+import { useDispatch } from "react-redux";
+
 const Index = () => {
   const cookies = new Cookies();
+  const dispatch = useDispatch();
   // const tokenC = cookies.get("token");
   const tokenUserId = cookies.get("userId");
   const [edit, setEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Current state values
-  const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState("");   
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
@@ -33,9 +37,9 @@ const Index = () => {
   const [originalCity, setOriginalCity] = useState(city);
   const [originalCountry, setOriginalCountry] = useState(country);
   const [profileImage, setProfileImage] = useState(null);
-  const [disableBtn, setDisableBtn] = useState(false);
 
   const fetchProfileImage = async () => {
+    dispatch(loaderReducer(true));
     try {
       const response = await apiCall(
         "GET",
@@ -49,14 +53,17 @@ const Index = () => {
       );
       const base64Image = response.data.image; // Assuming the response contains a base64 string
       setProfileImage(base64Image);
+      dispatch(loaderReducer(false));
       console.log("base64Image", base64Image);
       console.log("profile image response----->>>>", response);
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Failed to fetch profile image:", error);
     }
   };
 
   const fetchData = async () => {
+    dispatch(loaderReducer(true));
     try {
       const response = await apiCall(
         "GET",
@@ -69,6 +76,7 @@ const Index = () => {
         }
       );
       const user = response.data.user;
+      dispatch(loaderReducer(false));
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setEmail(user.email);
@@ -77,6 +85,7 @@ const Index = () => {
       setCity(user.city);
       setCountry(user.country);
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Failed to fetch user details:", error);
     }
   };
@@ -91,6 +100,7 @@ const Index = () => {
   }, []);
 
   const updateData = async () => {
+    dispatch(loaderReducer(true));
     try {
       const response = await apiCall(
         "PUT",
@@ -112,17 +122,17 @@ const Index = () => {
       );
       // console.log(response.data)
       if (response.data.status === "success") {
+        dispatch(loaderReducer(false));
         toast.success(response.data.message);
         setEdit(false);
-        setDisableBtn(false);
       } else if (response.data.status === "error") {
+        dispatch(loaderReducer(false));
         console.error(response.data.message);
-        setDisableBtn(false);
       }
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Failed to update user details:", error);
       toast.error(error);
-      setDisableBtn(false);
     }
   };
 
@@ -150,7 +160,6 @@ const Index = () => {
     setCity(originalCity);
     setCountry(originalCountry);
     setEdit(false);
-    setDisableBtn(false);
   };
 
   const openModal = () => {
@@ -159,6 +168,17 @@ const Index = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const validateTextInput = (value) => {
+    const regex = /^[A-Za-z\s]+$/;
+    return regex.test(value);
+  };
+
+  const handleTextInputChange = (setter, value) => {
+    if (validateTextInput(value) || value === "") {
+      setter(value);
+    }
   };
 
   return (
@@ -205,7 +225,9 @@ const Index = () => {
                 <div>First Name : </div>
                 <input
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) =>
+                    handleTextInputChange(setFirstName, e.target.value)
+                  }
                   className="input-field"
                   placeholder="Enter First Name"
                 />
@@ -214,7 +236,9 @@ const Index = () => {
                 <div>Last Name : </div>
                 <input
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) =>
+                    handleTextInputChange(setLastName, e.target.value)
+                  }
                   className="input-field"
                   placeholder="Enter Last Name"
                 />
@@ -257,6 +281,7 @@ const Index = () => {
                   // onChange={(e) => setContact(e.target.value)}
                   className="input-field"
                   placeholder="Enter Contact"
+                  maxLength={13}
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -272,7 +297,9 @@ const Index = () => {
                 <div>City : </div>
                 <input
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) =>
+                    handleTextInputChange(setCity, e.target.value)
+                  }
                   className="input-field"
                   placeholder="Enter City"
                 />
@@ -281,7 +308,9 @@ const Index = () => {
                 <div>Country : </div>
                 <input
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  onChange={(e) =>
+                    handleTextInputChange(setCountry, e.target.value)
+                  }
                   className="input-field"
                   placeholder="Enter Country"
                 />
@@ -325,9 +354,7 @@ const Index = () => {
             </button>
             <button
               className="proceedPay"
-              disabled={disableBtn}
               onClick={() => {
-                setDisableBtn(true);
                 updateData();
               }}
             >

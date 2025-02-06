@@ -3,10 +3,20 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
+import { loaderReducer } from "../../components/toolkit/loader";
+import { useDispatch } from "react-redux";
 
 const Index = ({
-  arg: { openModal, closeModal, isModalOpen, setIsModalOpen, profileImage, fetchProfileImage },
+  arg: {
+    openModal,
+    closeModal,
+    isModalOpen,
+    setIsModalOpen,
+    profileImage,
+    fetchProfileImage,
+  },
 }) => {
+  const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const cookies = new Cookies();
@@ -25,6 +35,7 @@ const Index = ({
   };
 
   const handleUpdate = async () => {
+    dispatch(loaderReducer(true));
     try {
       const formData = new FormData();
       formData.append("profilePicture", selectedFile);
@@ -41,14 +52,17 @@ const Index = ({
       );
 
       if (response.data.status === "success") {
+        dispatch(loaderReducer(false));
         toast.success(response.data.message);
         setIsModalOpen(false);
         fetchProfileImage();
-      } else if(response.data.status === "error") {
+      } else if (response.data.status === "error") {
+        dispatch(loaderReducer(false));
         console.error(response.data.message);
         toast.error(response.data.message);
       }
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Failed to update profile picture:", error);
       toast.error("Failed to update profile picture");
     }
@@ -81,7 +95,14 @@ const Index = ({
               onChange={handleFileChange}
             />
             <ButtonWrapper>
-              <CancelButton onClick={() => {setIsModalOpen(false);setPreview(null)}}>Cancel</CancelButton>
+              <CancelButton
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setPreview(null);
+                }}
+              >
+                Cancel
+              </CancelButton>
               <UpdateButton onClick={handleUpdate}>Update</UpdateButton>
             </ButtonWrapper>
           </ModalContainer>

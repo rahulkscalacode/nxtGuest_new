@@ -1,42 +1,36 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Home from "../../pages/home";
+import Login from "../../pages/login";
+import Register from "../../pages/register";
+import DashBoard from "../../pages/dashboard";
+import InvalidRoute from "../../pages/invalidRoute";
+import Role from "../../pages/role";
+import SelfRequestform from "../../pages/selfReqestForm";
+import OtherRequsetForm from "../../pages/otherReqestForm";
+import GroupRequestForm from "../../pages/groupRequestForm";
+import BookingSummary from "../../pages/bookingSummary";
+import Payment from "../../pages/payment";
+import BookingConfirmation from "../../pages/payment/bookingConfirmation";
+import BookingFailed from "../../pages/payment/bookingFailed";
+import AboutUs from "../../pages/aboutUs";
+import Profile from "../../pages/profile";
+import BookingHistory from "../../pages/bookingHistory";
+import BookingDetails from "../../pages/bookingHistory/bookingDetails";
+import ContactUs from "../../pages/contactUs";
+import FeedbackForm from "../../pages/feedback";
+import TermCondition from "../../pages/terms&Conditions";
+import PrivecyPolicy from "../../pages/privacyPolicy";
+import ReqestSendtoAdmin from "../../pages/groupConfirmationPage";
+import CustomPayment from "../../pages/payment/customPayment";
+import "../../App.css";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardNumberElement } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
 import Loading from "../loader";
-import "../../App.css";
-
-const Home = lazy(() => import("../../pages/home"));
-const Login = lazy(() => import("../../pages/login"));
-const Register = lazy(() => import("../../pages/register"));
-const DashBoard = lazy(() => import("../../pages/dashboard"));
-const InvalidRoute = lazy(() => import("../../pages/invalidRoute"));
-const Role = lazy(() => import("../../pages/role"));
-const SelfRequestform = lazy(() => import("../../pages/selfReqestForm"));
-const OtherRequsetForm = lazy(() => import("../../pages/otherReqestForm"));
-const GroupRequestForm = lazy(() => import("../../pages/groupRequestForm"));
-const BookingSummary = lazy(() => import("../../pages/bookingSummary"));
-const Payment = lazy(() => import("../../pages/payment"));
-const BookingConfirmation = lazy(() =>
-  import("../../pages/payment/bookingConfirmation")
-);
-const BookingFailed = lazy(() => import("../../pages/payment/bookingFailed"));
-const AboutUs = lazy(() => import("../../pages/aboutUs"));
-const Profile = lazy(() => import("../../pages/profile"));
-const BookingHistory = lazy(() => import("../../pages/bookingHistory"));
-const BookingDetails = lazy(() =>
-  import("../../pages/bookingHistory/bookingDetails")
-);
-const ContactUs = lazy(() => import("../../pages/contactUs"));
-const FeedbackForm = lazy(() => import("../../pages/feedback"));
-const TermCondition = lazy(() => import("../../pages/terms&Conditions"));
-const PrivecyPolicy = lazy(() => import("../../pages/privacyPolicy"));
-const ReqestSendtoAdmin = lazy(() =>
-  import("../../pages/groupConfirmationPage")
-);
-const CustomPayment = lazy(() => import("../../pages/payment/customPayment"));
 
 const Index = () => {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
@@ -104,50 +98,45 @@ const Index = () => {
     <div style={isSmallScreen ? {} : routeBackgroundStyle}>
       <ToastContainer theme="dark" autoClose={5000} />
       {loader && <Loading />}
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path="*" element={<InvalidRoute />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<DashBoard />} />
-          <Route path="/role" element={<Role />} />
-          <Route path="/self-request" element={<SelfRequestform />} />
-          <Route path="/other-request" element={<OtherRequsetForm />} />
-          <Route path="/group-request" element={<GroupRequestForm />} />
-          <Route path="/booking-summary" element={<BookingSummary />} />
-          <Route
-            path="/payment"
-            element={
-              <Elements stripe={stripePromise}>
-                <Payment />
-              </Elements>
-            }
-          />
-          <Route
-            path="/booking-confirmation"
-            element={<BookingConfirmation />}
-          />
-          <Route path="/request-to-admin" element={<ReqestSendtoAdmin />} />
-          <Route path="/booking-failed" element={<BookingFailed />} />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/booking-history" element={<BookingHistory />} />
-          <Route path="/booking-details" element={<BookingDetails />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/feedback" element={<FeedbackForm />} />
-          <Route
-            path="/stripe-payment"
-            element={
-              <Elements stripe={stripePromise}>
-                <CustomPayment />{" "}
-              </Elements>
-            }
-          />
-          <Route path="/privacy-policy" element={<PrivecyPolicy />} />
-          <Route path="/terms-conditions" element={<TermCondition />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="*" element={<InvalidRoute />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/role" element={<Role />} />
+        <Route path="/self-request" element={<SelfRequestform />} />
+        <Route path="/other-request" element={<OtherRequsetForm />} />
+        <Route path="/group-request" element={<GroupRequestForm />} />
+        <Route path="/booking-summary" element={<BookingSummary />} />
+        <Route
+          path="/payment"
+          element={
+            <Elements stripe={stripePromise}>
+              <Payment />
+            </Elements>
+          }
+        />
+        <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+        <Route path="/request-to-admin" element={<ReqestSendtoAdmin />} />
+        <Route path="/booking-failed" element={<BookingFailed />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/booking-history" element={<BookingHistory />} />
+        <Route path="/booking-details" element={<BookingDetails />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
+        <Route
+          path="/stripe-payment"
+          element={
+            <Elements stripe={stripePromise}>
+              <CustomPayment />{" "}
+            </Elements>
+          }
+        />
+        <Route path="/privacy-policy" element={<PrivecyPolicy />} />
+        <Route path="/terms-conditions" element={<TermCondition />} />
+      </Routes>
     </div>
   );
 };

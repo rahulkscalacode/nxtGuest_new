@@ -4,16 +4,7 @@
   font-size: 20px;
   font-weight: 700;
 }
-.input-field {
-  border: none;
-  border-radius: 5px;
-  padding: 0.5rem;
-  margin-top: 1rem;
-  color: white;
-  border-radius: 5px;
-  border: 1px solid #272727;
-  background: #272727 !important;
-}
+
 .input-field:focus {
   background: #272727;
   color: white;

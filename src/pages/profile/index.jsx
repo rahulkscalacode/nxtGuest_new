@@ -20,7 +20,7 @@ const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Current state values
-  const [firstName, setFirstName] = useState("");   
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");

@@ -11,7 +11,7 @@ const Index = () => {
       <Link to="/privacy-policy">
         <div style={{ color: "white" }}>Privacy Policy</div>
       </Link>|
-      <Link to="/aboutus">
+      <Link to="/about-us">
         <div style={{ color: "white" }}>About Us</div>
       </Link>
     </div>

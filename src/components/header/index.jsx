@@ -9,7 +9,7 @@ const Index = ({
   return (
     <div style={{ borderBottom: "1px solid #474747" }}>
       <div
-        className="d-flex align-items-center justify-content-center p-3"
+        className="d-flex align-items-center justify-content-center p-3 position-relative"
         onClick={closeSidebarOnMainClick}
       >
         <RxHamburgerMenu

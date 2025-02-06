@@ -37,3 +37,48 @@ body {
 a {
   text-decoration: none !important;
 }
+
+.inputcss {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 0.5rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+.input-field {
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  color: white;
+  border-radius: 5px;
+  border: 1px solid #272727;
+  background: #272727 !important;
+}
+.proceedPay {
+  border-radius: 5px;
+  background: #fbc810;
+  color: #000;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  /* width: 11rem; */
+  padding: 0.3rem;
+  border: none;
+}
+.editBook {
+  border-radius: 5px;
+  border: 1px solid #fff;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  /* width: 11rem; */
+  padding: 0.3rem;
+}
+.btncss {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}

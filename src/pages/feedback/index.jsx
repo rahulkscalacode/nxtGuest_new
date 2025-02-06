@@ -60,7 +60,7 @@ const FeedbackForm = () => {
       toast.error("Please enter a valid email address.");
       return;
     }
-    if (!formData.message){
+    if (!formData.message) {
       dispatch(loaderReducer(false));
       toast.error("Please enter message");
       return;

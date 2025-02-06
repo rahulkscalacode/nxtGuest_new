@@ -50,12 +50,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <img src="/images/icons/Car.png" alt="" /> Booking History
           </div>
         </Link>
-        <Link to="/contactus">
+        <Link to="/contact-us">
           <div className="menu-item">
             <img src="/images/icons/call.png" alt="" /> Contact Us
           </div>
         </Link>
-        <Link to="/aboutus">
+        <Link to="/about-us">
           <div className="menu-item">
             <img src="/images/icons/Question.png" alt="" /> About Us
           </div>

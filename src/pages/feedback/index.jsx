@@ -50,11 +50,22 @@ const FeedbackForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(loaderReducer(true));
+    if (!formData.name) {
+      dispatch(loaderReducer(false));
+      toast.error("Please enter a valid name.");
+      return;
+    }
     if (errors.email || !formData.email) {
       dispatch(loaderReducer(false));
       toast.error("Please enter a valid email address.");
       return;
     }
+    if (!formData.message){
+      dispatch(loaderReducer(false));
+      toast.error("Please enter message");
+      return;
+    }
+
     try {
       const response = await apiCall(
         "POST",
@@ -113,12 +124,13 @@ const FeedbackForm = () => {
               </label>
               <input
                 type="text"
-                placeholder="Enter Name"
+                placeholder="Enter Name*"
                 className="col-9 input-field1"
                 autoComplete="new-email"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="row">
@@ -127,7 +139,7 @@ const FeedbackForm = () => {
               </label>
               <input
                 type="email"
-                placeholder="Enter Email Address"
+                placeholder="Enter Email Address*"
                 className="col-9 input-field1"
                 autoComplete="new-email"
                 name="email"
@@ -158,7 +170,7 @@ const FeedbackForm = () => {
                 id="message"
                 name="message"
                 className="col-9 input-field1"
-                placeholder="Enter Message"
+                placeholder="Enter Message*"
                 value={formData.message}
                 onChange={handleInputChange}
                 minLength={10}

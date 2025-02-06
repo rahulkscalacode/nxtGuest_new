@@ -4,10 +4,18 @@ import Layout from "../../components/layout";
 import { apiCall } from "../../functions/api/apiGlobal";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
+import { loaderReducer } from "../../components/toolkit/loader";
+import { useDispatch } from "react-redux";
+
 const Index = () => {
   const cookies = new Cookies();
   // const tokenC = cookies.get("token");
   const tokenUserId = cookies.get("userId");
+  const [disableBtn, setDisableBtn] = useState(false);
+  const dispatch = useDispatch();
+  const [errors, setErrors] = useState({
+    email: "",
+  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,14 +25,35 @@ const Index = () => {
     message: "",
     type: "contact",
   });
-  const [disableBtn, setDisableBtn] = useState(false);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setDisableBtn(false);
+    if (name === "name") {
+      const regex = /^[A-Za-z\s]*$/;
+      if (!regex.test(value)) return;
+    }
+
+    if (name === "email") {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(value)) {
+        setErrors((prev) => ({ ...prev, email: "Invalid email address" }));
+      } else {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(loaderReducer(true));
+    if (errors.email || !formData.email) {
+      dispatch(loaderReducer(false));
+      toast.error("Please enter a valid email address.");
+      return;
+    }
     try {
       const response = await apiCall(
         "POST",
@@ -36,6 +65,7 @@ const Index = () => {
       );
 
       if (response.data.status === "success") {
+        dispatch(loaderReducer(false));
         toast.success(response.data.message);
         setFormData({
           name: "",
@@ -48,10 +78,12 @@ const Index = () => {
         setDisableBtn(false);
       } else if (response.data.status === "error") {
         console.error(response.data.message);
+        dispatch(loaderReducer(false));
         toast.error(response.data.message);
         setDisableBtn(false);
       }
     } catch (error) {
+      dispatch(loaderReducer(false));
       console.error("Failed to submit feedback:", error);
       toast.error("Failed to submit feedback");
       setDisableBtn(false);
@@ -119,12 +151,13 @@ const Index = () => {
               </label>
               <input
                 type="text"
-                placeholder="Enter Name"
+                placeholder="Enter Name*"
                 className="col-9 input-field1"
                 autoComplete="new-email"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="row">
@@ -133,12 +166,13 @@ const Index = () => {
               </label>
               <input
                 type="email"
-                placeholder="Enter Email Address"
+                placeholder="Enter Email Address*"
                 className="col-9 input-field1"
                 autoComplete="new-email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="row">
@@ -161,12 +195,12 @@ const Index = () => {
               </label>
               <input
                 type="tel"
-                placeholder="Enter phone number "
+                placeholder="Enter phone number*"
                 className="col-9 input-field1 no-spinner"
                 autoComplete="new-email"
                 name="phone"
                 value={formData.phone}
-                // onChange={handleInputChange}
+                maxLength={15}
                 onChange={(e) => {
                   const newValue = e.target.value.replace(/\D/g, "");
                   setFormData((prevData) => ({
@@ -179,7 +213,7 @@ const Index = () => {
                     e.preventDefault();
                   }
                 }}
-                min="0"
+                required
               />
             </div>
             <div className="row">
@@ -192,7 +226,9 @@ const Index = () => {
                 className="col-9 input-field1"
                 value={formData.message}
                 onChange={handleInputChange}
-                placeholder="Enter message"
+                placeholder="Enter message*"
+                minLength={10}
+                required
               ></textarea>
             </div>
             <div className="d-flex gap-2 mt-4">

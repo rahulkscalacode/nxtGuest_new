@@ -51,7 +51,9 @@ const Index = () => {
           user_id: tokenUserId, // Pass tokenUserId in headers
         }
       );
+
       const base64Image = response.data.image; // Assuming the response contains a base64 string
+      console.log("response==>", response, base64Image);
       setProfileImage(base64Image);
       dispatch(loaderReducer(false));
       console.log("base64Image", base64Image);

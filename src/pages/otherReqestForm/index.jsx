@@ -15,7 +15,7 @@ import airportCoordinates from "../../components/airportCoordinates";
 import hotelCoordinates from "../../components/hotelCoordinates";
 import { useDispatch } from "react-redux";
 import { loaderReducer } from "../../components/toolkit/loader";
-import { validateEmail } from "../../validations";
+import { validateName, validateEmail } from "../../validations";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -347,6 +347,12 @@ const Index = () => {
       total_fare: totalFare || form.total_fare,
     };
 
+    //No name validation
+    if (updatedForm?.firstName.trim().length === 0) {
+      dispatch(loaderReducer(false));
+      return toast.error("First name is required!");
+    }
+
     if (updatedForm.total_fare) {
       try {
         dispatch(loaderReducer(true));
@@ -392,6 +398,12 @@ const Index = () => {
       ...form,
       total_fare: totalFare || form.total_fare,
     };
+
+    //No name validation
+    if (updatedForm?.firstName.trim().length === 0) {
+      dispatch(loaderReducer(false));
+      return toast.error("First name is required!");
+    }
 
     if (updatedForm.total_fare) {
       try {
@@ -459,7 +471,7 @@ const Index = () => {
     }, 10);
   };
 
-  console.log("form==>>", form);
+  // console.log("form==>>", form);
   return (
     <Layout1 footer={<Footer />}>
       <div className="form-wrapper">
@@ -474,7 +486,8 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              //   style={{ marginTop: "1px", padding: "5px" }}
+              minLength={2}
+              maxLength={25}
               required
             />
             <input
@@ -485,7 +498,6 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
-              //   style={{ marginTop: "1px", padding: "5px" }}
             />
           </div>
           <div className="">
@@ -523,6 +535,8 @@ const Index = () => {
               className="input-field"
               autoComplete="new-email"
               required
+              minLength={2}
+              maxLength={30}
             />
           </div>
           <div className="">

@@ -16,6 +16,7 @@ import hotelCoordinates from "../../components/hotelCoordinates";
 import FormSelectDropDown from "../../components/fromAirportFormSelectDropDown";
 import { useDispatch } from "react-redux";
 import { loaderReducer } from "../../components/toolkit/loader";
+import { validateEmail } from "../../validations";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -221,6 +222,13 @@ const Index = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    if (name === "groupName") {
+      const regex = /^[A-Za-z\s]*$/;
+      if (!regex.test(value)) return;
+    } else if (name === "email") {
+      setError(validateEmail(value));
+    }
+
     if (name === "locationType") {
       setForm((prev) => ({
         ...prev,
@@ -345,6 +353,12 @@ const Index = () => {
       total_fare: totalFare || form.total_fare,
     };
 
+    //No name validation
+    if (updatedForm?.groupName.trim().length === 0) {
+      dispatch(loaderReducer(false));
+      return toast.error("First name is required!");
+    }
+
     if (updatedForm.total_fare) {
       try {
         dispatch(loaderReducer(true));
@@ -390,6 +404,12 @@ const Index = () => {
       ...form,
       total_fare: totalFare || form.total_fare,
     };
+
+    //No name validation
+    if (updatedForm?.groupName.trim().length === 0) {
+      dispatch(loaderReducer(false));
+      return toast.error("First name is required!");
+    }
 
     if (updatedForm.total_fare) {
       try {
@@ -469,6 +489,8 @@ const Index = () => {
               onChange={handleChange}
               className="input-field"
               autoComplete="new-email"
+              minLength={2}
+              maxLength={25}
               required
             />
           </div>
@@ -503,6 +525,8 @@ const Index = () => {
               className="input-field"
               autoComplete="new-email"
               required
+              minLength={2}
+              maxLength={25}
             />
           </div>
 

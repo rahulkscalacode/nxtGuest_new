@@ -1,10 +1,9 @@
 export const validateName = (name) => {
-  if (!name || name.trim() === "") {
-    return "Name is required.";
-  }
+  console.log("validateName==>", name); 
 
-  const nameRegex = /^[A-Za-z\s]{2,50}$/;
-  if (!nameRegex.test(name)) return;
+  if (!name || name.trim() === "") {
+    return "First name is required!";
+  }
 };
 
 //validateEmail.js
@@ -13,6 +12,7 @@ export const validateEmail = (email) => {
     return "Email is required.";
   }
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
   if (!emailRegex.test(email)) {
     return "Invalid email format.";
   }

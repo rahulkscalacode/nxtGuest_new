@@ -360,6 +360,11 @@ const Index = () => {
       ...form,
       total_fare: totalFare || form.total_fare,
     };
+    //No name validation
+    if (updatedForm?.firstName.trim().length === 0) {
+      dispatch(loaderReducer(false));
+      return toast.error("First name is required!");
+    }
 
     if (updatedForm.total_fare) {
       try {
@@ -401,6 +406,12 @@ const Index = () => {
       ...form,
       total_fare: totalFare || form.total_fare,
     };
+
+    //No name validation
+    if (updatedForm?.firstName.trim().length === 0) {
+      dispatch(loaderReducer(false));
+      return toast.error("First name is required!");
+    }
 
     if (updatedForm.total_fare) {
       try {
@@ -482,6 +493,8 @@ const Index = () => {
               className="input-field"
               autoComplete="new-email"
               required
+              minLength={2}
+              maxLength={25}
             />
             <input
               type="text"
@@ -528,6 +541,8 @@ const Index = () => {
               className="input-field"
               autoComplete="new-email"
               required
+              minLength={2}
+              maxLength={30}
             />
           </div>
 

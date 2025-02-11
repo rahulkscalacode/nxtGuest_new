@@ -15,6 +15,7 @@ import airportCoordinates from "../../components/airportCoordinates";
 import hotelCoordinates from "../../components/hotelCoordinates";
 import { useDispatch } from "react-redux";
 import { loaderReducer } from "../../components/toolkit/loader";
+import { validateEmail } from "../../validations";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -216,6 +217,13 @@ const Index = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "firstName" || name === "lastName") {
+      const regex = /^[A-Za-z\s]*$/;
+      if (!regex.test(value)) return;
+    } else if (name === "email") {
+      setError(validateEmail(value));
+    }
 
     if (name === "locationType") {
       setForm((prev) => ({

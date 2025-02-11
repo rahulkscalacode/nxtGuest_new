@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Sidebar from "../sidebar";
 import { Link } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 const Index = ({
   arg: { toggleSidebar, isSidebarOpen, closeSidebarOnMainClick },
 }) => {
+  const cookies = new Cookies();
+  const tokenC = cookies.get("token");
   return (
     <div style={{ borderBottom: "1px solid #474747" }}>
       <div
@@ -21,7 +24,7 @@ const Index = ({
           }}
           onClick={toggleSidebar}
         />
-        <Link to="/">
+        <Link to={tokenC ? "/dashboard" : "/"}>
           <img
             src="/images/asset/logo1.png"
             alt="Logo"

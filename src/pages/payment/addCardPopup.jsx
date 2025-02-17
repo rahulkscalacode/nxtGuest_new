@@ -42,6 +42,11 @@ const AddCardPopup = ({ toggleModal, showModal }) => {
       return;
     }
 
+    if (name) {
+      const regex = /^[A-Za-z\s]*$/;
+      if (!regex.test(name)) return;
+    }
+
     try {
       dispatch(loaderReducer(true));
       // Create a payment method
@@ -197,7 +202,10 @@ const AddCardPopup = ({ toggleModal, showModal }) => {
               required
               value={name}
               placeholder="Enter name"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                const newValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
+                setName(newValue);
+              }}
             />
           </div>
         </div>

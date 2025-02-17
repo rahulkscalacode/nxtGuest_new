@@ -454,6 +454,7 @@ const Index = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    
     await calculateDistance();
 
     if (error) {

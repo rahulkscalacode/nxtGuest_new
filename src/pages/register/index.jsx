@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import { loaderReducer } from "../../components/toolkit/loader";
 import { useDispatch } from "react-redux";
+import { validateEmail } from "../../validations";
 
 const Index = () => {
   const cookies = new Cookies();
@@ -50,6 +51,7 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(loaderReducer(true));
+
     const trimmedUser = {
       firstName: user.firstName.trim(),
       lastName: user.lastName.trim(),
@@ -76,6 +78,13 @@ const Index = () => {
 
     if (!firstName || !email || !password || !confirmPassword) {
       toast.error("Please fill in all required fields.");
+      dispatch(loaderReducer(false));
+      return;
+    }
+    //validate email error
+    const emailError = validateEmail(email);
+    if (emailError) {
+      toast.error(emailError);
       dispatch(loaderReducer(false));
       return;
     }

@@ -14,6 +14,7 @@ const Index = ({
     setIsModalOpen,
     profileImage,
     fetchProfileImage,
+    setServiceDisable,
   },
 }) => {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ const Index = ({
 
   const handleUpdate = async () => {
     dispatch(loaderReducer(true));
+    setServiceDisable(false);
     try {
       const formData = new FormData();
       formData.append("profilePicture", selectedFile);

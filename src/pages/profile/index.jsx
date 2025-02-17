@@ -18,6 +18,7 @@ const Index = () => {
   const tokenUserId = cookies.get("userId");
   const [edit, setEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [serviceDisable, setServiceDisable] = useState(false);
 
   // Current state values
   const [firstName, setFirstName] = useState("");
@@ -103,6 +104,12 @@ const Index = () => {
 
   const updateData = async () => {
     dispatch(loaderReducer(true));
+    setServiceDisable(true);
+    if (contact.length < 8) {
+      dispatch(loaderReducer(false));
+      toast.error("Contact number must be at least 7 digits long.");
+      return;
+    }
     try {
       const response = await apiCall(
         "PUT",
@@ -128,10 +135,12 @@ const Index = () => {
         toast.success(response.data.message);
         setEdit(false);
       } else if (response.data.status === "error") {
+        setServiceDisable(true);
         dispatch(loaderReducer(false));
-        console.error(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
+      setServiceDisable(true);
       dispatch(loaderReducer(false));
       console.error("Failed to update user details:", error);
       toast.error(error);
@@ -227,9 +236,10 @@ const Index = () => {
                 <div>First Name : </div>
                 <input
                   value={firstName}
-                  onChange={(e) =>
-                    handleTextInputChange(setFirstName, e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleTextInputChange(setFirstName, e.target.value);
+                    setServiceDisable(false);
+                  }}
                   className="input-field"
                   placeholder="Enter First Name"
                 />
@@ -238,9 +248,10 @@ const Index = () => {
                 <div>Last Name : </div>
                 <input
                   value={lastName}
-                  onChange={(e) =>
-                    handleTextInputChange(setLastName, e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleTextInputChange(setLastName, e.target.value);
+                    setServiceDisable(false);
+                  }}
                   className="input-field"
                   placeholder="Enter Last Name"
                 />
@@ -264,6 +275,7 @@ const Index = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="input-field"
                   placeholder="Enter Email"
+                  disabled
                 />
               </div>
               <div className="inputcss align-items-center mt-2">
@@ -274,6 +286,7 @@ const Index = () => {
                   onChange={(e) => {
                     const newValue = e.target.value.replace(/\D/g, "");
                     setContact(newValue);
+                    setServiceDisable(false);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "." || e.key === "-" || e.key === "e") {
@@ -290,7 +303,10 @@ const Index = () => {
                 <div>Address : </div>
                 <input
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={(e) => {
+                    setAddress(e.target.value);
+                    setServiceDisable(false);
+                  }}
                   className="input-field"
                   placeholder="Enter Address"
                 />
@@ -299,9 +315,10 @@ const Index = () => {
                 <div>City : </div>
                 <input
                   value={city}
-                  onChange={(e) =>
-                    handleTextInputChange(setCity, e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleTextInputChange(setCity, e.target.value);
+                    setServiceDisable(false);
+                  }}
                   className="input-field"
                   placeholder="Enter City"
                 />
@@ -310,9 +327,10 @@ const Index = () => {
                 <div>Country : </div>
                 <input
                   value={country}
-                  onChange={(e) =>
-                    handleTextInputChange(setCountry, e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleTextInputChange(setCountry, e.target.value);
+                    setServiceDisable(false);
+                  }}
                   className="input-field"
                   placeholder="Enter Country"
                 />
@@ -359,6 +377,7 @@ const Index = () => {
               onClick={() => {
                 updateData();
               }}
+              disabled={serviceDisable}
             >
               Update
             </button>
@@ -373,6 +392,7 @@ const Index = () => {
           setIsModalOpen,
           profileImage,
           fetchProfileImage,
+          setServiceDisable,
         }}
       />
     </Layout>

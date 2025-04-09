@@ -8,6 +8,7 @@ import { apiCall } from "../../functions/api/apiGlobal";
 import Cookies from "universal-cookie";
 import { useDispatch } from "react-redux";
 import { loaderReducer } from "../../components/toolkit/loader";
+import { toast } from "react-toastify";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Index = () => {
   // Check if data is defined and has the expected structure
   const nData = data?.data?.data || {};
   const [summaryData, setSummaryData] = useState({});
+  const [error, setError] = useState("");
 
   const [bookings, setBookings] = useState({});
   const totalFare = localStorage.getItem("total_fare");
@@ -27,8 +29,6 @@ const Index = () => {
   if (totalFare) {
     localStorage.removeItem("total_fare");
   }
-
-  console.log("totalFare====>>>", summaryData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,6 +114,7 @@ const Index = () => {
             });
           }
         }
+        setError(error);
       }
     };
 
@@ -121,12 +122,18 @@ const Index = () => {
   }, [tokenUserId]);
 
   const handleClick = () => {
-    if (summaryData?.total_fare) {
+    if (summaryData.total_fare) {
       navigate("/payment", {
         state: {
           fare: summaryData?.total_fare,
         },
       });
+    } else if (error.response.data.message === "User ID is required") {
+      navigate("/login");
+      toast.error("Login to proceed!");
+    } else {
+      navigate("/login");
+      toast.error("Getting some issue, Try Again.");
     }
   };
 
@@ -138,8 +145,6 @@ const Index = () => {
     const previousRoute = location.state?.previousRoute || "/self-request";
     navigate(previousRoute, { state: { data: { ...nData, total_fare: "" } } }); // This will navigate to the previous page
   };
-
-  console.log("summaryData==>", summaryData);
 
   return (
     <Layout2>

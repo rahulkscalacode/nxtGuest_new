@@ -108,7 +108,7 @@ const Index = () => {
       });
     }
   };
-  
+
   useEffect(() => {
     if (toggleSelect) {
       if (listAllPaymentMethod) {
@@ -119,7 +119,14 @@ const Index = () => {
     }
   }, [toggleSelect]);
 
-  console.log("data==>", selectedCard && toggleSelect);
+  console.log(
+    "data==>",
+    selectedCard,
+    "&&",
+    toggleSelect,
+    "listAllPaymentMethod==>>",
+    listAllPaymentMethod
+  );
   return (
     <Layout2>
       <AddCardPopup toggleModal={toggleModal} showModal={showModal} />
@@ -158,7 +165,7 @@ const Index = () => {
             type="radio"
             name="paymentType"
             value="saved"
-            checked={toggleSelect}
+            checked={toggleSelect && Boolean(listAllPaymentMethod?.id)}
             onChange={toggleSelectCard}
             style={{ marginRight: "6px" }}
           />

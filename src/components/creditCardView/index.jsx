@@ -45,7 +45,7 @@ const Index = ({
   }, [listAllPaymentMethod]);
 
   const handleClick = () => {
-    toggleSelectCard(); 
+    toggleSelectCard();
   };
 
   // console.log("listAllPaymentMethod==>", listAllPaymentMethod);
@@ -57,11 +57,13 @@ const Index = ({
       onClick={handleClick}
       style={{ cursor: "pointer" }}
     >
-      {toggleSelect && (
+      {toggleSelect && listAllPaymentMethod.id ? (
         <TiTick
           style={{ color: "green", fontSize: "50px" }}
           className="position-absolute tickClass"
         />
+      ) : (
+        ""
       )}
       <Cards
         cvc={formState.cvc}
@@ -75,52 +77,3 @@ const Index = ({
 };
 
 export default Index;
-
-// const handleInputFocus = (e) => {
-//   setFormState((prevState) => ({
-//     ...prevState,
-//     focus: e.target.name,
-//   }));
-// };
-
-// const handleInputChange = (e) => {
-//   const { name, value } = e.target;
-
-//   setFormState((prevState) => ({
-//     ...prevState,
-//     [name]: value,
-//   }));
-// };
-{
-  /* <form>
-<input
-  type="tel"
-  name="number"
-  placeholder="Card Number"
-  onChange={handleInputChange}
-  onFocus={handleInputFocus}
-/>
-<input
-  type="text"
-  name="name"
-  placeholder="Cardholder Name"
-  onChange={handleInputChange}
-  onFocus={handleInputFocus}
-/>
-<input
-  type="text"
-  name="expiry"
-  placeholder="MM/YY Expiry"
-  onChange={handleInputChange}
-  onFocus={handleInputFocus}
-/>
-<input
-  type="tel"
-  name="cvc"
-  placeholder="CVC"
-  onChange={handleInputChange}
-  onFocus={handleInputFocus}
-/>
-<button type="submit">Submit</button>
-</form> */
-}
